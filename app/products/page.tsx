@@ -1,3 +1,4 @@
+import MotionReveal from "@/components/MotionReveal";
 import ProductGrid from "@/components/ProductGrid";
 import Section from "@/components/Section";
 
@@ -22,13 +23,15 @@ const productListings = [
 
 const ProductsPage = () => {
   return (
-    <Section
-      eyebrow="Products"
-      title="What we do"
-      description="Copy sourced from the product listings on dezitechengineering.com."
-    >
-      <ProductGrid items={productListings} />
-    </Section>
+      <Section
+        eyebrow="Products"
+        title="What we do"
+        description="Copy sourced from the product listings on dezitechengineering.com."
+      >
+        <MotionReveal>
+          <ProductGrid items={productListings} />
+        </MotionReveal>
+      </Section>
   );
 };
 

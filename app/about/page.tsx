@@ -1,3 +1,4 @@
+import MotionReveal from "@/components/MotionReveal";
 import Section from "@/components/Section";
 
 const aboutIntro = [
@@ -40,25 +41,27 @@ const approach = [
 const AboutPage = () => {
   return (
     <>
-      <Section
-        eyebrow="About"
-        title="An end to end engineering solutions provider"
-        description="Copy sourced from dezitechengineering.com/about.html"
-      >
-        <div className="space-y-4 text-base text-gray-700">
-          {aboutIntro.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-          <p>
-            We have capabilities to develop product from concept, solve complex problems or simply provide engineering
-            resources.
-          </p>
-          <p>
-            We can take concept and develop product and/or Add resources to bridge skill gap and/or Add resources to
-            complete the not started projects.
-          </p>
-        </div>
-      </Section>
+        <Section
+          eyebrow="About"
+          title="An end to end engineering solutions provider"
+          description="Copy sourced from dezitechengineering.com/about.html"
+        >
+          <div className="space-y-4 text-base text-gray-700">
+            {aboutIntro.map((paragraph, index) => (
+              <MotionReveal key={paragraph} as="p" delay={index * 0.05} className="text-base text-gray-700">
+                {paragraph}
+              </MotionReveal>
+            ))}
+            <MotionReveal as="p" delay={aboutIntro.length * 0.05} className="text-base text-gray-700">
+              We have capabilities to develop product from concept, solve complex problems or simply provide engineering
+              resources.
+            </MotionReveal>
+            <MotionReveal as="p" delay={aboutIntro.length * 0.05 + 0.08} className="text-base text-gray-700">
+              We can take concept and develop product and/or Add resources to bridge skill gap and/or Add resources to
+              complete the not started projects.
+            </MotionReveal>
+          </div>
+        </Section>
 
       <Section
         eyebrow="Why us"
@@ -66,13 +69,17 @@ const AboutPage = () => {
         description="Sourced from the About Us section."
         className="bg-white"
       >
-        <div className="grid gap-4 md:grid-cols-2">
-          {whyUs.map((point) => (
-            <div key={point} className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
-              {point}
-            </div>
-          ))}
-        </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {whyUs.map((point, index) => (
+              <MotionReveal
+                key={point}
+                delay={index * 0.05}
+                className="rounded-2xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700"
+              >
+                {point}
+              </MotionReveal>
+            ))}
+          </div>
       </Section>
 
       <Section
@@ -80,18 +87,29 @@ const AboutPage = () => {
         title="Partnership-first delivery model"
         description="Text pulled directly from the Engineering outsourcing and Manufacturing sections."
       >
-        <div className="space-y-8">
-          {approach.map((section) => (
-            <div key={section.title} className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900">{section.title}</h3>
-              <div className="mt-4 space-y-4 text-sm text-gray-700">
-                {section.body.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+          <div className="space-y-8">
+            {approach.map((section, index) => (
+              <MotionReveal
+                key={section.title}
+                delay={index * 0.08}
+                className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm"
+              >
+                <h3 className="text-lg font-semibold text-gray-900">{section.title}</h3>
+                <div className="mt-4 space-y-4 text-sm text-gray-700">
+                  {section.body.map((paragraph, paragraphIndex) => (
+                    <MotionReveal
+                      key={paragraph}
+                      as="p"
+                      delay={0.05 + paragraphIndex * 0.05}
+                      className="text-sm text-gray-700"
+                    >
+                      {paragraph}
+                    </MotionReveal>
+                  ))}
+                </div>
+              </MotionReveal>
+            ))}
+          </div>
       </Section>
     </>
   );

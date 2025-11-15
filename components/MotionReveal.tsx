@@ -16,6 +16,7 @@ type MotionRevealProps = {
   stagger?: number;
   once?: boolean;
   amount?: number;
+  as?: keyof JSX.IntrinsicElements;
 } & HTMLMotionProps<"div">;
 
 const easing: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
@@ -30,6 +31,7 @@ const MotionReveal = ({
   stagger = 0,
   once = true,
   amount = 0.35,
+  as = "div",
   ...rest
 }: MotionRevealProps) => {
   const prefersReducedMotion = useReducedMotion();
@@ -54,8 +56,10 @@ const MotionReveal = ({
       }
     : { duration: 0 };
 
+  const MotionComponent = (motion as Record<string, typeof motion.div>)[as] ?? motion.div;
+
   return (
-    <motion.div
+    <MotionComponent
       className={className}
       initial={initial}
       whileInView={shouldAnimate ? animate : undefined}
@@ -64,7 +68,7 @@ const MotionReveal = ({
       {...rest}
     >
       {children}
-    </motion.div>
+    </MotionComponent>
   );
 };
 
