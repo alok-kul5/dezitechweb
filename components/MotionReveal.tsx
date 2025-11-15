@@ -1,7 +1,7 @@
 "use client";
 
 import { HTMLMotionProps, motion } from "framer-motion";
-import { Children, ElementType, ReactNode, isValidElement } from "react";
+import { Children, ElementType, ReactElement, ReactNode, isValidElement } from "react";
 
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -86,13 +86,14 @@ const MotionReveal = ({
         );
       }
 
-      const Component = child.type as ElementType;
+      const element = child as ReactElement;
+      const Component = element.type as ElementType;
       const AnimatedChild = motion(Component);
 
       return (
         <AnimatedChild
           key={child.key ?? index}
-          {...child.props}
+          {...(element.props as Record<string, unknown>)}
           variants={childVariants}
           data-motion-reveal-child
         />
