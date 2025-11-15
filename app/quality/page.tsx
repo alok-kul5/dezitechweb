@@ -1,3 +1,4 @@
+import MotionReveal from "@/components/MotionReveal";
 import Section from "@/components/Section";
 
 const qualityHighlights = [
@@ -21,24 +22,30 @@ const assuranceStatements = [
 
 const QualityPage = () => {
   return (
-    <Section
-      eyebrow="Quality"
-      title="Quality & Certifications"
-      description="Assurance copy imported from the manufacturing page on dezitechengineering.com."
-    >
-      <div className="space-y-6 text-sm text-gray-700">
-        {assuranceStatements.map((statement) => (
-          <p key={statement}>{statement}</p>
-        ))}
-      </div>
-      <div className="mt-8 grid gap-3 md:grid-cols-2">
-        {qualityHighlights.map((item) => (
-          <div key={item} className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800">
-            {item}
-          </div>
-        ))}
-      </div>
-    </Section>
+      <Section
+        eyebrow="Quality"
+        title="Quality & Certifications"
+        description="Assurance copy imported from the manufacturing page on dezitechengineering.com."
+      >
+        <div className="space-y-6 text-sm text-gray-700">
+          {assuranceStatements.map((statement, index) => (
+            <MotionReveal key={statement} as="p" delay={index * 0.06} className="text-sm text-gray-700">
+              {statement}
+            </MotionReveal>
+          ))}
+        </div>
+        <div className="mt-8 grid gap-3 md:grid-cols-2">
+          {qualityHighlights.map((item, index) => (
+            <MotionReveal
+              key={item}
+              delay={index * 0.05}
+              className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800"
+            >
+              {item}
+            </MotionReveal>
+          ))}
+        </div>
+      </Section>
   );
 };
 

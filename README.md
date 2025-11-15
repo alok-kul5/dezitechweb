@@ -33,5 +33,5 @@ Copy `.env.example` to `.env.local` and adjust as needed for map embeds or API t
 
 ## Notes
 - Tailwind CSS is configured with the Dezitech palette in `tailwind.config.js`.
-- Framer Motion + custom `Reveal` utilities are scaffolded; respect `prefers-reduced-motion` when adding animations.
+- Framer Motion + the `MotionReveal` utility power staggered reveals; respect `prefers-reduced-motion` when adding animations.
 - Replace `public/assets` SVG placeholders with branded photography or renders during Phase 3.

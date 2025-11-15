@@ -1,3 +1,4 @@
+import MotionReveal from "@/components/MotionReveal";
 import Section from "@/components/Section";
 
 const services = [
@@ -109,31 +110,41 @@ const ServicesPage = () => {
       title="How we support Dezitech clients"
       description="Live copy imported from dezitechengineering.com across Engineering/Design, Manufacturing, Refrigeration, and Heat Pump pages."
     >
-      <div className="space-y-10">
-        {services.map((service) => (
-          <article key={service.title} className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-2">
-              <p className="text-xs font-semibold uppercase text-gray-500">{service.source}</p>
-              <h3 className="text-xl font-semibold text-gray-900">{service.title}</h3>
-              <p className="text-sm font-medium text-gray-700">{service.intro}</p>
-            </div>
-            <div className="mt-4 space-y-4 text-sm text-gray-700">
-              {service.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-            {service.highlights?.length ? (
-              <ul className="mt-4 grid gap-2 text-sm text-gray-800 md:grid-cols-2">
-                {service.highlights.map((item) => (
-                  <li key={item} className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-2">
-                    {item}
-                  </li>
+        <div className="space-y-10">
+          {services.map((service, index) => (
+            <MotionReveal
+              key={service.title}
+              delay={index * 0.1}
+              className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm"
+              as="article"
+            >
+              <div className="flex flex-col gap-2">
+                <p className="text-xs font-semibold uppercase text-gray-500">{service.source}</p>
+                <h3 className="text-xl font-semibold text-gray-900">{service.title}</h3>
+                <p className="text-sm font-medium text-gray-700">{service.intro}</p>
+              </div>
+              <div className="mt-4 space-y-4 text-sm text-gray-700">
+                {service.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
                 ))}
-              </ul>
-            ) : null}
-          </article>
-        ))}
-      </div>
+              </div>
+              {service.highlights?.length ? (
+                <ul className="mt-4 grid gap-2 text-sm text-gray-800 md:grid-cols-2">
+                  {service.highlights.map((item, highlightIndex) => (
+                    <MotionReveal
+                      as="li"
+                      key={item}
+                      delay={0.1 + highlightIndex * 0.05}
+                      className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-2"
+                    >
+                      {item}
+                    </MotionReveal>
+                  ))}
+                </ul>
+              ) : null}
+            </MotionReveal>
+          ))}
+        </div>
     </Section>
   );
 };

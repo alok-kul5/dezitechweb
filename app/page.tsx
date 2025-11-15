@@ -1,6 +1,6 @@
 import Hero from "@/components/Hero";
 import ProductGrid from "@/components/ProductGrid";
-import Reveal from "@/components/Reveal";
+import MotionReveal from "@/components/MotionReveal";
 import Section from "@/components/Section";
 
 const heroTitle = (
@@ -60,15 +60,15 @@ export default function Home() {
         secondaryCta={{ label: "Our Services", href: "/services" }}
       />
 
-      <Section
-        eyebrow="What we do"
-        title="Engineering disciplines we lead"
-        description="Copy sourced from dezitechengineering.com to highlight Dezitech’s primary solution areas."
-      >
-        <Reveal>
-          <ProductGrid items={featuredProducts} />
-        </Reveal>
-      </Section>
+        <Section
+          eyebrow="What we do"
+          title="Engineering disciplines we lead"
+          description="Copy sourced from dezitechengineering.com to highlight Dezitech’s primary solution areas."
+        >
+          <MotionReveal>
+            <ProductGrid items={featuredProducts} />
+          </MotionReveal>
+        </Section>
 
       <Section
         eyebrow="Established expertise"
@@ -76,13 +76,17 @@ export default function Home() {
         description="Headlines directly mirrored from the Dezitech homepage."
         className="bg-white"
       >
-        <div className="grid gap-4 md:grid-cols-2">
-          {foundingHighlights.map((item) => (
-            <Reveal key={item} className="rounded-2xl border border-neutral-100 bg-neutral-50 px-5 py-4 text-sm text-neutral-800">
-              {item}
-            </Reveal>
-          ))}
-        </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {foundingHighlights.map((item, index) => (
+              <MotionReveal
+                key={item}
+                delay={0.05 + index * 0.06}
+                className="rounded-2xl border border-neutral-100 bg-neutral-50 px-5 py-4 text-sm text-neutral-800"
+              >
+                {item}
+              </MotionReveal>
+            ))}
+          </div>
       </Section>
 
       <Section
@@ -90,13 +94,17 @@ export default function Home() {
         title="UK + India delivery model"
         description="Summaries imported from the manufacturing/supply chain and homepage sections."
       >
-        <div className="space-y-4">
-          {presenceStatements.map((statement) => (
-            <Reveal key={statement} className="rounded-3xl border border-dashed border-neutral-200 bg-white px-6 py-5 text-sm text-neutral-800">
-              {statement}
-            </Reveal>
-          ))}
-        </div>
+          <div className="space-y-4">
+            {presenceStatements.map((statement, index) => (
+              <MotionReveal
+                key={statement}
+                delay={0.05 + index * 0.06}
+                className="rounded-3xl border border-dashed border-neutral-200 bg-white px-6 py-5 text-sm text-neutral-800"
+              >
+                {statement}
+              </MotionReveal>
+            ))}
+          </div>
       </Section>
 
       <Section
@@ -104,26 +112,30 @@ export default function Home() {
         title="Where we already operate"
         description="Direct lift from the Dezitech industries overview."
       >
-        <div className="grid gap-4 md:grid-cols-5">
-          {industriesServed.map((industry) => (
-            <Reveal key={industry} className="rounded-2xl border border-neutral-200 bg-white px-4 py-6 text-center text-sm font-semibold text-neutral-900">
-              {industry}
-            </Reveal>
-          ))}
-        </div>
+          <div className="grid gap-4 md:grid-cols-5">
+            {industriesServed.map((industry, index) => (
+              <MotionReveal
+                key={industry}
+                delay={0.05 + index * 0.05}
+                className="rounded-2xl border border-neutral-200 bg-white px-4 py-6 text-center text-sm font-semibold text-neutral-900"
+              >
+                {industry}
+              </MotionReveal>
+            ))}
+          </div>
       </Section>
 
-      <Section
-        eyebrow="Get in touch"
-        title="Stay ahead with Dezitech"
-        description="Adapted from the contact page invitation."
-      >
-        <Reveal className="rounded-3xl border border-neutral-200 bg-white p-6 text-sm text-neutral-800">
-          Please do contact us for any further details such as work samples, quotation or to discuss how we can help you.
-          We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering
-          reviews stay on track.
-        </Reveal>
-      </Section>
+        <Section
+          eyebrow="Get in touch"
+          title="Stay ahead with Dezitech"
+          description="Adapted from the contact page invitation."
+        >
+          <MotionReveal className="rounded-3xl border border-neutral-200 bg-white p-6 text-sm text-neutral-800">
+            Please do contact us for any further details such as work samples, quotation or to discuss how we can help you.
+            We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering
+            reviews stay on track.
+          </MotionReveal>
+        </Section>
     </>
   );
 }
