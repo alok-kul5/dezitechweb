@@ -1,10 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CSSProperties, ReactNode, useEffect, useRef } from "react";
+import { ReactNode } from "react";
 
-import MotionReveal from "./MotionReveal";
+import ParallaxWrapper from "./ParallaxWrapper";
 import { useReducedMotion } from "./useReducedMotion";
 
 export type HeroProps = {
@@ -15,116 +16,240 @@ export type HeroProps = {
   secondaryCta?: { label: string; href: string };
 };
 
-const HERO_EASE: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
+const HERO_EASE: [number, number, number, number] = [0.21, 0.8, 0.32, 1];
+
+const CTA_GROUP = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.35,
+      staggerChildren: 0.07,
+    },
+  },
+};
+
+const CTA_ITEM = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: HERO_EASE },
+  },
+};
 
 const Hero = ({ eyebrow, title, description, primaryCta, secondaryCta }: HeroProps) => {
   const prefersReducedMotion = useReducedMotion();
-  const imageRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-    const node = imageRef.current;
-    if (!node) return;
+  const stage = (delay: number, extra?: Record<string, unknown>) =>
+    prefersReducedMotion
+      ? {}
+      : {
+          initial: { opacity: 0, y: 36 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.9, ease: HERO_EASE, delay, ...extra },
+        };
 
-    let rafId: number | null = null;
-    const maxTranslate = 20;
+  const mediaStage = prefersReducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0, y: 60, scale: 0.96 },
+        animate: { opacity: 1, y: 0, scale: 1.015 },
+        transition: { duration: 1.1, delay: 0.4, ease: HERO_EASE },
+      };
 
-    const update = () => {
-      rafId = null;
-      const rect = node.getBoundingClientRect();
-      const viewport = window.innerHeight || 1;
-      const progress = Math.min(Math.max((viewport - rect.top) / (viewport + rect.height), 0), 1);
-      const offset = (progress - 0.5) * maxTranslate;
-      node.style.setProperty("--hero-parallax-y", `${offset.toFixed(2)}px`);
-    };
-
-    const requestTick = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(update);
-    };
-
-    update();
-    window.addEventListener("scroll", requestTick, { passive: true });
-    window.addEventListener("resize", requestTick);
-
-    return () => {
-      if (rafId !== null) {
-        window.cancelAnimationFrame(rafId);
-      }
-      window.removeEventListener("scroll", requestTick);
-      window.removeEventListener("resize", requestTick);
-    };
-  }, [prefersReducedMotion]);
+  const accentStage = prefersReducedMotion
+    ? {}
+    : {
+        initial: { opacity: 0, x: -60 },
+        animate: { opacity: 0.7, x: 0 },
+        transition: { duration: 1.1, delay: 0.48, ease: HERO_EASE },
+      };
 
   return (
-    <section className="bg-neutral-50 px-6 pb-20 pt-16">
-      <div className="container grid gap-12 md:grid-cols-2 md:items-center">
-        <div className="space-y-5">
+    <section className="relative overflow-hidden bg-[#03060f] px-6 pb-28 pt-24 text-neutral-50">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(80,201,206,0.18),_rgba(3,6,15,0))]" />
+        <div
+          className="absolute inset-0 opacity-20 mix-blend-screen"
+          style={{
+            backgroundImage: "linear-gradient(135deg, rgba(80,201,206,0.15) 0%, transparent 55%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 opacity-15"
+          style={{
+            backgroundImage: "url(/images/DEZITECH_TECH_GRID.svg)",
+            backgroundSize: "640px",
+            backgroundPosition: "center",
+          }}
+        />
+      </div>
+
+      <div className="container relative grid gap-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+        <div className="space-y-7 text-balance">
           {eyebrow ? (
-            <MotionReveal direction="up" delay={0.05} distance={18} duration={0.55}>
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-dezitech-500">{eyebrow}</p>
-            </MotionReveal>
+            <motion.p
+              {...stage(0.08)}
+              className="text-xs font-semibold uppercase tracking-[0.4em] text-teal-200/70"
+            >
+              {eyebrow}
+            </motion.p>
           ) : null}
 
-          <MotionReveal direction="up" delay={0.17} distance={28} duration={0.7}>
-            <h1 className="font-heading text-4xl font-semibold leading-tight text-neutral-900 md:text-5xl lg:text-[3.5rem]">
-              {title}
-            </h1>
-          </MotionReveal>
+          <motion.h1
+            {...stage(0.16)}
+            className="font-heading text-4xl font-semibold leading-tight text-white md:text-5xl lg:text-[3.65rem]"
+          >
+            {title}
+          </motion.h1>
 
           {description ? (
-            <MotionReveal direction="up" delay={0.25} distance={24} duration={0.65}>
-              <p className="text-lg text-neutral-600">{description}</p>
-            </MotionReveal>
+            <motion.p
+              {...stage(0.24)}
+              className="max-w-2xl text-lg text-neutral-300 md:text-xl"
+            >
+              {description}
+            </motion.p>
           ) : null}
 
           {primaryCta || secondaryCta ? (
-            <MotionReveal direction="up" delay={0.33} stagger={0.07} distance={20} duration={0.65}>
-              <div className="flex flex-wrap gap-4">
-                {primaryCta ? (
+            <motion.div
+              className="flex flex-wrap gap-4"
+              {...(prefersReducedMotion
+                ? {}
+                : { initial: "hidden", animate: "visible", variants: CTA_GROUP })}
+            >
+              {primaryCta ? (
+                <motion.div variants={prefersReducedMotion ? undefined : CTA_ITEM}>
                   <Link
                     href={primaryCta.href}
-                    className="inline-flex items-center rounded-full bg-dezitech-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-dezitech-500/30 transition-all duration-300 ease-[cubic-bezier(.2,.9,.2,1)] hover:-translate-y-0.5 hover:scale-[1.03] hover:bg-dezitech-600 hover:shadow-[0_25px_50px_rgba(200,16,46,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dezitech-500"
+                    className="inline-flex items-center rounded-full bg-dezitech-500 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-[0_20px_40px_rgba(200,16,46,0.25)] transition-transform duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] hover:-translate-y-1 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dezitech-300"
                   >
                     {primaryCta.label}
                   </Link>
-                ) : null}
-                {secondaryCta ? (
+                </motion.div>
+              ) : null}
+              {secondaryCta ? (
+                <motion.div variants={prefersReducedMotion ? undefined : CTA_ITEM}>
                   <Link
                     href={secondaryCta.href}
-                    className="inline-flex items-center rounded-full border border-neutral-300 px-6 py-3 text-sm font-semibold text-neutral-900 transition-all duration-300 ease-[cubic-bezier(.2,.9,.2,1)] hover:-translate-y-0.5 hover:scale-[1.02] hover:border-neutral-500 hover:shadow-[0_18px_35px_rgba(15,23,42,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-800"
+                    className="inline-flex items-center rounded-full border border-white/20 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80 transition-all duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-white/50 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
                   >
                     {secondaryCta.label}
                   </Link>
-                ) : null}
-              </div>
-            </MotionReveal>
+                </motion.div>
+              ) : null}
+            </motion.div>
           ) : null}
+
+          <motion.div
+            {...stage(0.4, { duration: 1 })}
+            className="flex flex-wrap gap-6 text-sm text-white/70"
+          >
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Response SLA</p>
+              <p className="text-2xl font-semibold text-white">2h avg</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Active Deployments</p>
+              <p className="text-2xl font-semibold text-white">58</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Global Sites</p>
+              <p className="text-2xl font-semibold text-white">14</p>
+            </div>
+          </motion.div>
         </div>
 
-        <div className="md:justify-self-end">
-          <motion.div
-            ref={imageRef}
-            className="group relative overflow-hidden rounded-3xl border border-neutral-100 bg-white/85 p-8 shadow-[0_30px_60px_rgba(17,24,39,0.08)] backdrop-blur"
-              style={
+        <div className="relative">
+          <div className="pointer-events-none absolute -left-16 top-14 hidden h-56 w-56 rounded-full bg-teal-500/20 blur-3xl lg:block" />
+
+          <ParallaxWrapper speed={0.26}>
+            <motion.div
+              className="relative overflow-hidden rounded-[32px] border border-white/5 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl"
+              {...mediaStage}
+              whileHover={
                 prefersReducedMotion
                   ? undefined
-                  : ({
-                      transform: "translateY(var(--hero-parallax-y, 0px))",
-                    } as CSSProperties)
+                  : { y: -12, transition: { duration: 0.6, ease: HERO_EASE } }
               }
-            initial={prefersReducedMotion ? undefined : { opacity: 0, y: 32, scale: 0.985 }}
-            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0, scale: 1.015 }}
-            viewport={prefersReducedMotion ? undefined : { once: true, amount: 0.2 }}
-            transition={prefersReducedMotion ? undefined : { duration: 0.75, delay: 0.4, ease: HERO_EASE }}
-            whileHover={prefersReducedMotion ? undefined : { y: -8, boxShadow: "0 35px 70px rgba(17,24,39,0.12)" }}
+            >
+              <div className="mb-4 flex items-center justify-between text-[0.65rem] uppercase tracking-[0.45em] text-white/60">
+                <span>DEZITECH CORE SYSTEMS</span>
+                <span>VERIFIED</span>
+              </div>
+
+              <div className="relative aspect-[5/3] overflow-hidden rounded-2xl border border-white/10">
+                <Image
+                  src="/images/DEZITECH_MACHINERY_PLACEHOLDER.jpg"
+                  fill
+                  alt="Placeholder industrial system visualization"
+                  priority
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 540px, 100vw"
+                />
+                <div className="absolute inset-3 rounded-xl border border-white/10 bg-gradient-to-tr from-[#061228]/70 via-transparent to-transparent" />
+              </div>
+
+              <div className="mt-6 grid gap-3 text-xs text-white/70 md:grid-cols-3">
+                <div>
+                  <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/40">Integrity</p>
+                  <p className="text-lg font-semibold text-white">99.982%</p>
+                </div>
+                <div>
+                  <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/40">Latency</p>
+                  <p className="text-lg font-semibold text-white">14 ms</p>
+                </div>
+                <div>
+                  <p className="text-[0.6rem] uppercase tracking-[0.4em] text-white/40">Thermals</p>
+                  <p className="text-lg font-semibold text-white">Optimal</p>
+                </div>
+              </div>
+            </motion.div>
+          </ParallaxWrapper>
+
+          <ParallaxWrapper
+            speed={0.18}
+            className="pointer-events-none absolute -right-10 -top-12 hidden w-80 lg:block"
           >
-            <div className="text-xs font-semibold uppercase tracking-[0.4em] text-dezitech-500">DEZITECH_IMAGE_01</div>
-            <div className="mt-6 flex h-72 items-center justify-center rounded-2xl border border-dashed border-dezitech-500/60 bg-dezitech-50 text-sm font-semibold tracking-[0.4em] text-dezitech-500">
-              DEZITECH_IMAGE_01
-            </div>
-            <p className="mt-4 text-xs text-neutral-500">Placeholder for hero imagery and technical schematics.</p>
-          </motion.div>
+            <motion.div
+              className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 opacity-70"
+              {...accentStage}
+            >
+              <Image
+                src="/images/DEZITECH_TECH_GRID.svg"
+                fill
+                alt="Technical grid overlay"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-white/5 mix-blend-screen" />
+            </motion.div>
+          </ParallaxWrapper>
+
+          <ParallaxWrapper speed={0.14} axis="x" className="pointer-events-none absolute -left-12 bottom-0 hidden lg:block">
+            <motion.div
+              className="h-48 w-48 rounded-full bg-[radial-gradient(circle,_rgba(80,201,206,0.4),_transparent_70%)] blur-2xl"
+              {...(prefersReducedMotion
+                ? {}
+                : {
+                    initial: { opacity: 0, scale: 0.8 },
+                    animate: { opacity: 0.7, scale: 1 },
+                    transition: { duration: 1.2, delay: 0.52, ease: HERO_EASE },
+                  })}
+            />
+          </ParallaxWrapper>
+
+          <motion.div
+            className="pointer-events-none absolute inset-0 rounded-[42px] bg-[url(/images/DEZITECH_BG_SHAPE.png)] bg-cover bg-center opacity-20 blur-3xl"
+            {...(prefersReducedMotion
+              ? {}
+              : {
+                  initial: { opacity: 0, scale: 0.9 },
+                  animate: { opacity: 0.2, scale: 1 },
+                  transition: { duration: 1, delay: 0.55, ease: HERO_EASE },
+                })}
+          />
         </div>
       </div>
     </section>

@@ -1,0 +1,20 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" fill="#04070f"/>
+  <path d="M0 0H1200V800H0V0Z" fill="url(#grad)"/>
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="1200" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#081022"/>
+      <stop offset="1" stop-color="#04070f"/>
+    </linearGradient>
+    <pattern id="smallGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="800" fill="url(#smallGrid)"/>
+  <g stroke="#50C9CE" stroke-opacity="0.35" stroke-width="1">
+    <circle cx="600" cy="400" r="260" fill="none"/>
+    <circle cx="600" cy="400" r="120" fill="none"/>
+    <line x1="0" y1="400" x2="1200" y2="400"/>
+    <line x1="600" y1="0" x2="600" y2="800"/>
+  </g>
+</svg>
