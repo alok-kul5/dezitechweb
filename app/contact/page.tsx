@@ -1,17 +1,35 @@
 import ContactForm from "@/components/ContactForm";
 import Section from "@/components/Section";
 
+const contactDetails = [
+  { label: "Headquarters", value: "Karad,  India" },
+  { label: "UK Office", value: "Bristol, UK" },
+  { label: "Email", value: "info@dezitechengineering.com" },
+];
+
 const ContactPage = () => {
   return (
     <Section
       eyebrow="Contact"
       title="Contact Dezitech"
-      description="Map, location highlights, and validation logic will be completed in later phases."
+      description="Please do contact us for any further details such as work samples, quotation or discus how we can help you."
     >
       <div className="grid gap-10 md:grid-cols-2">
         <ContactForm />
-        <div className="rounded-2xl border border-dashed border-gray-300 p-6 text-sm text-gray-500">
-          Map placeholder / contact details block.
+        <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900">Reach us directly</h3>
+          <p className="mt-3 text-sm text-gray-700">
+            We stay responsive between the UK & India so project conversations, supplier coordination, and engineering
+            reviews stay on track.
+          </p>
+          <dl className="mt-6 space-y-4">
+            {contactDetails.map((item) => (
+              <div key={item.label}>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">{item.label}</dt>
+                <dd className="text-sm text-gray-900">{item.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
     </Section>

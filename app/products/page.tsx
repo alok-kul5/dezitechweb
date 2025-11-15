@@ -1,20 +1,33 @@
 import ProductGrid from "@/components/ProductGrid";
 import Section from "@/components/Section";
 
-const placeholderProducts = [
-  { title: "Precision Components", summary: "High tolerance manufacturing for mission critical systems.", href: "/products/precision-components" },
-  { title: "Integrated Assemblies", summary: "Turnkey engineering assemblies crafted for reliability.", href: "/products/integrated-assemblies" },
-  { title: "Custom Tooling", summary: "Purpose-built tooling tailored to each engagement.", href: "/products/custom-tooling" },
+const productListings = [
+  {
+    title: "Engineering and design",
+    summary: "Engineering resources, design, 3D modelling, CAE/FEA",
+    href: "/products/engineering-design",
+  },
+  {
+    title: "Refrigeration",
+    summary: "Design of refrigeration systems and component supply",
+    href: "/products/refrigeration",
+  },
+  { title: "Heat pump", summary: "Heat pump design and components supply", href: "/products/heat-pump" },
+  {
+    title: "Engineering Supply chain",
+    summary: "Cost effective & reliable components supply with excellent quality",
+    href: "/products/engineering-supply-chain",
+  },
 ];
 
 const ProductsPage = () => {
   return (
     <Section
       eyebrow="Products"
-      title="Product Portfolio"
-      description="Grid layout and interactive states will be refined during Phase 3."
+      title="What we do"
+      description="Copy sourced from the product listings on dezitechengineering.com."
     >
-      <ProductGrid items={placeholderProducts} />
+      <ProductGrid items={productListings} />
     </Section>
   );
 };
