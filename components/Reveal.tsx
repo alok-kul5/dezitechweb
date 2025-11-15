@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 type RevealProps = {
   children: ReactNode;
@@ -9,20 +9,17 @@ type RevealProps = {
 };
 
 const Reveal = ({ children, className = "", rootMargin = "0px" }: RevealProps) => {
-  const supportsIntersectionObserver = useMemo(
-    () => typeof window !== "undefined" && "IntersectionObserver" in window,
-    []
-  );
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isVisible, setIsVisible] = useState(() => !supportsIntersectionObserver);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (!supportsIntersectionObserver) {
+    const node = ref.current;
+    if (!node) {
       return;
     }
 
-    const node = ref.current;
-    if (!node) {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
+      setIsVisible(true);
       return;
     }
 
@@ -39,10 +36,13 @@ const Reveal = ({ children, className = "", rootMargin = "0px" }: RevealProps) =
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [rootMargin, supportsIntersectionObserver]);
+  }, [rootMargin]);
+
+  const visibilityClass = isVisible ? "is-visible" : "";
+  const classes = ["reveal", visibilityClass, className].filter(Boolean).join(" ");
 
   return (
-    <div ref={ref} className={className} data-reveal-visible={isVisible}>
+    <div ref={ref} className={classes}>
       {children}
     </div>
   );
