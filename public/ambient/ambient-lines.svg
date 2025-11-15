@@ -1,0 +1,16 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="400" fill="#050912"/>
+  <g opacity="0.18" stroke="#7FE9E5" stroke-width="1.2">
+    <path d="M0 50L1200 0"/>
+    <path d="M0 120L1200 70"/>
+    <path d="M0 190L1200 140"/>
+    <path d="M0 260L1200 210"/>
+    <path d="M0 330L1200 280"/>
+  </g>
+  <g opacity="0.12" stroke="white" stroke-width="0.5">
+    <path d="M0 40L1200 100"/>
+    <path d="M0 110L1200 170"/>
+    <path d="M0 180L1200 240"/>
+    <path d="M0 250L1200 310"/>
+  </g>
+</svg>
