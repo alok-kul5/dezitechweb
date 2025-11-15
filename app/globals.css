@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #18181b;
+  --container: 1200px;
+  --space-base: 24px;
+  --dezitech-red: #C8102E;
+  --bg-light: #F8F8F9;
 }
 
 html {
@@ -13,11 +15,101 @@ html {
 
 body {
   min-height: 100vh;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg-light);
+  color: #111827;
+  font-family: var(--font-body), Inter, system-ui, sans-serif;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
-main {
-  background-color: transparent;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), "Space Grotesk", Inter, system-ui, sans-serif;
+  color: #111827;
+  line-height: 1.15;
+  font-weight: 600;
+  margin-bottom: 0.75em;
+}
+
+p {
+  margin-bottom: 1.25em;
+  color: #374151;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 4vw, 3.75rem);
+}
+
+h2 {
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+}
+
+.container {
+  max-width: var(--container);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  width: 100%;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition:
+    background 200ms ease,
+    backdrop-filter 200ms ease,
+    padding 200ms ease,
+    border-color 200ms ease;
+}
+
+.site-header.at-top {
+  background: transparent;
+  padding: 22px 0;
+}
+
+.site-header.scrolled {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.2, 0.9, 0.2, 1),
+    transform 0.6s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .site-header {
+    transition: none !important;
+  }
 }

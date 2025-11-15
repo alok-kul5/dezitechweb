@@ -4,14 +4,16 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const bodyFont = Inter({
+  variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const headingFont = Space_Grotesk({
+  variable: "--font-heading",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} bg-white text-gray-900 antialiased`}>
+      <body
+        className={`${bodyFont.variable} ${headingFont.variable} bg-neutral-50 text-neutral-900 antialiased`}
+      >
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">{children}</main>
