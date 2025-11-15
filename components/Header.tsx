@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { useState } from "react";
 
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -15,53 +15,52 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
-const EASING: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
-
-const headerStates = {
-  top: {
-    paddingTop: 22,
-    paddingBottom: 22,
-    backgroundColor: "rgba(255, 255, 255, 0)",
-    borderBottomColor: "rgba(15, 23, 42, 0)",
-    boxShadow: "0 0 0 rgba(15, 23, 42, 0)",
-    backdropFilter: "blur(0px)",
-  },
-  scrolled: {
-    paddingTop: 12,
-    paddingBottom: 12,
-    backgroundColor: "rgba(255, 255, 255, 0.88)",
-    borderBottomColor: "rgba(15, 23, 42, 0.08)",
-    boxShadow: "0 15px 40px rgba(15, 23, 42, 0.08)",
-    backdropFilter: "blur(16px)",
-  },
-};
+const NAV_EASE: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
 
 const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const prefersReducedMotion = useReducedMotion();
+  const { scrollY } = useScroll();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 16);
-    };
+  const scrollProgress = useSpring(useTransform(scrollY, [0, 120], [0, 1]), {
+    stiffness: 200,
+    damping: 28,
+    mass: 0.8,
+  });
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const paddingTop = useTransform(scrollProgress, [0, 1], [24, 14]);
+  const paddingBottom = useTransform(scrollProgress, [0, 1], [24, 14]);
+  const backgroundColor = useTransform(scrollProgress, (value) => `rgba(255, 255, 255, ${value * 0.9})`);
+  const borderBottomColor = useTransform(scrollProgress, (value) => `rgba(15, 23, 42, ${value * 0.12})`);
+  const boxShadow = useTransform(scrollProgress, (value) => `0 25px 60px rgba(15, 23, 42, ${value * 0.14})`);
+  const backdropFilter = useTransform(scrollProgress, (value) => `blur(${value * 18}px)`);
 
-  const currentState = isScrolled ? "scrolled" : "top";
-  const transition = prefersReducedMotion ? { duration: 0 } : { duration: 0.45, ease: EASING };
+  const motionStyle = prefersReducedMotion
+    ? {
+        paddingTop: 24,
+        paddingBottom: 24,
+        backgroundColor: "rgba(255, 255, 255, 0)",
+        borderBottomColor: "rgba(15, 23, 42, 0)",
+        boxShadow: "none",
+        backdropFilter: "blur(0px)",
+      }
+    : {
+        paddingTop,
+        paddingBottom,
+        backgroundColor,
+        borderBottomColor,
+        boxShadow,
+        backdropFilter,
+      };
+
+  const handlePointerEnter = (href: string) => setHoveredLink(href);
+  const resetHover = () => setHoveredLink(null);
 
   return (
     <motion.header
       className="site-header"
       aria-label="Site header"
-      initial="top"
-      animate={prefersReducedMotion ? undefined : currentState}
-      variants={prefersReducedMotion ? undefined : headerStates}
-      transition={transition}
-      style={prefersReducedMotion ? headerStates[currentState] : undefined}
+      style={motionStyle}
     >
       <div className="container flex items-center justify-between gap-4">
         <Link href="/" className="font-heading text-lg font-semibold tracking-tight text-neutral-900">
@@ -74,11 +73,21 @@ const Header = () => {
               key={link.href}
               href={link.href}
               className="group relative inline-flex items-center gap-1 py-2 text-neutral-900/70 transition-colors duration-200 ease-out hover:text-neutral-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neutral-900/40"
+              onMouseEnter={() => handlePointerEnter(link.href)}
+              onMouseLeave={resetHover}
+              onFocus={() => handlePointerEnter(link.href)}
+              onBlur={resetHover}
             >
               <span>{link.label}</span>
-              <span
+              <motion.span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] origin-center scale-x-0 rounded-full bg-neutral-900/60 transition-transform duration-250 ease-[cubic-bezier(.2,.9,.2,1)] group-hover:scale-x-100"
+                className="pointer-events-none absolute inset-x-1 bottom-0 h-[2px] origin-left rounded-full bg-neutral-900/70"
+                initial={false}
+                animate={{
+                  scaleX: hoveredLink === link.href ? 1 : 0,
+                  opacity: hoveredLink === link.href ? 1 : 0,
+                }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.3, ease: NAV_EASE }}
               />
             </Link>
           ))}
