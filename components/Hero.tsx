@@ -13,7 +13,7 @@ export type HeroProps = {
 
 const Hero = ({ eyebrow, title, description, primaryCta, secondaryCta }: HeroProps) => {
   return (
-    <section className="px-6 pb-20 pt-16">
+    <section className="bg-neutral-50 px-6 pb-20 pt-16">
       <div className="container grid gap-12 md:grid-cols-2 md:items-center">
         <Reveal className="space-y-6">
           {eyebrow ? <p className="text-xs font-semibold uppercase tracking-[0.3em] text-dezitech-500">{eyebrow}</p> : null}

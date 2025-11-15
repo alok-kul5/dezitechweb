@@ -6,20 +6,22 @@ type RevealProps = {
   children: ReactNode;
   className?: string;
   rootMargin?: string;
+  threshold?: number;
 };
 
-const Reveal = ({ children, className = "", rootMargin = "0px" }: RevealProps) => {
+const Reveal = ({ children, className = "", rootMargin = "0px", threshold = 0.2 }: RevealProps) => {
+  const supportsIntersectionObserver =
+    typeof window !== "undefined" && "IntersectionObserver" in window;
   const ref = useRef<HTMLDivElement | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(() => !supportsIntersectionObserver);
 
   useEffect(() => {
-    const node = ref.current;
-    if (!node) {
+    if (!supportsIntersectionObserver) {
       return;
     }
 
-    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
-      setIsVisible(true);
+    const node = ref.current;
+    if (!node) {
       return;
     }
 
@@ -31,12 +33,12 @@ const Reveal = ({ children, className = "", rootMargin = "0px" }: RevealProps) =
           observer.disconnect();
         }
       },
-      { threshold: 0.2, rootMargin }
+      { threshold, rootMargin }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [rootMargin]);
+  }, [rootMargin, supportsIntersectionObserver, threshold]);
 
   const visibilityClass = isVisible ? "is-visible" : "";
   const classes = ["reveal", visibilityClass, className].filter(Boolean).join(" ");
