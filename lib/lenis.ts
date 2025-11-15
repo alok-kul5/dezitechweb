@@ -42,5 +42,5 @@ export function LenisProvider({ children }: LenisProviderProps) {
     };
   }, []);
 
-  return <>{children}</>;
+  return children;
 }
