@@ -6,12 +6,14 @@ export type ProductCardProps = {
   title: string;
   summary?: string;
   href: string;
+  motionDelay?: number;
 };
 
-const ProductCard = ({ title, summary, href }: ProductCardProps) => {
+const ProductCard = ({ title, summary, href, motionDelay = 0 }: ProductCardProps) => {
   return (
     <MotionReveal
       as="article"
+      delay={motionDelay}
       className="group flex h-full flex-col justify-between rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-transform duration-300 ease-[cubic-bezier(.2,.9,.2,1)] will-change-transform hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-[0_30px_55px_rgba(15,23,42,0.12)]"
     >
       <div>
