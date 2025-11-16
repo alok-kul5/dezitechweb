@@ -1,17 +1,23 @@
 // lib/lenis.ts
-// Lightweight Lenis wrapper that exports the functions expected by LenisProvider.tsx
-// This module is safe to import from server code (it guards window usage).
+// FINAL CLEAN VERSION – works with LenisProvider.tsx and removes ALL merge conflicts
+
+"use client";
+
 import Lenis from "@studio-freight/lenis";
 
 let lenisInstance: ReturnType<typeof Lenis> | null = null;
 let rafId: number | null = null;
 
-/** Returns true when Lenis can run in this environment (browser). */
+/** Can run Lenis only in browser and if motion isn't reduced */
 export function canUseLenis(): boolean {
-  return typeof window !== "undefined" && typeof window.requestAnimationFrame === "function";
+  if (typeof window === "undefined") return false;
+  const reduce =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return !reduce;
 }
 
-/** Initialize Lenis if not already created. Returns the instance or null. */
+/** Initialize Lenis (snappy Meridian-style scroll) */
 export function initLenis(options?: {
   lerp?: number;
   wheelMultiplier?: number;
@@ -21,19 +27,21 @@ export function initLenis(options?: {
 }) {
   if (!canUseLenis()) return null;
 
+  // Already exists, return it
   if (lenisInstance) return lenisInstance;
 
   const cfg = {
-    lerp: 0.08,
-    wheelMultiplier: 1.2,
+    lerp: 0.045, // snappy smoothness
+    wheelMultiplier: 1.5, // speed up wheel scroll
     gestureOrientation: "vertical",
     smoothTouch: false,
-    touchMultiplier: 1.5,
+    touchMultiplier: 1.4,
     ...(options || {}),
   };
 
   lenisInstance = new Lenis(cfg);
 
+  /** Start RAF loop */
   function raf(time: number) {
     if (!lenisInstance) return;
     lenisInstance.raf(time);
@@ -45,35 +53,27 @@ export function initLenis(options?: {
   return lenisInstance;
 }
 
-/** Call this on window resize if needed (Lenis usually handles it, but expose anyway). */
+/** Resize handler */
 export function resizeLenis() {
   if (!lenisInstance) return;
-  if (typeof (lenisInstance as any).onResize === "function") {
-    try {
-      (lenisInstance as any).onResize();
-    } catch (e) {
-      // ignore
-    }
-  }
+  try {
+    (lenisInstance as any).onResize?.();
+  } catch {}
 }
 
-/** Destroys Lenis instance and cancels RAF loop. */
+/** Destroy instance safely */
 export function destroyLenis() {
   if (rafId) {
     cancelAnimationFrame(rafId);
     rafId = null;
   }
-  if (lenisInstance) {
-    try {
-      lenisInstance.destroy();
-    } catch (e) {
-      // ignore
-    }
-    lenisInstance = null;
-  }
+  try {
+    lenisInstance?.destroy();
+  } catch {}
+  lenisInstance = null;
 }
 
-/** Expose the instance (dangerous to call from SSR) */
+/** Get instance (careful, not SSR-safe) */
 export function getLenisInstance() {
   return lenisInstance;
 }

@@ -3,6 +3,7 @@
 
 import React, { ReactNode, useEffect } from "react";
 import { canUseLenis, initLenis, destroyLenis, resizeLenis } from "@/lib/lenis";
+import useReducedMotion from "./useReducedMotion";
 
 type LenisProviderProps = {
   children: ReactNode;
@@ -13,31 +14,37 @@ type LenisProviderProps = {
  * It ensures Lenis only runs in browser, respects reduced-motion and cleans up.
  */
 export default function LenisProvider({ children }: LenisProviderProps) {
+  const prefersReduced = useReducedMotion();
+
   useEffect(() => {
-    if (!canUseLenis()) return;
+    // Only run on client and when user doesn't prefer reduced motion
+    if (!canUseLenis() || prefersReduced) return;
 
-    // Respect prefers-reduced-motion
-    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
+    // Init Lenis (idempotent in lib/lenis.ts)
     const lenis = initLenis({
-      // Tuned for snappy but smooth feel. Adjust if needed.
-      lerp: 0.08,
-      wheelMultiplier: 1.2,
+      lerp: 0.045,
+      wheelMultiplier: 1.5,
       gestureOrientation: "vertical",
       smoothTouch: false,
-      touchMultiplier: 1.5,
+      touchMultiplier: 1.4,
     });
 
-    // Ensure Lenis resizes on window resize
-    const onResize = () => resizeLenis();
-    window.addEventListener("resize", onResize, { passive: true });
-
-    return () => {
-      window.removeEventListener("resize", onResize);
-      destroyLenis();
+    // Resize handler
+    const handleResize = () => {
+      try {
+        resizeLenis();
+      } catch {}
     };
-  }, []);
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      try {
+        destroyLenis();
+      } catch {}
+    };
+  }, [prefersReduced]);
 
   return <>{children}</>;
 }

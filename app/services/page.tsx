@@ -105,61 +105,75 @@ const services = [
 
 const ServicesPage = () => {
   return (
-    <Section
-      eyebrow="Services"
-      title="How we support Dezitech clients"
-      description="Live copy imported from dezitechengineering.com across Engineering/Design, Manufacturing, Refrigeration, and Heat Pump pages."
-    >
-        <div className="space-y-10">
-          {services.map((service, index) => (
-            <MotionReveal
-              key={service.title}
-              delay={index * 0.1}
-              className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm"
-              as="article"
-            >
-                <div className="flex flex-col gap-2">
-                  <p className="text-xs font-semibold uppercase text-gray-500">{service.source}</p>
-                  <h3 className="text-xl font-semibold text-gray-900">{service.title}</h3>
-                  <MotionReveal as="p" splitText stagger={0.035} className="text-sm font-medium text-gray-700">
-                    {service.intro}
-                  </MotionReveal>
-                </div>
-                <div className="mt-4 space-y-4 text-sm text-gray-700">
-                  {service.body.map((paragraph, paragraphIndex) => (
-                    <MotionReveal
-                      key={paragraph}
-                      as="p"
-                      direction="up"
-                      distance={16}
-                      duration={0.55}
-                      delay={paragraphIndex * 0.04}
-                      splitText
-                      className="text-sm text-gray-700"
-                    >
-                      {paragraph}
+      <Section
+        eyebrow="Services"
+        title="How we support Dezitech clients"
+        description="Live copy imported from dezitechengineering.com across Engineering/Design, Manufacturing, Refrigeration, and Heat Pump pages."
+        ambientProps={[
+          {
+            src: "/ambient/ambient-lines.svg",
+            alt: "Ambient lines",
+            className: "right-6 top-12 hidden w-60 opacity-20 md:block",
+            speed: 0.05,
+          },
+          {
+            src: "/ambient/ambient-grid.svg",
+            alt: "Ambient grid",
+            className: "left-10 bottom-10 hidden w-64 opacity-20 lg:block",
+            speed: 0.04,
+          },
+        ]}
+      >
+          <div className="space-y-10">
+            {services.map((service, index) => (
+              <MotionReveal
+                key={service.title}
+                delay={index * 0.1}
+                className="rounded-3xl border border-white/10 bg-white/5 p-6 text-white shadow-[0_25px_60px_rgba(5,7,15,0.5)]"
+                as="article"
+              >
+                  <div className="flex flex-col gap-2">
+                    <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/50">{service.source}</p>
+                    <h3 className="text-xl font-semibold text-white">{service.title}</h3>
+                    <MotionReveal as="p" splitText stagger={0.035} className="text-sm font-medium text-white/80">
+                      {service.intro}
                     </MotionReveal>
-                  ))}
-                </div>
-              {service.highlights?.length ? (
-                <ul className="mt-4 grid gap-2 text-sm text-gray-800 md:grid-cols-2">
-                    {service.highlights.map((item, highlightIndex) => (
+                  </div>
+                  <div className="mt-4 space-y-4 text-sm text-white/75">
+                    {service.body.map((paragraph, paragraphIndex) => (
                       <MotionReveal
-                        as="li"
-                        key={item}
-                        delay={0.1 + highlightIndex * 0.05}
+                        key={paragraph}
+                        as="p"
+                        direction="up"
+                        distance={16}
+                        duration={0.55}
+                        delay={paragraphIndex * 0.04}
                         splitText
-                        className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-2"
                       >
-                        {item}
+                        {paragraph}
                       </MotionReveal>
                     ))}
-                </ul>
-              ) : null}
-            </MotionReveal>
-          ))}
-        </div>
-    </Section>
+                  </div>
+                {service.highlights?.length ? (
+                  <ul className="mt-4 grid gap-2 text-sm text-white/85 md:grid-cols-2">
+                      {service.highlights.map((item, highlightIndex) => (
+                        <MotionReveal
+                          as="li"
+                          key={item}
+                          delay={0.1 + highlightIndex * 0.05}
+                          splitText
+                          pop
+                          className="interactive-card rounded-2xl border border-white/10 bg-white/5 px-4 py-2"
+                        >
+                          {item}
+                        </MotionReveal>
+                      ))}
+                  </ul>
+                ) : null}
+              </MotionReveal>
+            ))}
+          </div>
+      </Section>
   );
 };
 

@@ -26,10 +26,24 @@ const QualityPage = () => {
         eyebrow="Quality"
         title="Quality & Certifications"
         description="Assurance copy imported from the manufacturing page on dezitechengineering.com."
+        ambientProps={[
+          {
+            src: "/ambient/ambient-grid.svg",
+            alt: "Ambient grid",
+            className: "-right-8 top-8 hidden w-60 opacity-25 lg:block",
+            speed: 0.04,
+          },
+          {
+            src: "/ambient/ambient-gear-outline.svg",
+            alt: "Gear outline",
+            className: "left-6 bottom-6 hidden w-48 opacity-25 md:block",
+            speed: 0.05,
+          },
+        ]}
       >
-        <div className="space-y-6 text-sm text-gray-700">
+        <div className="space-y-6 text-sm text-white/75">
           {assuranceStatements.map((statement, index) => (
-            <MotionReveal key={statement} as="p" delay={index * 0.06} className="text-sm text-gray-700">
+            <MotionReveal key={statement} as="p" delay={index * 0.06} splitText>
               {statement}
             </MotionReveal>
           ))}
@@ -39,7 +53,8 @@ const QualityPage = () => {
             <MotionReveal
               key={item}
               delay={index * 0.05}
-              className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800"
+              pop
+              className="interactive-card rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80"
             >
               {item}
             </MotionReveal>

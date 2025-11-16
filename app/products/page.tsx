@@ -27,8 +27,22 @@ const ProductsPage = () => {
         eyebrow="Products"
         title="What we do"
         description="Copy sourced from the product listings on dezitechengineering.com."
+        ambientProps={[
+          {
+            src: "/ambient/ambient-grid.svg",
+            alt: "Ambient grid",
+            className: "left-8 top-6 hidden w-60 opacity-25 lg:block",
+            speed: 0.04,
+          },
+          {
+            src: "/ambient/ambient-lines.svg",
+            alt: "Ambient lines",
+            className: "right-8 bottom-10 hidden w-64 opacity-20 md:block",
+            speed: 0.05,
+          },
+        ]}
       >
-        <MotionReveal>
+        <MotionReveal direction="up" pop>
           <ProductGrid items={productListings} />
         </MotionReveal>
       </Section>
