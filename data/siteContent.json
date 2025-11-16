@@ -1,21 +1,21 @@
 {
-  "hero": {
-    "eyebrow": "Dezitech Engineering",
-    "headline": [
-      "Build better products faster",
-      "with flexible engineering partners"
-    ],
-    "description": "Since 2014, Dezitech Engineering has paired global teams with design, manufacturing, and supply-chain expertise.",
-    "ctaPrimary": {
-      "label": "Contact Us",
-      "href": "/contact"
+    "hero": {
+      "eyebrow": "Dezitech Engineering",
+      "headline": [
+        "Engineering supply chains.",
+        "Re-engineered for OEM success."
+      ],
+      "description": "UK + India engineering teams keep OEM programs resilient, compliant, and on cost.",
+      "ctaPrimary": {
+        "label": "Contact Us",
+        "href": "/contact"
+      },
+      "ctaSecondary": {
+        "label": "About Us",
+        "href": "/about"
+      },
+      "image": "/images/DEZITECH_IMG_HERO.jpg"
     },
-    "ctaSecondary": {
-      "label": "About Us",
-      "href": "/about"
-    },
-    "image": "/images/DEZITECH_IMG_01.jpg"
-  },
   "kpis": [
     {
       "label": "International engineering experience",
