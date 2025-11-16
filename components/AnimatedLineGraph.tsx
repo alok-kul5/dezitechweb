@@ -77,8 +77,8 @@ const AnimatedLineGraph = ({ data, className }: AnimatedLineGraphProps) => {
       <defs>
         <linearGradient id="graph-stroke" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#C8102E" />
-          <stop offset="50%" stopColor="#F04658" />
-          <stop offset="100%" stopColor="#FF8A5C" />
+          <stop offset="60%" stopColor="rgba(200, 16, 46, 0.85)" />
+          <stop offset="100%" stopColor="rgba(200, 16, 46, 0.65)" />
         </linearGradient>
         <linearGradient id="graph-fill" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="rgba(200, 16, 46, 0.25)" />
@@ -105,7 +105,7 @@ const AnimatedLineGraph = ({ data, className }: AnimatedLineGraphProps) => {
           cx={point.x}
           cy={point.y}
           r={1.2}
-          fill="#FFB199"
+          fill="#C8102E"
           initial={shouldAnimate ? { scale: 0, opacity: 0 } : undefined}
           animate={shouldAnimate ? { scale: 1, opacity: 1 } : undefined}
           transition={

@@ -54,9 +54,9 @@ body {
   min-height: 100vh;
   background-color: var(--bg-canvas);
   background-image:
-    radial-gradient(circle at 20% -10%, rgba(200, 16, 46, 0.15), transparent 55%),
-    radial-gradient(circle at 80% 0%, rgba(25, 64, 95, 0.28), transparent 52%),
-    linear-gradient(0deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04));
+    radial-gradient(circle at 20% -10%, rgba(200, 16, 46, 0.18), transparent 55%),
+    radial-gradient(circle at 78% 6%, rgba(11, 15, 20, 0.75), transparent 60%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.03));
   color: var(--text-soft);
   font-family: var(--font-body), Inter, system-ui, sans-serif;
   line-height: 1.6;
