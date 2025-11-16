@@ -69,28 +69,32 @@
       "summary": "Engineering resources, design, 3D modelling, CAE/FEA.",
       "description": "We solve technical challenges and provide resources to get new products faster to the market.",
       "href": "/products/engineering-design",
-      "media": "/images/DEZITECH_IMG_02.jpg"
+      "media": "/images/DEZITECH_IMG_02.jpg",
+      "icon": "/icons/DEZITECH_ICON_GEAR.svg"
     },
     {
       "title": "Refrigeration",
       "summary": "Design of refrigeration systems and component supply.",
       "description": "Refrigeration & heat pump components are part of the managed supply for customers who need reliable quality.",
       "href": "/products/refrigeration",
-      "media": "/images/DEZITECH_IMG_03.jpg"
+      "media": "/images/DEZITECH_IMG_03.jpg",
+      "icon": "/icons/DEZITECH_ICON_MAP.svg"
     },
     {
       "title": "Heat pump",
       "summary": "Heat pump design and components supply.",
       "description": "We are flexible with volumes and manage the development & approval of patterns, jigs/fixtures, gauges and testing.",
       "href": "/products/heat-pump",
-      "media": "/images/DEZITECH_ART_01.png"
+      "media": "/images/DEZITECH_ART_01.png",
+      "icon": "/icons/DEZITECH_ICON_GEAR.svg"
     },
     {
       "title": "Engineering supply chain",
       "summary": "Cost effective & reliable components supply with excellent quality.",
       "description": "We are locally based & can assist with solving supply chain challenges ensuring a quality and reliable supply of components at economical prices from our operation in India.",
       "href": "/products/engineering-supply-chain",
-      "media": "/images/DEZITECH_IMG_01.jpg"
+      "media": "/images/DEZITECH_IMG_01.jpg",
+      "icon": "/icons/DEZITECH_ICON_MAP.svg"
     }
   ],
   "services": [

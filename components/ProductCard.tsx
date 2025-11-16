@@ -13,11 +13,12 @@ export type ProductCardProps = {
   mediaSrc?: string;
   mediaAlt?: string;
   motionDelay?: number;
+  icon?: string;
 };
 
 const FALLBACK_MEDIA = "/images/DEZITECH_IMG_03.jpg";
 
-const ProductCard = ({ title, summary, href, mediaSrc, mediaAlt, motionDelay = 0 }: ProductCardProps) => {
+const ProductCard = ({ title, summary, href, mediaSrc, mediaAlt, motionDelay = 0, icon }: ProductCardProps) => {
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -37,7 +38,7 @@ const ProductCard = ({ title, summary, href, mediaSrc, mediaAlt, motionDelay = 0
       }
     >
       <div className="interactive-card relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/12 bg-carbon-800/80 p-6 shadow-[0_25px_65px_rgba(3,6,15,0.45)]">
-        <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-carbon-700/40">
+          <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-carbon-700/40">
           <Image
             src={mediaSrc ?? FALLBACK_MEDIA}
             alt={mediaAlt ?? `${title} visual`}
@@ -47,9 +48,19 @@ const ProductCard = ({ title, summary, href, mediaSrc, mediaAlt, motionDelay = 0
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-          <span className="absolute left-4 top-4 inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-[0.6rem] uppercase tracking-[0.35em] text-white/80">
-            Capability
-          </span>
+            <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-white/80">
+              {icon ? (
+                <Image
+                  src={icon}
+                  alt={`${title} icon`}
+                  width={16}
+                  height={16}
+                  loading="lazy"
+                  className="h-4 w-4 object-contain"
+                />
+              ) : null}
+              <span>Capability</span>
+            </span>
         </div>
 
         <div className="flex flex-1 flex-col">

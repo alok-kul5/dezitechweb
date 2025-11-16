@@ -29,6 +29,7 @@ const productCards = siteContent.products.map((product) => ({
   href: product.href,
   mediaSrc: product.media,
   mediaAlt: `${product.title} visual`,
+  icon: product.icon,
 }));
 
 export default function Home() {

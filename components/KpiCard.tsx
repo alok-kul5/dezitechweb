@@ -28,6 +28,16 @@ const KpiCard = ({ label, value, description, icon, media }: KpiCardProps) => {
           loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-transparent" />
+        {icon ? (
+          <Image
+            src={icon}
+            alt={`${label} icon`}
+            width={28}
+            height={28}
+            loading="lazy"
+            className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
+          />
+        ) : null}
       </div>
       <div>
         <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/50">{label}</p>
