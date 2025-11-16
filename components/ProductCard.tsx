@@ -23,24 +23,19 @@ const ProductCard = ({
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <MotionReveal
-      as="article"
-      direction="up"
-      distance={20}
-      duration={0.65}
-      delay={motionDelay}
-      className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-white/40 bg-white/90 p-6 shadow-[0_18px_55px_rgba(15,23,42,0.08)] transition-[transform,box-shadow] duration-[480ms] ease-[cubic-bezier(.21,.8,.32,1)] will-change-transform"
-      whileHover={
-        prefersReducedMotion
-          ? undefined
-          : {
-              y: -10,
-              scale: 1.03,
-              boxShadow: "0 30px 70px rgba(15,23,42,0.18)",
-              transition: { duration: 0.5, ease: CARD_EASE },
-            }
-      }
-    >
+      <MotionReveal
+        as="article"
+        direction="up"
+        distance={20}
+        duration={0.65}
+        delay={motionDelay}
+        className="interactive-card group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-white/90 p-6 shadow-[0_18px_55px_rgba(15,23,42,0.18)]"
+        whileHover={
+          prefersReducedMotion
+            ? undefined
+            : { transition: { duration: 0.5, ease: CARD_EASE } }
+        }
+      >
         <div>
           <p className="text-[0.65rem] uppercase tracking-[0.35em] text-neutral-400">
             Capability
@@ -62,14 +57,14 @@ const ProductCard = ({
           ) : null}
         </div>
       <div className="mt-8 flex items-center justify-between">
-        <Link
+          <Link
           href={href}
-          className="inline-flex items-center gap-1 text-sm font-semibold text-neutral-900 transition-all duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] group-hover:gap-2 group-hover:text-dezitech-500"
+            className="interactive-cta inline-flex items-center gap-1 text-sm font-semibold text-neutral-900/90 transition-all duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] group-hover:gap-2 group-hover:text-dezitech-500"
         >
           <span>View details</span>
           <span
             aria-hidden="true"
-            className="transition-transform duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] group-hover:translate-x-0.5"
+              className="interactive-icon transition-transform duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] group-hover:translate-x-0.5"
           >
             →
           </span>

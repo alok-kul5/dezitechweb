@@ -1,0 +1,176 @@
+"use client";
+
+import { motion, useInView } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import AnimatedLineGraph from "./AnimatedLineGraph";
+import MotionReveal from "./MotionReveal";
+import { useReducedMotion } from "./useReducedMotion";
+
+type StatConfig = {
+  label: string;
+  value: number;
+  suffix?: string;
+  prefix?: string;
+  decimals?: number;
+};
+
+const STAT_CONFIG: StatConfig[] = [
+  { label: "Response SLA", value: 2, suffix: "h avg", decimals: 1 },
+  { label: "Active Deployments", value: 58 },
+  { label: "Global Sites", value: 14 },
+];
+
+const formatValue = (value: number, decimals = 0) =>
+  Number(value).toFixed(decimals);
+
+const AnimatedStats = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const [values, setValues] = useState<number[]>(
+    () => STAT_CONFIG.map(() => 0),
+  );
+  const isInView = useInView(containerRef, {
+    once: true,
+    margin: "-20% 0px",
+  });
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    if (prefersReducedMotion) {
+      const reducedId = requestAnimationFrame(() => {
+        setValues(STAT_CONFIG.map((stat) => stat.value));
+      });
+      return () => cancelAnimationFrame(reducedId);
+    }
+
+    const rafIds: number[] = [];
+
+    STAT_CONFIG.forEach((stat, index) => {
+      const start = performance.now();
+      const duration = 1600;
+
+      const tick = (now: number) => {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const nextValue = stat.value * eased;
+
+        setValues((prev) => {
+          const next = [...prev];
+          next[index] = nextValue;
+          return next;
+        });
+
+        if (progress < 1) {
+          rafIds[index] = requestAnimationFrame(tick);
+        }
+      };
+
+      rafIds[index] = requestAnimationFrame(tick);
+    });
+
+    return () => {
+      rafIds.forEach((id) => cancelAnimationFrame(id));
+    };
+  }, [isInView, prefersReducedMotion]);
+
+  const stats = useMemo(
+    () =>
+      STAT_CONFIG.map((stat, index) => ({
+        ...stat,
+        current: prefersReducedMotion
+          ? stat.value
+          : values[index] ?? 0,
+      })),
+    [prefersReducedMotion, values],
+  );
+
+  return (
+    <section className="px-6">
+      <motion.div
+        ref={containerRef}
+        className="relative mx-auto grid w-full max-w-5xl gap-10 overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-8 text-white shadow-[0_40px_120px_rgba(3,6,15,0.55)] backdrop-blur-2xl md:grid-cols-[1.1fr_0.9fr]"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.25 }}
+        transition={{ duration: 0.65, ease: [0.21, 0.8, 0.32, 1] }}
+      >
+        <div>
+          <MotionReveal
+            as="div"
+            className="space-y-4"
+            direction="up"
+            distance={18}
+            stagger={0.08}
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">
+              Operating posture
+            </p>
+            <h3 className="text-3xl font-semibold text-white">
+              Live delivery metrics
+            </h3>
+            <p className="text-base text-white/70">
+              We mirror Meridian&apos;s calm operating cadence with reliable
+              telemetry on availability, response, and deployments.
+            </p>
+          </MotionReveal>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {stats.map((stat) => (
+              <div
+                key={stat.label}
+                className="interactive-card rounded-2xl border border-white/10 bg-white/5 p-4"
+              >
+                <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/50">
+                  {stat.label}
+                </p>
+                <p className="mt-2 text-3xl font-semibold text-white">
+                  {stat.prefix ?? ""}
+                  {formatValue(stat.current, stat.decimals)}
+                  {stat.suffix ? (
+                    <span className="ml-1 text-sm text-white/60">
+                      {stat.suffix}
+                    </span>
+                  ) : null}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-between gap-6">
+          <MotionReveal
+            direction="up"
+            distance={18}
+            className="rounded-3xl border border-white/10 bg-black/30 p-6"
+          >
+            <div className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-white/50">
+              <span>Latency</span>
+              <span>ms</span>
+            </div>
+            <AnimatedLineGraph className="mt-4 h-28 w-full" />
+            <p className="mt-4 text-xs text-white/60">
+              Drawn via stroke dash offsets for a precise, Meridian-like reveal.
+            </p>
+          </MotionReveal>
+
+          <MotionReveal
+            direction="up"
+            distance={18}
+            className="rounded-3xl border border-white/10 bg-black/30 p-6 text-sm text-white/70"
+          >
+            <p className="font-semibold text-white">Operational certainty</p>
+            <p className="mt-2">
+              Counters sync with a RAF loop, ensuring the motion cadence stays
+              crisp even on lower-powered devices.
+            </p>
+          </MotionReveal>
+        </div>
+      </motion.div>
+    </section>
+  );
+};
+
+export default AnimatedStats;

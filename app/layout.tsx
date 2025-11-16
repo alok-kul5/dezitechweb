@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
-import Header from "@/components/Header";
+import AnimatedHeader from "@/components/AnimatedHeader";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import AmbientStage from "@/components/AmbientStage";
@@ -30,12 +30,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-        <body className={`${bodyFont.variable} ${headingFont.variable} bg-neutral-50 text-neutral-900 antialiased`}>
+      <html lang="en">
+          <body className={`${bodyFont.variable} ${headingFont.variable} bg-[#05070f] text-white antialiased`}>
           <LenisProvider>
-            <div className="relative flex min-h-screen flex-col overflow-hidden bg-neutral-50">
-              <AmbientStage />
-              <Header />
+              <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#05070f]">
+                <AmbientStage />
+                <AnimatedHeader />
               <main className="flex-1">
                 <PageTransition>{children}</PageTransition>
               </main>

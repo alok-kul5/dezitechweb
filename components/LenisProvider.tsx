@@ -1,30 +1,41 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 import { canUseLenis, initLenis, resizeLenis } from "@/lib/lenis";
+import { useReducedMotion } from "./useReducedMotion";
 
 type LenisProviderProps = {
   children: ReactNode;
 };
 
 const LenisProvider = ({ children }: LenisProviderProps) => {
+  const prefersReducedMotion = useReducedMotion();
+  const teardownRef = useRef<(() => void) | null>(null);
+
   useEffect(() => {
-    if (!canUseLenis()) return;
+    if (typeof window === "undefined") return;
 
-    const { lenis, destroy } = initLenis({
-      duration: 1.15,
-      lerp: 0.09,
-    });
+    if (prefersReducedMotion || !canUseLenis()) {
+      teardownRef.current?.();
+      teardownRef.current = null;
+      return;
+    }
 
-    const handleResize = () => resizeLenis(lenis);
+    const { destroy } = initLenis();
+    const handleResize = () => resizeLenis();
+
     window.addEventListener("resize", handleResize);
-
-    return () => {
+    teardownRef.current = () => {
       window.removeEventListener("resize", handleResize);
       destroy();
     };
-  }, []);
+
+    return () => {
+      teardownRef.current?.();
+      teardownRef.current = null;
+    };
+  }, [prefersReducedMotion]);
 
   return <>{children}</>;
 };

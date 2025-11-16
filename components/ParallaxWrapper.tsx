@@ -1,7 +1,8 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useRef } from "react";
-import useReducedMotion from "@/components/useReducedMotion";
+import { ReactNode, useEffect, useRef } from "react";
+
+import { useReducedMotion } from "./useReducedMotion";
 
 type ParallaxWrapperProps = {
   children: ReactNode;
@@ -10,6 +11,7 @@ type ParallaxWrapperProps = {
   axis?: "x" | "y";
   range?: number;
   disabled?: boolean;
+  depth?: number;
 };
 
 const clamp = (value: number, min: number, max: number) =>
@@ -18,60 +20,76 @@ const clamp = (value: number, min: number, max: number) =>
 export function ParallaxWrapper({
   children,
   className,
-  speed = 0.2,
+  speed = 0.08,
   axis = "y",
-  range = 120,
+  range = 80,
   disabled = false,
+  depth = 0,
 }: ParallaxWrapperProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const normalizedSpeed = useMemo(() => clamp(speed, 0.08, 0.45), [speed]);
-  const movementRange = useMemo(() => clamp(range, 60, 220), [range]);
-
   useEffect(() => {
-    if (prefersReducedMotion || disabled) return;
+    if (prefersReducedMotion || disabled) {
+      const element = wrapperRef.current;
+      if (element) {
+        element.style.transform = "translate3d(0, 0, 0)";
+      }
+      return;
+    }
+
     const element = wrapperRef.current;
     if (!element || typeof window === "undefined") return;
 
     let frameId: number | null = null;
+    let lastScrollY = window.scrollY;
+    let offset = 0;
 
-    const update = () => {
+    const maxOffset = clamp(range, 24, 240);
+    const normalizedSpeed = clamp(speed, 0.01, 0.35);
+
+    const applyTransform = () => {
       frameId = null;
-      const rect = element.getBoundingClientRect();
-      const viewportHeight = window.innerHeight || 1;
-      const viewportWidth = window.innerWidth || 1;
-      const relativePosition =
-        axis === "y"
-          ? (rect.top + rect.height * 0.5 - viewportHeight * 0.5) / viewportHeight
-          : (rect.left + rect.width * 0.5 - viewportWidth * 0.5) / viewportWidth;
+      const translateX = axis === "x" ? offset : 0;
+      const translateY = axis === "y" ? offset : 0;
+      const translateZ = depth ? offset * depth : 0;
 
-      const movement = relativePosition * normalizedSpeed * movementRange;
-      const x = axis === "x" ? movement : 0;
-      const y = axis === "y" ? movement : 0;
-
-      element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      element.style.transform = `translate3d(${translateX}px, ${translateY}px, ${translateZ}px)`;
     };
 
-    const requestTick = () => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      const delta = currentScroll - lastScrollY;
+      lastScrollY = currentScroll;
+
+      offset += delta * normalizedSpeed;
+      offset = clamp(offset, -maxOffset, maxOffset);
+
       if (frameId === null) {
-        frameId = window.requestAnimationFrame(update);
+        frameId = window.requestAnimationFrame(applyTransform);
       }
     };
 
-    update();
-    window.addEventListener("scroll", requestTick, { passive: true });
-    window.addEventListener("resize", requestTick);
+    const handleResize = () => {
+      offset = clamp(offset, -maxOffset, maxOffset);
+      if (frameId === null) {
+        frameId = window.requestAnimationFrame(applyTransform);
+      }
+    };
+
+    applyTransform();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      if (frameId) {
+      if (frameId !== null) {
         cancelAnimationFrame(frameId);
       }
-      window.removeEventListener("scroll", requestTick);
-      window.removeEventListener("resize", requestTick);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
       element.style.transform = "";
     };
-  }, [axis, disabled, movementRange, normalizedSpeed, prefersReducedMotion]);
+  }, [axis, depth, disabled, prefersReducedMotion, range, speed]);
 
   return (
     <div
