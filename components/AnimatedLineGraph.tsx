@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 
+import { motionConfig } from "@/motion.config";
 import { getSiteContentSync, loadSiteContent } from "@/lib/siteData";
 
 import { useReducedMotion } from "./useReducedMotion";
@@ -18,7 +19,7 @@ type AnimatedLineGraphProps = {
 };
 
 const staticGraph = getSiteContentSync().lineGraph;
-const GRAPH_EASE: [number, number, number, number] = [0.16, 0.84, 0.44, 1];
+const GRAPH_EASE = motionConfig.ease;
 
 const buildPointsFromData = (values: number[]): DataPoint[] => {
   if (!values.length) {
@@ -75,12 +76,12 @@ const AnimatedLineGraph = ({ data, className }: AnimatedLineGraphProps) => {
     <svg viewBox="0 0 100 40" role="img" aria-label="Performance trendline" className={className}>
       <defs>
         <linearGradient id="graph-stroke" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#5DC4D9" />
-          <stop offset="50%" stopColor="#7CE0C3" />
-          <stop offset="100%" stopColor="#FCE38A" />
+          <stop offset="0%" stopColor="#C8102E" />
+          <stop offset="50%" stopColor="#F04658" />
+          <stop offset="100%" stopColor="#FF8A5C" />
         </linearGradient>
         <linearGradient id="graph-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(92, 196, 217, 0.3)" />
+          <stop offset="0%" stopColor="rgba(200, 16, 46, 0.25)" />
           <stop offset="100%" stopColor="rgba(5, 7, 15, 0)" />
         </linearGradient>
       </defs>
@@ -95,7 +96,7 @@ const AnimatedLineGraph = ({ data, className }: AnimatedLineGraphProps) => {
         strokeLinecap="round"
         initial={shouldAnimate ? { pathLength: 0, opacity: 0.4 } : undefined}
         animate={shouldAnimate ? { pathLength: 1, opacity: 1 } : undefined}
-        transition={shouldAnimate ? { duration: 1.8, ease: GRAPH_EASE, delay: 0.4 } : undefined}
+        transition={shouldAnimate ? { duration: 1.6, ease: GRAPH_EASE, delay: 0.35 } : undefined}
       />
 
       {points.map((point, index) => (
@@ -104,14 +105,14 @@ const AnimatedLineGraph = ({ data, className }: AnimatedLineGraphProps) => {
           cx={point.x}
           cy={point.y}
           r={1.2}
-          fill="#FCE38A"
+          fill="#FFB199"
           initial={shouldAnimate ? { scale: 0, opacity: 0 } : undefined}
           animate={shouldAnimate ? { scale: 1, opacity: 1 } : undefined}
           transition={
             shouldAnimate
               ? {
                   duration: 0.45,
-                  delay: 0.6 + index * 0.08,
+                  delay: 0.55 + index * 0.07,
                   ease: GRAPH_EASE,
                 }
               : undefined

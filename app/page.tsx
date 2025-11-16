@@ -64,7 +64,7 @@ export default function Home() {
       >
         <MotionReveal direction="up" distance={18} duration={0.65} amount={0.18} variant="light">
           <div className="rounded-[28px] border border-black/5 bg-white p-2 shadow-[0_35px_95px_rgba(15,23,36,0.08)]">
-            <ProductGrid items={productCards} />
+            <ProductGrid items={productCards} tone="light" />
           </div>
         </MotionReveal>
       </Section>

@@ -7,8 +7,8 @@ import { getSiteContentSync, loadSiteContent } from "@/lib/siteData";
 
 import AnimatedLineGraph from "./AnimatedLineGraph";
 import KpiCard from "./KpiCard";
-import LayoutGrid from "./LayoutGrid";
 import MotionReveal from "./MotionReveal";
+import SectionWrapper from "./SectionWrapper";
 import { useReducedMotion } from "./useReducedMotion";
 
 type SiteCopy = ReturnType<typeof getSiteContentSync>;
@@ -98,77 +98,73 @@ const AnimatedStats = () => {
   );
 
   return (
-    <section className="px-6 py-20">
+    <SectionWrapper variant="dark" className="stats-section">
       <motion.div
         ref={containerRef}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.6, ease: [0.21, 0.8, 0.32, 1] }}
+        transition={{ duration: 0.6, ease: [0.2, 0.9, 0.2, 1] }}
+        className="relative"
       >
-        <LayoutGrid
-          gapClassName="gap-12"
-          left={
-            <div className="space-y-8">
-              <MotionReveal as="div" className="space-y-4" direction="up" distance={18} stagger={0.08}>
-                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">Operating posture</p>
-                <h3 className="text-3xl font-semibold text-white">Live delivery metrics</h3>
-                <p className="text-base text-white/70">
-                  Dezitech telemetry keeps a constant signal on availability, deployments, and response lines so global
-                  OEMs can plan against real data.
-                </p>
-              </MotionReveal>
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="space-y-8">
+            <MotionReveal as="div" className="space-y-4" direction="up" distance={18} stagger={0.08}>
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">Operating posture</p>
+              <h3 className="text-3xl font-semibold text-white">Live delivery metrics</h3>
+              <p className="text-base text-white/70">
+                Dezitech telemetry keeps OEM programs synchronized with real deployments, so plans stay grounded in live data.
+              </p>
+            </MotionReveal>
 
-              <div className="kpi-grid">
-                {stats.map((stat, index) => (
-                  <motion.div
-                    key={stat.label}
-                    initial={shouldAnimate ? { opacity: 0, y: 18 } : undefined}
-                    animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
-                    transition={
-                      shouldAnimate
-                        ? {
-                            duration: 0.45,
-                            delay: 0.35 + index * 0.08,
-                            ease: [0.21, 0.8, 0.32, 1],
-                          }
-                        : undefined
-                    }
-                  >
-                    <KpiCard
-                      label={stat.label}
-                      value={`${formatValue(stat.current)}${stat.suffix ? ` ${stat.suffix}` : ""}`}
-                      description={stat.description}
-                      icon={stat.icon}
-                      media={stat.media}
-                    />
-                  </motion.div>
-                ))}
+            <div className="kpi-grid">
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={shouldAnimate ? { opacity: 0, y: 18 } : undefined}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                  transition={
+                    shouldAnimate
+                      ? {
+                          duration: 0.45,
+                          delay: 0.35 + index * 0.08,
+                          ease: [0.2, 0.9, 0.2, 1],
+                        }
+                      : undefined
+                  }
+                >
+                  <KpiCard
+                    label={stat.label}
+                    value={`${formatValue(stat.current)}${stat.suffix ? ` ${stat.suffix}` : ""}`}
+                    description={stat.description}
+                    icon={stat.icon}
+                    media={stat.media}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <MotionReveal direction="up" distance={18} className="rounded-[24px] border border-white/10 bg-white/5 p-6 shadow-[0_35px_90px_rgba(3,6,15,0.55)]">
+              <div className="flex items-center justify-between text-[0.6rem] uppercase tracking-[0.35em] text-white/55">
+                <span>{graphMeta.title}</span>
+                <span>{graphMeta.unit}</span>
               </div>
-            </div>
-          }
-          right={
-            <div className="space-y-6">
-              <MotionReveal direction="up" distance={18} className="card-surface p-6">
-                <div className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-white/55">
-                  <span>{graphMeta.title}</span>
-                  <span>{graphMeta.unit}</span>
-                </div>
-                <AnimatedLineGraph className="mt-4 h-36 w-full" data={graphMeta.data} />
-                <p className="mt-4 text-xs text-white/65">{graphMeta.description}</p>
-              </MotionReveal>
+              <AnimatedLineGraph className="mt-6 h-32 w-full" data={graphMeta.data} />
+              <p className="mt-5 text-xs text-white/65">{graphMeta.description}</p>
+            </MotionReveal>
 
-              <MotionReveal direction="up" distance={18} className="card-surface p-6 text-sm text-white/70">
-                <p className="font-semibold text-white">Operational certainty</p>
-                <p className="mt-2 text-white/65">
-                  Counters sync with a RAF loop, ensuring the motion cadence stays crisp even on lower-powered devices.
-                </p>
-              </MotionReveal>
-            </div>
-          }
-        />
+            <MotionReveal direction="up" distance={18} className="rounded-[24px] border border-white/10 bg-white/5 p-6 text-sm text-white/75 shadow-[0_25px_75px_rgba(3,6,15,0.45)]">
+              <p className="text-base font-semibold text-white">Operational certainty</p>
+              <p className="mt-2">
+                Counters sync with a RAF loop, keeping cadence crisp even on lower-powered devices.
+              </p>
+            </MotionReveal>
+          </div>
+        </div>
       </motion.div>
-    </section>
+    </SectionWrapper>
   );
 };
 

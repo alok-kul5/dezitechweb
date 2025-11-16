@@ -6,19 +6,35 @@ type KpiCardProps = {
   description?: string;
   icon?: string;
   media?: string;
+  variant?: "dark" | "light";
 };
 
 const FALLBACK_MEDIA = "/images/DEZITECH_IMG_02.jpg";
 
-const KpiCard = ({ label, value, description, icon, media }: KpiCardProps) => {
+const toneTokens = {
+  dark: {
+    card: "bg-white/6 border-white/12 text-white",
+    accent: "text-white/60",
+    value: "text-white",
+    description: "text-white/65",
+    thumbBorder: "border-white/15",
+  },
+  light: {
+    card: "bg-white border-black/5 text-[#0F1724]",
+    accent: "text-[#94A3B8]",
+    value: "text-[#0F1724]",
+    description: "text-[#4B5563]",
+    thumbBorder: "border-black/10",
+  },
+} as const;
+
+const KpiCard = ({ label, value, description, icon, media, variant = "dark" }: KpiCardProps) => {
   const visual = media ?? icon ?? FALLBACK_MEDIA;
+  const styles = toneTokens[variant];
 
   return (
-    <article className="card-surface card-surface--metric flex items-center gap-5 bg-white/5">
-      <div
-        className="relative shrink-0 overflow-hidden rounded-2xl border border-white/10"
-        style={{ width: "72px", height: "72px" }}
-      >
+    <article className={`flex items-center gap-4 rounded-[18px] border p-4 sm:p-5 shadow-[0_22px_70px_rgba(3,6,15,0.45)] ${styles.card}`}>
+      <div className={`relative h-14 w-14 overflow-hidden rounded-2xl border ${styles.thumbBorder}`}>
         <Image
           src={visual}
           alt={`${label} visual`}
@@ -27,22 +43,21 @@ const KpiCard = ({ label, value, description, icon, media }: KpiCardProps) => {
           className="h-full w-full object-cover"
           loading="lazy"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-transparent to-transparent" />
         {icon ? (
           <Image
             src={icon}
             alt={`${label} icon`}
-            width={28}
-            height={28}
+            width={20}
+            height={20}
             loading="lazy"
-            className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
+            className="absolute inset-0 m-auto h-5 w-5 object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.35)]"
           />
         ) : null}
       </div>
-        <div>
-          <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/70">{label}</p>
-        <p className="mt-2 text-3xl font-semibold text-white">{value}</p>
-        {description ? <p className="mt-2 text-xs text-white/65">{description}</p> : null}
+      <div>
+        <p className={`text-[0.55rem] uppercase tracking-[0.35em] ${styles.accent}`}>{label}</p>
+        <p className={`mt-2 text-2xl font-semibold ${styles.value}`}>{value}</p>
+        {description ? <p className={`mt-1 text-xs leading-relaxed ${styles.description}`}>{description}</p> : null}
       </div>
     </article>
   );
