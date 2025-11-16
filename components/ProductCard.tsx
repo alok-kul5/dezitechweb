@@ -25,15 +25,17 @@ const ProductCard = ({ title, summary, href, mediaSrc, mediaAlt, motionDelay = 0
     <MotionReveal
       as="article"
       direction="up"
-      distance={20}
-      duration={0.65}
+      distance={24}
+      duration={0.72}
       delay={motionDelay}
       className="group flex h-full flex-col"
       whileHover={
         prefersReducedMotion
           ? undefined
           : {
-              transition: { duration: 0.4, ease: [0.21, 0.8, 0.32, 1] },
+              y: -10,
+              scale: 1.03,
+              transition: { duration: 0.35, ease: [0.21, 0.8, 0.32, 1] },
             }
       }
     >
