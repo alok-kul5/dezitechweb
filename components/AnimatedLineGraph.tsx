@@ -50,18 +50,17 @@ const buildPath = (points: DataPoint[]) =>
 const AnimatedLineGraph = ({ data, className }: AnimatedLineGraphProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
-  const [points, setPoints] = useState<DataPoint[]>(() => buildPointsFromData(data ?? staticGraph.data));
+  const [remoteData, setRemoteData] = useState<number[]>(staticGraph.data);
 
   useEffect(() => {
     if (data) {
-      setPoints(buildPointsFromData(data));
       return;
     }
 
     let mounted = true;
     loadSiteContent().then((content) => {
       if (mounted) {
-        setPoints(buildPointsFromData(content.lineGraph.data));
+        setRemoteData(content.lineGraph.data);
       }
     });
 
@@ -70,6 +69,8 @@ const AnimatedLineGraph = ({ data, className }: AnimatedLineGraphProps) => {
     };
   }, [data]);
 
+  const sourceData = data ?? remoteData;
+  const points = useMemo(() => buildPointsFromData(sourceData), [sourceData]);
   const path = useMemo(() => buildPath(points), [points]);
 
   return (

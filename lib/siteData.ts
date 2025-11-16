@@ -15,7 +15,7 @@ export const loadSiteContent = async (): Promise<SiteContent> => {
     return clientCache;
   }
 
-  const module = await import("@/data/siteContent.json");
-  clientCache = module.default ?? (module as SiteContent);
+  const contentModule: { default: SiteContent } = await import("@/data/siteContent.json");
+  clientCache = contentModule.default;
   return clientCache;
 };

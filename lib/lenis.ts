@@ -50,7 +50,7 @@ export function initLenis(options?: LenisOptions) {
 export function resizeLenis() {
   if (!lenisInstance) return;
   try {
-    (lenisInstance as any).onResize?.();
+    lenisInstance.resize();
   } catch {}
 }
 

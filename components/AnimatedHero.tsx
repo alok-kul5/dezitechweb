@@ -67,28 +67,27 @@ const AnimatedHero = ({
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
 
-  const condensedHeadline = condenseHeadline(headline);
-  const heroHeadline =
-    condensedHeadline.length > 0
-      ? condensedHeadline
+  const normalizedHeadline = useMemo(() => {
+    const condensed = condenseHeadline(headline);
+    return condensed.length > 0
+      ? condensed
       : ["Engineering supply chains engineered for OEM success."];
+  }, [headline]);
   const condensedDescription = useMemo(() => condenseDescription(description), [description]);
   const headlineWordMatrix = useMemo(() => {
-    const rows = heroHeadline.map((line) => line.split(/\s+/).filter(Boolean));
-    let globalIndex = 0;
-
-    return rows.map((words) =>
-      words.map((word) => {
-        const meta = {
-          key: `${globalIndex}-${word}`,
-          word,
-          delay: 0.25 + globalIndex * WORD_STAGGER,
-        };
-        globalIndex += 1;
-        return meta;
-      }),
+    const groups = normalizedHeadline.map((line) => line.split(/\s+/).filter(Boolean));
+    const offsets = groups.map((_, index) =>
+      index === 0 ? 0 : groups.slice(0, index).reduce((sum, group) => sum + group.length, 0),
     );
-  }, [heroHeadline]);
+
+    return groups.map((words, lineIndex) =>
+      words.map((word, wordIndex) => ({
+        key: `${lineIndex}-${wordIndex}-${word}`,
+        word,
+        delay: 0.25 + (offsets[lineIndex] + wordIndex) * WORD_STAGGER,
+      })),
+    );
+  }, [normalizedHeadline]);
 
   const heroImageSrc = mediaSrc ?? "/images/DEZITECH_IMG_HERO.jpg";
   const descriptionDelay = 0.45;

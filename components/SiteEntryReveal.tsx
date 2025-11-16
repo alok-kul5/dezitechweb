@@ -25,9 +25,22 @@ const SiteEntryReveal = ({ children }: SiteEntryRevealProps) => {
 
     const hasPlayed = window.sessionStorage.getItem(STORAGE_KEY);
     if (!hasPlayed) {
-      setShouldAnimate(true);
-      setShowOverlay(true);
+      const frame = requestAnimationFrame(() => {
+        setShouldAnimate(true);
+        setShowOverlay(true);
+      });
       window.sessionStorage.setItem(STORAGE_KEY, "true");
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      const frame = requestAnimationFrame(() => {
+        setShouldAnimate(false);
+        setShowOverlay(false);
+      });
+      return () => cancelAnimationFrame(frame);
     }
   }, [prefersReducedMotion]);
 
