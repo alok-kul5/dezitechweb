@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useMemo } from "react";
 
 import SectionWrapper from "@/components/SectionWrapper";
+import { motionConfig } from "@/motion.config";
 
 import AmbientStage from "./AmbientStage";
 import ParallaxWrapper from "./ParallaxWrapper";
@@ -25,10 +26,11 @@ type AnimatedHeroProps = {
   mediaSrc?: string;
 };
 
-const HERO_EASE: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
+const HERO_EASE = motionConfig.ease;
 const HEADLINE_WORD_LIMIT = 14;
 const SUBLINE_WORD_LIMIT = 14;
-const WORD_STAGGER = 0.045;
+const WORD_STAGGER = motionConfig.hero.wordStagger;
+const HEADLINE_DURATION = motionConfig.hero.headlineDur;
 
 const condenseHeadline = (lines: string[]): string[] => {
   const cleanedWords = lines.join(" ").trim().split(/\s+/).filter(Boolean);
@@ -115,12 +117,12 @@ const AnimatedHero = ({
 
     return (
       <span key={wordMeta.key} className="inline-flex overflow-hidden align-top">
-        <motion.span
-          initial={{ y: "110%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          transition={{ delay: wordMeta.delay, duration: 0.56, ease: HERO_EASE }}
-          className="inline-block"
-        >
+          <motion.span
+            initial={{ y: "110%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            transition={{ delay: wordMeta.delay, duration: HEADLINE_DURATION, ease: HERO_EASE }}
+            className="inline-block"
+          >
           {wordMeta.word}
           <span aria-hidden="true">&nbsp;</span>
         </motion.span>

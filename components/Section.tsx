@@ -113,6 +113,7 @@ const Section = ({
           distance={24}
           duration={0.72}
           amount={0.15}
+          variant={variant}
         >
           <div
             className={`h-full w-full rounded-[48px] ${backdropStyles[backdropVariant][variant]}`}
@@ -152,6 +153,7 @@ const Section = ({
               distance={24}
               duration={0.72}
               stagger={0.08}
+              variant={variant}
             >
               {eyebrow ? <div className={eyebrowClass}>{eyebrow}</div> : null}
               {title ? (

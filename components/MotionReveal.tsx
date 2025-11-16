@@ -1,13 +1,9 @@
 "use client";
 
+import { motionConfig } from "@/motion.config";
+
 import { HTMLMotionProps, motion } from "framer-motion";
-import {
-  Children,
-  ElementType,
-  ReactElement,
-  ReactNode,
-  isValidElement,
-} from "react";
+import { Children, ElementType, ReactElement, ReactNode, isValidElement } from "react";
 
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -28,14 +24,9 @@ type MotionRevealProps = {
   splitBy?: "word" | "char";
   pop?: boolean;
   disableWhileInView?: boolean;
+  variant?: "dark" | "light";
 } & HTMLMotionProps<"div">;
 
-const MERIDIAN_EASE: [number, number, number, number] = [
-  0.21,
-  0.8,
-  0.32,
-  1,
-];
 const MIN_DISTANCE = 12;
 const MAX_DISTANCE = 36;
 
@@ -43,10 +34,10 @@ const MotionReveal = ({
   children,
   className,
   direction = "up",
-  distance = 22,
+  distance = motionConfig.section.distance,
   delay = 0,
-  duration = 0.6,
-  stagger = 0,
+  duration = motionConfig.section.dur,
+  stagger = motionConfig.section.stagger,
   once = true,
   amount = 0.2,
   as = "div",
@@ -55,32 +46,39 @@ const MotionReveal = ({
   splitBy = "word",
   pop = false,
   disableWhileInView = false,
+  variant = "dark",
+  style,
   ...rest
 }: MotionRevealProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
   const clampedDistance = Math.min(Math.max(distance, MIN_DISTANCE), MAX_DISTANCE);
 
-  const offsets: Record<Direction, { x?: number; y?: number }> = {
+    const offsets: Record<Direction, { x?: number; y?: number }> = {
     up: { y: clampedDistance },
     down: { y: -clampedDistance },
     left: { x: clampedDistance },
     right: { x: -clampedDistance },
   };
 
-  const baseInitial: Record<string, number> = fadeOnly
+    const baseInitial: Record<string, number> = fadeOnly
     ? { opacity: 0 }
     : { opacity: 0, ...(offsets[direction] ?? {}) };
-  const baseVisible: Record<string, number> = fadeOnly
-    ? { opacity: 1 }
-    : { opacity: 1, x: 0, y: 0 };
+    const variantTokens = {
+      dark: { opacity: 1, filter: "drop-shadow(0 28px 65px rgba(3,6,15,0.45))" },
+      light: { opacity: 0.98, filter: "drop-shadow(0 24px 55px rgba(15,23,36,0.18))" },
+    } as const;
+    const variantStyle = variantTokens[variant] ?? variantTokens.dark;
+    const baseVisible: Record<string, number> = fadeOnly
+      ? { opacity: variantStyle.opacity }
+      : { opacity: variantStyle.opacity, x: 0, y: 0 };
 
-  if (pop) {
-    baseInitial.scale = 0.96;
-    baseVisible.scale = 1;
+    if (pop) {
+      baseInitial.scale = motionConfig.pop.scaleIn[0];
+      baseVisible.scale = motionConfig.pop.scaleIn[1];
   }
 
-  const resolvedStagger = splitText && stagger === 0 ? 0.065 : stagger;
+    const resolvedStagger = splitText ? stagger || motionConfig.hero.wordStagger : stagger;
   const hasStagger = shouldAnimate && (resolvedStagger > 0 || splitText);
 
   const containerVariants = hasStagger
@@ -88,11 +86,11 @@ const MotionReveal = ({
     : { hidden: baseInitial, visible: baseVisible };
   const childVariants = { hidden: baseInitial, visible: baseVisible };
 
-  const transition = shouldAnimate
+    const transition = shouldAnimate
     ? {
         duration,
         delay,
-        ease: MERIDIAN_EASE,
+          ease: motionConfig.ease,
         ...(hasStagger
           ? {
               staggerChildren: resolvedStagger,
@@ -102,7 +100,7 @@ const MotionReveal = ({
       }
     : { duration: 0 };
 
-  const motionTagMap = motion as unknown as Record<string, typeof motion.div>;
+    const motionTagMap = motion as unknown as Record<string, typeof motion.div>;
   const MotionComponent = motionTagMap[as] ?? motion.div;
 
   const tokenizeString = (value: string) => {
@@ -172,20 +170,30 @@ const MotionReveal = ({
     });
   };
 
-  return (
-    <MotionComponent
-      className={className}
-      initial={shouldAnimate ? "hidden" : undefined}
-      animate={disableWhileInView && shouldAnimate ? "visible" : undefined}
-      whileInView={!disableWhileInView && shouldAnimate ? "visible" : undefined}
-      viewport={shouldAnimate && !disableWhileInView ? { once, amount } : undefined}
-      variants={shouldAnimate ? containerVariants : undefined}
-      transition={transition}
-      {...rest}
-    >
-      {renderChildren()}
-    </MotionComponent>
-  );
+    const combinedStyle = {
+      ...(style ?? {}),
+      ...(pop
+        ? {
+            filter: [style?.filter, variantStyle.filter].filter(Boolean).join(" ") || variantStyle.filter,
+          }
+        : {}),
+    };
+
+    return (
+      <MotionComponent
+        className={className}
+        initial={shouldAnimate ? "hidden" : undefined}
+        animate={disableWhileInView && shouldAnimate ? "visible" : undefined}
+        whileInView={!disableWhileInView && shouldAnimate ? "visible" : undefined}
+        viewport={shouldAnimate && !disableWhileInView ? { once, amount } : undefined}
+        variants={shouldAnimate ? containerVariants : undefined}
+        transition={transition}
+        style={combinedStyle}
+        {...rest}
+      >
+        {renderChildren()}
+      </MotionComponent>
+    );
 };
 
 export default MotionReveal;

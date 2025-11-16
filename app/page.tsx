@@ -62,7 +62,7 @@ export default function Home() {
           },
         ]}
       >
-        <MotionReveal direction="up" distance={18} duration={0.65} amount={0.18}>
+        <MotionReveal direction="up" distance={18} duration={0.65} amount={0.18} variant="light">
           <div className="rounded-[28px] border border-black/5 bg-white p-2 shadow-[0_35px_95px_rgba(15,23,36,0.08)]">
             <ProductGrid items={productCards} />
           </div>
@@ -132,6 +132,7 @@ export default function Home() {
               duration={0.6}
               delay={index * 0.05}
               splitText
+              variant="light"
               className="rounded-3xl border border-black/5 bg-white/90 px-6 py-5 text-sm text-[#0F1724]"
             >
               {statement}
@@ -189,6 +190,7 @@ export default function Home() {
           distance={20}
           duration={0.65}
           splitText
+          variant="light"
           className="rounded-3xl border border-black/5 bg-white p-8 text-base text-[#0F1724]"
         >
           {siteContent.contact.message}
