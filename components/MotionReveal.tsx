@@ -41,8 +41,8 @@ const MotionReveal = ({
   direction = "up",
   distance = cinematicMotion.section.distance,
   delay = 0,
-  duration = cinematicMotion.section.duration,
-  stagger = 0,
+  duration = cinematicMotion.section.dur,
+  stagger,
   once = true,
   amount = cinematicMotion.section.amount,
   as = "div",
@@ -77,8 +77,13 @@ const MotionReveal = ({
     baseVisible.scale = 1;
   }
 
+  const baseStagger = typeof stagger === "number" ? stagger : cinematicMotion.section.stagger;
   const resolvedStagger =
-    splitText && stagger === 0 ? (splitBy === "line" ? 0.12 : 0.065) : stagger;
+    splitText && typeof stagger !== "number"
+      ? splitBy === "line"
+        ? 0.12
+        : 0.065
+      : baseStagger;
   const hasStagger = shouldAnimate && (resolvedStagger > 0 || splitText);
 
   const containerVariants = hasStagger
@@ -159,7 +164,7 @@ const MotionReveal = ({
         return (
           <motion.span
             key={key}
-            style={{ display: "inline-block" }}
+              style={{ display: "inline-block" }}
             variants={childVariants}
             data-motion-reveal-child
           >
@@ -193,14 +198,14 @@ const MotionReveal = ({
 
   return (
     <MotionComponent
-      className={className}
-      data-motion-variant={variant}
-      initial="hidden"
-      animate={disableWhileInView ? "visible" : undefined}
-      whileInView={!disableWhileInView ? "visible" : undefined}
-      viewport={!disableWhileInView ? { once, amount } : undefined}
-      variants={containerVariants}
-      transition={transition}
+        className={className}
+        data-motion-variant={variant}
+        initial="hidden"
+        animate={disableWhileInView ? "visible" : undefined}
+        whileInView={!disableWhileInView ? "visible" : undefined}
+        viewport={!disableWhileInView ? { once, amount } : undefined}
+        variants={containerVariants}
+        transition={transition}
       {...rest}
     >
       {renderChildren()}

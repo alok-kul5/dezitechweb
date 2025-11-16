@@ -13,6 +13,11 @@ type MaskRevealProps = {
   delay?: number;
   duration?: number;
   stagger?: number;
+  distance?: number;
+  direction?: "up" | "down";
+  splitText?: boolean;
+  pop?: boolean;
+  variant?: "dark" | "light";
 };
 
 const MaskReveal = ({
@@ -22,25 +27,37 @@ const MaskReveal = ({
   delay = 0,
   duration = 0.6,
   stagger = 0.07,
+  distance = cinematicMotion.section.distance,
+  direction = "up",
+  splitText = true,
+  pop = false,
+  variant,
 }: MaskRevealProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
 
-  const tokens = Children.toArray(children).flatMap((child) => {
-    if (typeof child === "string") {
-      return child.split(/(\s+)/);
-    }
-    return [child];
-  });
+  const travel = direction === "up" ? distance : -distance;
+  const tokens = splitText
+    ? Children.toArray(children).flatMap((child) => {
+        if (typeof child === "string") {
+          return child.split(/(\s+)/);
+        }
+        return [child];
+      })
+    : Children.toArray(children);
 
   const MotionTag = motion[as] ?? motion.span;
 
   if (!shouldAnimate) {
-    return <MotionTag className={className}>{children}</MotionTag>;
+    return (
+      <MotionTag className={className} data-mask-variant={variant}>
+        {children}
+      </MotionTag>
+    );
   }
 
   return (
-    <MotionTag className={className}>
+    <MotionTag className={className} data-mask-variant={variant}>
       {tokens.map((token, index) => {
         if (typeof token === "string" && !token.trim()) {
           return (
@@ -59,8 +76,16 @@ const MaskReveal = ({
             }}
           >
             <motion.span
-              initial={{ y: "110%", opacity: 0 }}
-              animate={{ y: "0%", opacity: 1 }}
+              initial={{
+                y: splitText ? travel : 0,
+                opacity: 0,
+                scale: pop ? cinematicMotion.pop.scaleFrom : 1,
+              }}
+              animate={{
+                y: 0,
+                opacity: 1,
+                scale: pop ? 1 : 1,
+              }}
               transition={{
                 duration,
                 delay: delay + index * stagger,

@@ -11,9 +11,9 @@ const ProductGrid = ({ items, emptyLabel = "Product details coming soon." }: Pro
   }
 
   return (
-    <div className="grid auto-rows-fr gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid auto-rows-fr gap-6 md:grid-cols-2 xl:grid-cols-3">
       {items.map((item, index) => (
-        <ProductCard key={item.href} {...item} motionDelay={index * 0.05} />
+          <ProductCard key={item.href} {...item} motionDelay={0.15 + index * 0.08} />
       ))}
     </div>
   );

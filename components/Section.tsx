@@ -73,76 +73,74 @@ const Section = ({
 
   return (
     <SectionWrapper id={id} variant={variant} className={className}>
-      <MotionReveal
-        className="pointer-events-none absolute inset-x-3 inset-y-4 rounded-[48px]"
-        fadeOnly
-        direction="up"
-        distance={24}
-        duration={0.72}
-        amount={0.15}
-      >
-        <div
-          className={`h-full w-full rounded-[48px] ${backdropStyles[backdropVariant]}`}
-        />
-      </MotionReveal>
+        <MotionReveal
+          className="pointer-events-none absolute inset-x-3 inset-y-4 rounded-[48px]"
+          fadeOnly
+          direction="up"
+          distance={24}
+          duration={0.72}
+          amount={0.15}
+        >
+          <div className={`h-full w-full rounded-[48px] ${backdropStyles[backdropVariant]}`} />
+        </MotionReveal>
 
-      <ParallaxWrapper
-        speed={0.14}
-        className={`pointer-events-none absolute ${accentClassName}`}
-      >
-        {accentContent[accentVariant]}
-      </ParallaxWrapper>
+        <ParallaxWrapper speed={0.14} className={`pointer-events-none absolute ${accentClassName}`}>
+          {accentContent[accentVariant]}
+        </ParallaxWrapper>
 
         {ambientProps.map((prop) => (
-        <ParallaxWrapper
-          key={`${prop.src}-${prop.className ?? ""}`}
-          speed={prop.speed}
-          axis={prop.axis}
-          className={`pointer-events-none absolute ${prop.className ?? ""}`}
-        >
-          <Image
-            src={prop.src}
-            alt={prop.alt}
-            width={prop.width ?? 320}
-            height={prop.height ?? 320}
-            className="w-full opacity-50"
-          />
-        </ParallaxWrapper>
+          <ParallaxWrapper
+            key={`${prop.src}-${prop.className ?? ""}`}
+            speed={prop.speed}
+            axis={prop.axis}
+            className={`pointer-events-none absolute ${prop.className ?? ""}`}
+          >
+            <Image
+              src={prop.src}
+              alt={prop.alt}
+              width={prop.width ?? 320}
+              height={prop.height ?? 320}
+              className="w-full opacity-50"
+            />
+          </ParallaxWrapper>
         ))}
 
-        <div
-          className={`relative mx-auto max-w-5xl space-y-8 rounded-[36px] border p-8 backdrop-blur-2xl ${panelClasses}`}
-        >
+        <div className={`relative mx-auto max-w-5xl space-y-8 rounded-[36px] border p-8 backdrop-blur-2xl ${panelClasses}`}>
           {hasHeading ? (
-            <MotionReveal
-              as="div"
-              className="space-y-3"
-              direction="up"
-              distance={24}
-              duration={0.72}
-              stagger={0.08}
-            >
+            <div className="space-y-3">
               {eyebrow ? (
-                <div className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--tone-muted)]">
+                <MotionReveal
+                  as="p"
+                  direction="up"
+                  distance={18}
+                  duration={0.58}
+                  splitText
+                  className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--tone-muted)]"
+                >
                   {eyebrow}
-                </div>
+                </MotionReveal>
               ) : null}
               {title ? (
-                <div>
-                  <MaskReveal
-                    as="h2"
-                    className="text-3xl font-semibold text-[var(--tone-foreground)]"
-                  >
-                    {title}
-                  </MaskReveal>
-                </div>
+                <MaskReveal
+                  as="h2"
+                  className="text-3xl font-semibold text-[var(--tone-foreground)]"
+                  distance={24}
+                  duration={0.65}
+                  stagger={0.075}
+                >
+                  {title}
+                </MaskReveal>
               ) : null}
-              {description ? <div className={`text-base ${copyMuted}`}>{description}</div> : null}
-            </MotionReveal>
+              {description ? (
+                <MotionReveal as="p" splitText className={`text-base ${copyMuted}`} distance={18} duration={0.6}>
+                  {description}
+                </MotionReveal>
+              ) : null}
+            </div>
           ) : null}
           {children}
         </div>
-      </SectionWrapper>
+    </SectionWrapper>
   );
 };
 

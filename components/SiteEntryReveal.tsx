@@ -28,20 +28,20 @@ const SiteEntryReveal = () => {
   }
 
   return (
-    <motion.div
-      className="fixed inset-0 z-[9999] bg-white"
-      initial={{ opacity: 1 }}
-      animate={{ opacity: 0 }}
-      transition={{ duration: cinematicMotion.overlay.duration, ease: cinematicMotion.ease }}
-      onAnimationComplete={() => setIsVisible(false)}
-    >
       <motion.div
-        className="h-full w-full bg-white"
-        initial={{ scale: 1.015 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.6, ease: cinematicMotion.ease }}
-      />
-    </motion.div>
+        className="fixed inset-0 z-[9999] bg-white"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 0 }}
+        transition={{ duration: cinematicMotion.overlay.duration, ease: cinematicMotion.ease }}
+        onAnimationComplete={() => setIsVisible(false)}
+      >
+        <motion.div
+          className="h-full w-full bg-white"
+          initial={{ scale: 1.015 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: cinematicMotion.overlay.duration, ease: cinematicMotion.ease }}
+        />
+      </motion.div>
   );
 };
 

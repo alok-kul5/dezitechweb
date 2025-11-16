@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getSiteContentSync, loadSiteContent } from "@/lib/siteData";
 
+import MotionReveal from "./MotionReveal";
 import { useReducedMotion } from "./useReducedMotion";
 
 type DataPoint = {
@@ -137,15 +138,21 @@ const AnimatedLineGraph = ({ data, labels, className, graphClassName }: Animated
         ) : null}
       </svg>
 
-      {labelDisplay.length ? (
-        <div className="grid grid-cols-2 gap-3 text-sm font-semibold uppercase tracking-[0.25em] text-[var(--tone-muted)] sm:grid-cols-3">
-          {labelDisplay.map((label) => (
-            <span key={label} className="text-[var(--tone-foreground)]">
-              {label}
-            </span>
-          ))}
-        </div>
-      ) : null}
+        {labelDisplay.length ? (
+          <MotionReveal
+            as="div"
+            className="grid grid-cols-2 gap-3 text-sm font-semibold uppercase tracking-[0.25em] text-[var(--tone-muted)] sm:grid-cols-3"
+            distance={18}
+            duration={0.6}
+            stagger={0.06}
+          >
+            {labelDisplay.map((label) => (
+              <span key={label} className="text-[var(--tone-foreground)]">
+                {label}
+              </span>
+            ))}
+          </MotionReveal>
+        ) : null}
     </div>
   );
 };
