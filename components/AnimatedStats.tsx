@@ -4,42 +4,16 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { getSiteContentSync, loadSiteContent } from "@/lib/siteData";
+
 import AnimatedLineGraph from "./AnimatedLineGraph";
 import MotionReveal from "./MotionReveal";
 import { useReducedMotion } from "./useReducedMotion";
 
-type StatConfig = {
-  label: string;
-  value: number;
-  suffix?: string;
-  prefix?: string;
-  decimals?: number;
-  caption: string;
-  mediaSrc?: string;
-};
+type SiteCopy = ReturnType<typeof getSiteContentSync>;
+type KpiStat = SiteCopy["kpis"][number];
 
-const STAT_CONFIG: StatConfig[] = [
-  {
-    label: "Response SLA",
-    value: 2,
-    suffix: "h avg",
-    decimals: 1,
-    caption: "London response desk",
-    mediaSrc: "/images/DEZITECH_IMG_02.jpg",
-  },
-  {
-    label: "Active Deployments",
-    value: 58,
-    caption: "Live manufacturing cells",
-    mediaSrc: "/images/DEZITECH_IMG_03.jpg",
-  },
-  {
-    label: "Global Sites",
-    value: 14,
-    caption: "Dual-continent oversight",
-    mediaSrc: "/images/DEZITECH_IMG_02.jpg",
-  },
-];
+const staticContent = getSiteContentSync();
 
 const formatValue = (value: number, decimals = 0) => Number(value).toFixed(decimals);
 
@@ -47,25 +21,42 @@ const AnimatedStats = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
-  const [values, setValues] = useState<number[]>(() => STAT_CONFIG.map(() => 0));
+  const [kpis, setKpis] = useState<KpiStat[]>(staticContent.kpis);
+  const [values, setValues] = useState<number[]>(() => staticContent.kpis.map(() => 0));
   const isInView = useInView(containerRef, {
     once: true,
     margin: "-20% 0px",
   });
 
   useEffect(() => {
+    let mounted = true;
+    loadSiteContent().then((content) => {
+      if (mounted) {
+        setKpis(content.kpis);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    setValues(kpis.map(() => 0));
+  }, [kpis.length]);
+
+  useEffect(() => {
     if (!isInView) return;
 
     if (prefersReducedMotion) {
       const reducedId = requestAnimationFrame(() => {
-        setValues(STAT_CONFIG.map((stat) => stat.value));
+        setValues(kpis.map((stat) => Number(stat.value)));
       });
       return () => cancelAnimationFrame(reducedId);
     }
 
     const rafIds: number[] = [];
 
-    STAT_CONFIG.forEach((stat, index) => {
+    kpis.forEach((stat, index) => {
       const start = performance.now();
       const duration = 1600;
 
@@ -73,7 +64,7 @@ const AnimatedStats = () => {
         const elapsed = now - start;
         const progress = Math.min(elapsed / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
-        const nextValue = stat.value * eased;
+        const nextValue = Number(stat.value) * eased;
 
         setValues((prev) => {
           const next = [...prev];
@@ -92,15 +83,15 @@ const AnimatedStats = () => {
     return () => {
       rafIds.forEach((id) => cancelAnimationFrame(id));
     };
-  }, [isInView, prefersReducedMotion]);
+  }, [isInView, prefersReducedMotion, kpis]);
 
   const stats = useMemo(
     () =>
-      STAT_CONFIG.map((stat, index) => ({
+      kpis.map((stat, index) => ({
         ...stat,
-        current: prefersReducedMotion ? stat.value : values[index] ?? 0,
+        current: prefersReducedMotion ? Number(stat.value) : values[index] ?? 0,
       })),
-    [prefersReducedMotion, values],
+    [prefersReducedMotion, values, kpis],
   );
 
   return (
@@ -123,44 +114,44 @@ const AnimatedStats = () => {
             </p>
           </MotionReveal>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {stats.map((stat, index) => (
-              <motion.article
-                key={stat.label}
-                className="flex flex-col overflow-hidden rounded-2xl border border-white/15 bg-white/5 p-4 shadow-[0_25px_55px_rgba(5,9,19,0.45)]"
-                initial={shouldAnimate ? { opacity: 0, y: 18 } : undefined}
-                animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
-                transition={
-                  shouldAnimate
-                    ? {
-                        duration: 0.55,
-                        delay: 0.35 + index * 0.08,
-                        ease: [0.21, 0.8, 0.32, 1],
-                      }
-                    : undefined
-                }
-              >
-                <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-black/30">
-                  <Image
-                    src={stat.mediaSrc ?? "/images/DEZITECH_IMG_02.jpg"}
-                    alt={`${stat.label} visual`}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 768px) 180px, 33vw"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                </div>
-                <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/55">{stat.label}</p>
-                <p className="mt-2 text-3xl font-semibold text-white">
-                  {stat.prefix ?? ""}
-                  {formatValue(stat.current, stat.decimals)}
-                  {stat.suffix ? <span className="ml-1 text-sm text-white/60">{stat.suffix}</span> : null}
-                </p>
-                <p className="mt-3 text-xs text-white/60">{stat.caption}</p>
-              </motion.article>
-            ))}
-          </div>
+            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+              {stats.map((stat, index) => (
+                <motion.article
+                  key={stat.label}
+                  className="flex flex-col overflow-hidden rounded-2xl border border-white/15 bg-white/5 p-4 shadow-[0_25px_55px_rgba(5,9,19,0.45)]"
+                  initial={shouldAnimate ? { opacity: 0, y: 18 } : undefined}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                  transition={
+                    shouldAnimate
+                      ? {
+                          duration: 0.55,
+                          delay: 0.35 + index * 0.08,
+                          ease: [0.21, 0.8, 0.32, 1],
+                        }
+                      : undefined
+                  }
+                >
+                  <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl border border-white/10 bg-black/30">
+                    <Image
+                      src={stat.media ?? "/images/DEZITECH_IMG_02.jpg"}
+                      alt={`${stat.label} visual`}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 768px) 180px, 33vw"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  </div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.35em] text-white/55">{stat.label}</p>
+                  <p className="mt-2 text-3xl font-semibold text-white">
+                    {stat.prefix ?? ""}
+                    {formatValue(stat.current, stat.decimals)}
+                    {stat.suffix ? <span className="ml-1 text-sm text-white/60">{stat.suffix}</span> : null}
+                  </p>
+                  <p className="mt-3 text-xs text-white/60">{stat.description}</p>
+                </motion.article>
+              ))}
+            </div>
         </div>
 
         <div className="flex flex-col justify-between gap-6">

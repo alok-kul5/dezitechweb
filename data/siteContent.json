@@ -1,8 +1,12 @@
 {
   "hero": {
     "eyebrow": "Dezitech Engineering",
-    "headline": "Helping customers grow profitably by providing engineering outsourcing solutions Design and Product manufacturing",
-    "subheadline": "Established in 2014, Dezitech engineering pvt. Ltd engineers have extensive experience in engineering design, new product development and supply chain management in diverse industries.",
+    "headline": [
+      "Helping customers grow profitably",
+      "by providing engineering outsourcing solutions",
+      "Design and Product manufacturing"
+    ],
+    "description": "Established in 2014, Dezitech engineering pvt. Ltd engineers have extensive experience in engineering design, new product development and supply chain management in diverse industries.",
     "ctaPrimary": {
       "label": "Contact Us",
       "href": "/contact"
@@ -16,21 +20,26 @@
   "kpis": [
     {
       "label": "International engineering experience",
-      "value": "20+ years",
+      "value": 20,
+      "suffix": "+ years",
       "description": "Our Engineers have 20+ years of international working experience and understand the business environment and cultural issues.",
-      "icon": "/icons/DEZITECH_ICON_MAP.svg"
+      "icon": "/icons/DEZITECH_ICON_MAP.svg",
+      "media": "/images/DEZITECH_IMG_02.jpg"
     },
     {
       "label": "Established",
-      "value": "2014",
+      "value": 2014,
       "description": "Established in 2014 by highly qualified and experienced Engineering professionals.",
-      "icon": "/icons/DEZITECH_ICON_GEAR.svg"
+      "icon": "/icons/DEZITECH_ICON_GEAR.svg",
+      "media": "/images/DEZITECH_IMG_01.jpg"
     },
     {
       "label": "Global support regions",
-      "value": "4 regions",
+      "value": 4,
+      "suffix": "regions",
       "description": "We have provided engineering / supply chain support to customers in the UK, USA, India and Australia.",
-      "icon": "/icons/DEZITECH_ICON_MAP.svg"
+      "icon": "/icons/DEZITECH_ICON_MAP.svg",
+      "media": "/images/DEZITECH_IMG_03.jpg"
     }
   ],
   "lineGraph": {
@@ -56,36 +65,32 @@
   },
   "products": [
     {
-      "name": "Engineering and design",
+      "title": "Engineering and design",
       "summary": "Engineering resources, design, 3D modelling, CAE/FEA.",
-      "details": "We solve technical challenges and provide resources to get new products faster to the market.",
-      "image": "/images/DEZITECH_IMG_02.jpg",
-      "icon": "/icons/DEZITECH_ICON_GEAR.svg",
-      "link": "/services#engineering"
+      "description": "We solve technical challenges and provide resources to get new products faster to the market.",
+      "href": "/products/engineering-design",
+      "media": "/images/DEZITECH_IMG_02.jpg"
     },
     {
-      "name": "Refrigeration",
+      "title": "Refrigeration",
       "summary": "Design of refrigeration systems and component supply.",
-      "details": "Refrigeration & heat pump components are part of the managed supply for customers who need reliable quality.",
-      "image": "/images/DEZITECH_IMG_03.jpg",
-      "icon": "/icons/DEZITECH_ICON_MAP.svg",
-      "link": "/services#refrigeration"
+      "description": "Refrigeration & heat pump components are part of the managed supply for customers who need reliable quality.",
+      "href": "/products/refrigeration",
+      "media": "/images/DEZITECH_IMG_03.jpg"
     },
     {
-      "name": "Heat pump",
+      "title": "Heat pump",
       "summary": "Heat pump design and components supply.",
-      "details": "We are flexible with volumes and manage the development & approval of patterns, jigs/fixtures, gauges and testing.",
-      "image": "/images/DEZITECH_ART_01.png",
-      "icon": "/icons/DEZITECH_ICON_GEAR.svg",
-      "link": "/services#heat"
+      "description": "We are flexible with volumes and manage the development & approval of patterns, jigs/fixtures, gauges and testing.",
+      "href": "/products/heat-pump",
+      "media": "/images/DEZITECH_ART_01.png"
     },
     {
-      "name": "Engineering supply chain",
+      "title": "Engineering supply chain",
       "summary": "Cost effective & reliable components supply with excellent quality.",
-      "details": "We are locally based & can assist with solving supply chain challenges ensuring a quality and reliable supply of components at economical prices from our operation in India.",
-      "image": "/images/DEZITECH_IMG_01.jpg",
-      "icon": "/icons/DEZITECH_ICON_MAP.svg",
-      "link": "/services#supply"
+      "description": "We are locally based & can assist with solving supply chain challenges ensuring a quality and reliable supply of components at economical prices from our operation in India.",
+      "href": "/products/engineering-supply-chain",
+      "media": "/images/DEZITECH_IMG_01.jpg"
     }
   ],
   "services": [
@@ -136,6 +141,7 @@
       "Karad, India",
       "Bristol, UK"
     ],
+    "message": "Please do contact us for any further details such as work samples, quotation or to discuss how we can help you. We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering reviews stay on track.",
     "cta": {
       "label": "Request Call Back",
       "href": "/contact",

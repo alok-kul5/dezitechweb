@@ -15,12 +15,18 @@ type Cta = {
   href: string;
 };
 
+type HeroStat = {
+  label: string;
+  value: string;
+};
+
 type AnimatedHeroProps = {
   eyebrow?: string;
   headline: string[];
   description: string;
   primaryCta: Cta;
   secondaryCta?: Cta;
+  stats?: HeroStat[];
 };
 
 const HERO_EASE: [number, number, number, number] = [0.21, 0.8, 0.32, 1];
@@ -31,6 +37,7 @@ const AnimatedHero = ({
   description,
   primaryCta,
   secondaryCta,
+  stats,
 }: AnimatedHeroProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
@@ -123,24 +130,22 @@ const AnimatedHero = ({
               ) : null}
             </motion.div>
 
-            <MotionReveal
-              className="grid gap-6 text-sm text-white/80 sm:grid-cols-3"
-              direction="up"
-              distance={20}
-              delay={0.6}
-              stagger={0.08}
-            >
-              {[
-                { label: "Response SLA", value: "2h avg" },
-                { label: "Active Deployments", value: "58" },
-                { label: "Global Sites", value: "14" },
-              ].map((item) => (
-                <div key={item.label}>
-                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/40">{item.label}</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">{item.value}</p>
-                </div>
-              ))}
-            </MotionReveal>
+            {stats?.length ? (
+              <MotionReveal
+                className="grid gap-6 text-sm text-white/80 sm:grid-cols-3"
+                direction="up"
+                distance={20}
+                delay={0.6}
+                stagger={0.08}
+              >
+                {stats.map((item) => (
+                  <div key={item.label}>
+                    <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/40">{item.label}</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">{item.value}</p>
+                  </div>
+                ))}
+              </MotionReveal>
+            ) : null}
           </div>
 
           <div className="relative lg:col-span-5">
