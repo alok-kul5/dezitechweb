@@ -1,0 +1,5 @@
+<!-- TODO: Replace with final Dezitech gear icon -->
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="32" r="10" stroke="#F8F8F9" stroke-width="3" fill="none"/>
+  <path d="M32 8L36 16L45 18L42 26L45 34L36 36L32 46L28 36L19 34L22 26L19 18L28 16L32 8Z" stroke="#C8102E" stroke-width="3" fill="none" stroke-linejoin="round"/>
+</svg>

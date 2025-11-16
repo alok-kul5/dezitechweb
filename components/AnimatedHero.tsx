@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import AmbientStage from "./AmbientStage";
+import LayoutGrid from "./LayoutGrid";
 import MaskReveal from "./MaskReveal";
 import MotionReveal from "./MotionReveal";
 import ParallaxWrapper from "./ParallaxWrapper";
@@ -15,12 +16,18 @@ type Cta = {
   href: string;
 };
 
+type HeroStat = {
+  label: string;
+  value: string;
+};
+
 type AnimatedHeroProps = {
   eyebrow?: string;
   headline: string[];
   description: string;
   primaryCta: Cta;
   secondaryCta?: Cta;
+  stats?: HeroStat[];
 };
 
 const HERO_EASE: [number, number, number, number] = [0.21, 0.8, 0.32, 1];
@@ -31,17 +38,19 @@ const AnimatedHero = ({
   description,
   primaryCta,
   secondaryCta,
+  stats,
 }: AnimatedHeroProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
 
   return (
-    <section className="relative isolate overflow-hidden bg-carbon-900 pb-20 pt-24 text-white sm:pb-28 sm:pt-28 lg:pb-32">
+      <section className="relative isolate overflow-hidden bg-carbon-900 pb-20 pt-24 text-white sm:pb-28 sm:pt-28 lg:pb-32">
       <AmbientStage variant="hero" className="opacity-80" />
 
-      <div className="container relative">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-10">
-          <div className="space-y-9 text-balance lg:col-span-7">
+        <LayoutGrid
+          className="relative"
+          left={
+            <div className="space-y-9 text-balance">
             {eyebrow ? (
               <MotionReveal
                 as="p"
@@ -123,97 +132,105 @@ const AnimatedHero = ({
               ) : null}
             </motion.div>
 
-            <MotionReveal
-              className="grid gap-6 text-sm text-white/80 sm:grid-cols-3"
-              direction="up"
-              distance={20}
-              delay={0.6}
-              stagger={0.08}
-            >
-              {[
-                { label: "Response SLA", value: "2h avg" },
-                { label: "Active Deployments", value: "58" },
-                { label: "Global Sites", value: "14" },
-              ].map((item) => (
-                <div key={item.label}>
-                  <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/40">{item.label}</p>
-                  <p className="mt-2 text-2xl font-semibold text-white">{item.value}</p>
-                </div>
-              ))}
-            </MotionReveal>
-          </div>
-
-          <div className="relative lg:col-span-5">
-            <ParallaxWrapper
-              speed={0.06}
-              axis="x"
-              className="pointer-events-none absolute -right-10 top-10 hidden w-72 opacity-30 lg:block"
-            >
-              <Image
-                src="/ambient/ambient-lines.svg"
-                alt="Ambient line work"
-                width={320}
-                height={220}
-                loading="lazy"
-                className="w-full"
-              />
-            </ParallaxWrapper>
-
-            <ParallaxWrapper
-              speed={0.04}
-              className="pointer-events-none absolute -left-12 bottom-10 hidden w-64 opacity-25 lg:block"
-            >
-              <Image
-                src="/ambient/ambient-grid.svg"
-                alt="Ambient grid"
-                width={310}
-                height={230}
-                loading="lazy"
-                className="w-full"
-              />
-            </ParallaxWrapper>
-
-            <ParallaxWrapper speed={0.12} range={180}>
-              <motion.article
-                className="interactive-media relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl"
-                initial={shouldAnimate ? { opacity: 0, y: 60 } : undefined}
-                animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
-                transition={{ duration: 0.85, delay: 0.55, ease: HERO_EASE }}
+            {stats?.length ? (
+              <MotionReveal
+                className="grid gap-6 text-sm text-white/80 sm:grid-cols-3"
+                direction="up"
+                distance={20}
+                delay={0.6}
+                stagger={0.08}
               >
-                <div className="mb-5 flex items-center justify-between text-[0.55rem] uppercase tracking-[0.35em] text-white/55">
-                  <span>Dezitech Core Systems</span>
-                  <span>Verified</span>
-                </div>
-                <div className="relative aspect-[5/3] overflow-hidden rounded-3xl border border-white/10">
-                  <Image
-                    src="/images/DEZITECH_IMG_01.jpg"
-                    alt="Dezitech industrial control render"
-                    fill
-                    priority
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 540px, 100vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#040915]/85 via-transparent to-transparent" />
-                </div>
-                <div className="mt-6 grid gap-4 text-xs text-white/70 sm:grid-cols-3">
-                  {[
-                    { label: "Integrity", value: "99.982%" },
-                    { label: "Latency", value: "14 ms" },
-                    { label: "Thermals", value: "Optimal" },
-                  ].map((metric) => (
-                    <div key={metric.label}>
-                      <p className="text-[0.55rem] uppercase tracking-[0.35em] text-white/40">
-                        {metric.label}
-                      </p>
-                      <p className="mt-2 text-lg font-semibold text-white">{metric.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </motion.article>
-            </ParallaxWrapper>
-          </div>
-        </div>
-      </div>
+                {stats.map((item) => (
+                  <div key={item.label}>
+                    <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/40">{item.label}</p>
+                    <p className="mt-2 text-2xl font-semibold text-white">{item.value}</p>
+                  </div>
+                ))}
+              </MotionReveal>
+            ) : null}
+            </div>
+          }
+          right={
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-0 -z-10 opacity-60 blur-3xl">
+                <Image
+                  src="/ambient/ambient-glow.png"
+                  alt=""
+                  fill
+                  loading="lazy"
+                  className="object-cover"
+                />
+              </div>
+              <ParallaxWrapper
+                speed={0.06}
+                axis="x"
+                className="pointer-events-none absolute -right-10 top-10 hidden w-72 opacity-30 lg:block"
+              >
+                <Image
+                  src="/ambient/ambient-lines.svg"
+                  alt="Ambient line work"
+                  width={320}
+                  height={220}
+                  loading="lazy"
+                  className="w-full"
+                />
+              </ParallaxWrapper>
+
+              <ParallaxWrapper
+                speed={0.04}
+                className="pointer-events-none absolute -left-12 bottom-10 hidden w-64 opacity-25 lg:block"
+              >
+                <Image
+                  src="/ambient/ambient-grid.svg"
+                  alt="Ambient grid"
+                  width={310}
+                  height={230}
+                  loading="lazy"
+                  className="w-full"
+                />
+              </ParallaxWrapper>
+
+              <ParallaxWrapper speed={0.12} range={180}>
+                <motion.article
+                  className="interactive-media relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl"
+                  initial={shouldAnimate ? { opacity: 0, y: 60 } : undefined}
+                  animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                  transition={{ duration: 0.85, delay: 0.55, ease: HERO_EASE }}
+                >
+                  <div className="mb-5 flex items-center justify-between text-[0.55rem] uppercase tracking-[0.35em] text-white/55">
+                    <span>Dezitech Core Systems</span>
+                    <span>Verified</span>
+                  </div>
+                  <div className="relative aspect-[5/3] overflow-hidden rounded-3xl border border-white/10">
+                    <Image
+                      src="/images/DEZITECH_IMG_01.jpg"
+                      alt="Dezitech industrial control render"
+                      fill
+                      priority
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 540px, 100vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-[#040915]/85 via-transparent to-transparent" />
+                  </div>
+                  <div className="mt-6 grid gap-4 text-xs text-white/70 sm:grid-cols-3">
+                    {[
+                      { label: "Integrity", value: "99.982%" },
+                      { label: "Latency", value: "14 ms" },
+                      { label: "Thermals", value: "Optimal" },
+                    ].map((metric) => (
+                      <div key={metric.label}>
+                        <p className="text-[0.55rem] uppercase tracking-[0.35em] text-white/40">
+                          {metric.label}
+                        </p>
+                        <p className="mt-2 text-lg font-semibold text-white">{metric.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </motion.article>
+              </ParallaxWrapper>
+            </div>
+          }
+        />
     </section>
   );
 };

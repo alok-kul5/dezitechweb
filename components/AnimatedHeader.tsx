@@ -107,12 +107,12 @@ const AnimatedHeader = () => {
           </LayoutGroup>
         </nav>
 
-        <Link
-          href="/contact"
-          className="interactive-cta inline-flex items-center rounded-full bg-white/10 px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white backdrop-blur focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
-        >
-          Engage
-        </Link>
+          <Link
+            href="/contact"
+            className="interactive-cta inline-flex items-center rounded-full bg-white/10 px-5 py-2 text-sm font-semibold uppercase tracking-[0.3em] text-white backdrop-blur focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50"
+          >
+            ENGAGE
+          </Link>
       </div>
     </motion.header>
   );

@@ -3,9 +3,9 @@
 
 "use client";
 
-import Lenis from "@studio-freight/lenis";
+import Lenis, { LenisOptions } from "@studio-freight/lenis";
 
-let lenisInstance: ReturnType<typeof Lenis> | null = null;
+let lenisInstance: InstanceType<typeof Lenis> | null = null;
 let rafId: number | null = null;
 
 /** Can run Lenis only in browser and if motion isn't reduced */
@@ -17,24 +17,17 @@ export function canUseLenis(): boolean {
   return !reduce;
 }
 
-/** Initialize Lenis (snappy Meridian-style scroll) */
-export function initLenis(options?: {
-  lerp?: number;
-  wheelMultiplier?: number;
-  gestureOrientation?: "vertical" | "horizontal";
-  smoothTouch?: boolean;
-  touchMultiplier?: number;
-}) {
+/** Initialize Lenis (snappy Dezitech engineering scroll) */
+export function initLenis(options?: LenisOptions) {
   if (!canUseLenis()) return null;
 
   // Already exists, return it
   if (lenisInstance) return lenisInstance;
 
-  const cfg = {
+  const cfg: LenisOptions = {
     lerp: 0.045, // snappy smoothness
     wheelMultiplier: 1.5, // speed up wheel scroll
     gestureOrientation: "vertical",
-    smoothTouch: false,
     touchMultiplier: 1.4,
     ...(options || {}),
   };
