@@ -55,13 +55,13 @@ const ProductDetailPage = ({ params }: ProductDetailPageProps) => {
       eyebrow="Product Detail"
       title={detail?.title ?? fallbackTitle}
       description={detail?.excerpt ?? "Detailed specifications will follow in upcoming phases."}
-    >
-      <div className="space-y-4 text-sm text-gray-700">
+      >
+        <div className="space-y-4 text-sm text-[var(--tone-muted)]">
         {detail?.body?.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         )) || <p>Additional detail will be published for this product soon.</p>}
       </div>
-      <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-600">
+        <div className="mt-8 rounded-2xl border border-dashed border-white/15 bg-white/5 p-4 text-sm text-[var(--tone-muted)]">
         TODO: Add imagery and specifications for {detail?.title ?? fallbackTitle}.
       </div>
     </Section>

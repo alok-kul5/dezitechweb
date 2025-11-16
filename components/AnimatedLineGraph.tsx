@@ -85,13 +85,13 @@ const AnimatedLineGraph = ({ data, labels, className, graphClassName }: Animated
       <svg viewBox="0 0 100 40" role="img" aria-label="Performance trendline" className={cx("w-full", graphClassName)}>
         <defs>
           <linearGradient id="graph-stroke" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#5DC4D9" />
-            <stop offset="50%" stopColor="#7CE0C3" />
-            <stop offset="100%" stopColor="#FCE38A" />
+            <stop offset="0%" stopColor="#C8102E" />
+            <stop offset="60%" stopColor="#f04658" />
+            <stop offset="100%" stopColor="#ffffff" />
           </linearGradient>
           <linearGradient id="graph-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="rgba(92, 196, 217, 0.3)" />
-            <stop offset="100%" stopColor="rgba(5, 7, 15, 0)" />
+            <stop offset="0%" stopColor="rgba(200, 16, 46, 0.22)" />
+            <stop offset="100%" stopColor="rgba(5, 7, 13, 0)" />
           </linearGradient>
         </defs>
 

@@ -85,11 +85,11 @@ const AnimatedHeader = () => {
                 >
                   <span>{link.label}</span>
                   {active ? (
-                    <motion.span
-                      layoutId="nav-underline"
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-dezitech-400 via-dezitech-500 to-emerald-200"
-                      transition={{ duration: 0.26, ease: [0.21, 0.8, 0.32, 1] }}
-                    />
+                      <motion.span
+                        layoutId="nav-underline"
+                        className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-[#C8102E] via-[#f04658] to-white/80"
+                        transition={{ duration: 0.26, ease: [0.21, 0.8, 0.32, 1] }}
+                      />
                   ) : null}
                   <motion.span
                     aria-hidden="true"
