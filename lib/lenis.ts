@@ -7,15 +7,16 @@ export type LenisInstance = InstanceType<typeof Lenis>;
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
-export const defaultLenisOptions: LenisOptions = {
-  duration: 1.1,
-  orientation: "vertical",
-  smoothWheel: true,
-  smoothTouch: false,
-  syncTouch: true,
-  lerp: 0.08,
+const defaultLenisOptions: LenisOptions = {
+  lerp: 0.045,
+  wheelMultiplier: 1.5,
   gestureOrientation: "vertical",
+  smoothWheel: true,
+  syncTouch: true,
 };
+
+let lenisInstance: LenisInstance | null = null;
+let rafId: number | null = null;
 
 const isBrowser = () => typeof window !== "undefined";
 
@@ -24,28 +25,50 @@ export const prefersReducedMotion = () =>
 
 export const canUseLenis = () => isBrowser() && !prefersReducedMotion();
 
-export const createLenis = (options?: Partial<LenisOptions>) =>
-  new Lenis({ ...defaultLenisOptions, ...options });
+export const getLenis = () => lenisInstance;
 
-export const initLenis = (options?: Partial<LenisOptions>) => {
-  const lenis = createLenis(options);
-  let frameId = 0;
+const startRafLoop = () => {
+  if (!lenisInstance || rafId !== null) return;
 
   const raf = (time: number) => {
-    lenis.raf(time);
-    frameId = requestAnimationFrame(raf);
+    lenisInstance?.raf(time);
+    rafId = requestAnimationFrame(raf);
   };
 
-  frameId = requestAnimationFrame(raf);
+  rafId = requestAnimationFrame(raf);
+};
+
+const stopRafLoop = () => {
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+};
+
+export const initLenis = (options?: Partial<LenisOptions>) => {
+  if (!canUseLenis()) {
+    return { lenis: null, destroy: () => undefined };
+  }
+
+  if (!lenisInstance) {
+    lenisInstance = new Lenis({
+      ...defaultLenisOptions,
+      ...options,
+    });
+  }
+
+  startRafLoop();
 
   const destroy = () => {
-    cancelAnimationFrame(frameId);
-    lenis.destroy();
+    stopRafLoop();
+    lenisInstance?.destroy();
+    lenisInstance = null;
   };
 
-  return { lenis, destroy };
+  return { lenis: lenisInstance, destroy };
 };
 
-export const resizeLenis = (lenis: LenisInstance) => {
-  lenis.resize();
+export const resizeLenis = () => {
+  lenisInstance?.resize();
 };
+

@@ -1,7 +1,13 @@
 "use client";
 
 import { HTMLMotionProps, motion } from "framer-motion";
-import { Children, ElementType, ReactElement, ReactNode, isValidElement } from "react";
+import {
+  Children,
+  ElementType,
+  ReactElement,
+  ReactNode,
+  isValidElement,
+} from "react";
 
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -20,11 +26,18 @@ type MotionRevealProps = {
   fadeOnly?: boolean;
   splitText?: boolean;
   splitBy?: "word" | "char";
+  pop?: boolean;
+  disableWhileInView?: boolean;
 } & HTMLMotionProps<"div">;
 
-const easing: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
-const MIN_DISTANCE = 18;
-const MAX_DISTANCE = 28;
+const MERIDIAN_EASE: [number, number, number, number] = [
+  0.21,
+  0.8,
+  0.32,
+  1,
+];
+const MIN_DISTANCE = 12;
+const MAX_DISTANCE = 36;
 
 const MotionReveal = ({
   children,
@@ -32,20 +45,22 @@ const MotionReveal = ({
   direction = "up",
   distance = 22,
   delay = 0,
-  duration = 0.65,
+  duration = 0.6,
   stagger = 0,
   once = true,
-  amount = 0.16,
+  amount = 0.2,
   as = "div",
   fadeOnly = false,
   splitText = false,
   splitBy = "word",
+  pop = false,
+  disableWhileInView = false,
   ...rest
 }: MotionRevealProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
-
   const clampedDistance = Math.min(Math.max(distance, MIN_DISTANCE), MAX_DISTANCE);
+
   const offsets: Record<Direction, { x?: number; y?: number }> = {
     up: { y: clampedDistance },
     down: { y: -clampedDistance },
@@ -53,23 +68,34 @@ const MotionReveal = ({
     right: { x: -clampedDistance },
   };
 
-  const baseInitial = fadeOnly ? { opacity: 0 } : { opacity: 0, ...offsets[direction] };
-  const baseVisible = fadeOnly ? { opacity: 1 } : { opacity: 1, x: 0, y: 0 };
+  const baseInitial: Record<string, number> = fadeOnly
+    ? { opacity: 0 }
+    : { opacity: 0, ...(offsets[direction] ?? {}) };
+  const baseVisible: Record<string, number> = fadeOnly
+    ? { opacity: 1 }
+    : { opacity: 1, x: 0, y: 0 };
 
-  const resolvedStagger = splitText && stagger === 0 ? 0.045 : stagger;
+  if (pop) {
+    baseInitial.scale = 0.96;
+    baseVisible.scale = 1;
+  }
+
+  const resolvedStagger = splitText && stagger === 0 ? 0.065 : stagger;
   const hasStagger = shouldAnimate && (resolvedStagger > 0 || splitText);
 
-  const containerVariants = hasStagger ? { hidden: {}, visible: {} } : { hidden: baseInitial, visible: baseVisible };
+  const containerVariants = hasStagger
+    ? { hidden: {}, visible: {} }
+    : { hidden: baseInitial, visible: baseVisible };
   const childVariants = { hidden: baseInitial, visible: baseVisible };
 
   const transition = shouldAnimate
     ? {
         duration,
         delay,
-        ease: easing,
+        ease: MERIDIAN_EASE,
         ...(hasStagger
           ? {
-              staggerChildren: resolvedStagger || 0.045,
+              staggerChildren: resolvedStagger,
               delayChildren: delay,
             }
           : {}),
@@ -118,7 +144,12 @@ const MotionReveal = ({
         }
 
         return shouldAnimate ? (
-          <motion.span key={key} style={{ display: "inline-block" }} variants={childVariants}>
+          <motion.span
+            key={key}
+            style={{ display: "inline-block" }}
+            variants={childVariants}
+            data-motion-reveal-child
+          >
             {child}
           </motion.span>
         ) : (
@@ -145,8 +176,9 @@ const MotionReveal = ({
     <MotionComponent
       className={className}
       initial={shouldAnimate ? "hidden" : undefined}
-      whileInView={shouldAnimate ? "visible" : undefined}
-      viewport={shouldAnimate ? { once, amount } : undefined}
+      animate={disableWhileInView && shouldAnimate ? "visible" : undefined}
+      whileInView={!disableWhileInView && shouldAnimate ? "visible" : undefined}
+      viewport={shouldAnimate && !disableWhileInView ? { once, amount } : undefined}
       variants={shouldAnimate ? containerVariants : undefined}
       transition={transition}
       {...rest}
