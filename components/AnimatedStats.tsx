@@ -156,7 +156,7 @@ const AnimatedStats = () => {
                   <span>{graphMeta.title}</span>
                   <span>{graphMeta.unit}</span>
                 </div>
-                <AnimatedLineGraph className="mt-4 h-36 w-full" data={graphMeta.data} />
+                  <AnimatedLineGraph className="mt-4" graphClassName="h-36 w-full" data={graphMeta.data} labels={graphMeta.labels} />
                   <p className="mt-4 text-xs text-[var(--tone-muted)]">{graphMeta.description}</p>
               </MotionReveal>
 
