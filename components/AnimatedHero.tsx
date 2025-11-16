@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 
 import AmbientStage from "./AmbientStage";
-import MotionReveal from "./MotionReveal";
 import ParallaxWrapper from "./ParallaxWrapper";
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -74,61 +73,93 @@ const AnimatedHero = ({
   const secondaryCtaClass =
     "hero-cta inline-flex items-center justify-center rounded-full border border-white/30 px-9 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-white/80 backdrop-blur focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70";
 
+  let wordCursor = 0;
+
   return (
     <section className="relative isolate overflow-hidden bg-carbon-900 py-20 text-white sm:py-28 lg:py-32">
-      <AmbientStage variant="hero" className="opacity-10" />
+      <motion.div
+        className="absolute inset-0"
+        initial={shouldAnimate ? { opacity: 0 } : undefined}
+        animate={shouldAnimate ? { opacity: 1 } : undefined}
+        transition={shouldAnimate ? { duration: 0.6, ease: HERO_EASE } : undefined}
+      >
+        <AmbientStage variant="hero" className="opacity-10" />
+      </motion.div>
 
       <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 gap-14 px-6 text-balance lg:grid-cols-[3fr_2fr] lg:items-center">
-        <div className="space-y-10">
+        <div className="space-y-8">
           {eyebrow ? (
-            <MotionReveal
-              as="p"
-              direction="up"
-              distance={18}
-              splitText
-              stagger={0.045}
+            <motion.p
               className={heroEyebrowClass}
-              disableWhileInView={shouldAnimate}
+              initial={shouldAnimate ? { opacity: 0, y: 14 } : undefined}
+              animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+              transition={shouldAnimate ? { duration: 0.5, delay: 0.25, ease: HERO_EASE } : undefined}
             >
               {eyebrow}
-            </MotionReveal>
+            </motion.p>
           ) : null}
 
-          <div className="space-y-3">
-            {resolvedHeadline.map((line) => (
-              <MotionReveal
-                key={line}
-                as="h1"
-                direction="up"
-                distance={28}
-                className="font-heading text-[2.5rem] leading-[1.05] text-white md:text-[3.75rem] lg:text-[4.75rem]"
-                disableWhileInView={shouldAnimate}
-              >
-                {line}
-              </MotionReveal>
-            ))}
+          <div className="space-y-2">
+            {resolvedHeadline.map((line, lineIndex) => {
+              const words = line.split(/\s+/).filter(Boolean);
+              return (
+                <div
+                  key={`${line}-${lineIndex}`}
+                  className="font-heading text-[2.5rem] leading-[1.05] text-white md:text-[3.75rem] lg:text-[4.75rem]"
+                >
+                  {words.map((word, wordIndex) => {
+                    const delay = 0.4 + wordCursor * 0.08;
+                    wordCursor += 1;
+                    const animationProps = shouldAnimate
+                      ? {
+                          initial: { opacity: 0, y: 32 },
+                          animate: { opacity: 1, y: 0 },
+                          transition: { delay, duration: 0.65, ease: HERO_EASE },
+                        }
+                      : {};
+
+                    return (
+                      <motion.span key={`${word}-${wordIndex}`} className="inline-block align-top" {...animationProps}>
+                        {word}
+                        <span aria-hidden="true">&nbsp;</span>
+                      </motion.span>
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
 
-          <MotionReveal
-            as="p"
-            direction="up"
-            distance={24}
-            delay={0.2}
+          <motion.p
             className="max-w-xl text-base text-white/80 md:text-lg"
-            disableWhileInView={shouldAnimate}
+            initial={shouldAnimate ? { opacity: 0, y: 24 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+            transition={shouldAnimate ? { duration: 0.65, delay: 0.6, ease: HERO_EASE } : undefined}
           >
             {description}
-          </MotionReveal>
+          </motion.p>
 
           <div className="flex flex-wrap gap-4">
-            <Link href={primaryCta.href} className={primaryCtaClass}>
-              {primaryCta.label}
-            </Link>
+            <motion.div
+              initial={shouldAnimate ? { opacity: 0, scale: 1 } : undefined}
+              animate={shouldAnimate ? { opacity: 1, scale: [1, 1.04, 1] } : undefined}
+              transition={shouldAnimate ? { delay: 0.8, duration: 0.6, ease: HERO_EASE } : undefined}
+            >
+              <Link href={primaryCta.href} className={primaryCtaClass}>
+                {primaryCta.label}
+              </Link>
+            </motion.div>
 
             {secondaryCta ? (
-              <Link href={secondaryCta.href} className={secondaryCtaClass}>
-                {secondaryCta.label}
-              </Link>
+              <motion.div
+                initial={shouldAnimate ? { opacity: 0, y: 18 } : undefined}
+                animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+                transition={shouldAnimate ? { delay: 0.9, duration: 0.5, ease: HERO_EASE } : undefined}
+              >
+                <Link href={secondaryCta.href} className={secondaryCtaClass}>
+                  {secondaryCta.label}
+                </Link>
+              </motion.div>
             ) : null}
           </div>
         </div>
@@ -153,7 +184,12 @@ const AnimatedHero = ({
           </ParallaxWrapper>
 
           <ParallaxWrapper speed={0.12} range={180}>
-            <motion.div className="interactive-media relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl">
+            <motion.div
+              className="interactive-media relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl"
+              initial={shouldAnimate ? { opacity: 0, scale: 1.04 } : undefined}
+              animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
+              transition={shouldAnimate ? { duration: 0.85, delay: 0.5, ease: HERO_EASE } : undefined}
+            >
               <div className="mb-5 flex items-center justify-between text-[0.55rem] uppercase tracking-[0.35em] text-white/55">
                 <span>Dezitech Core Systems</span>
                 <span>Verified</span>

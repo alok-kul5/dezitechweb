@@ -24,20 +24,20 @@ const PageTransition = ({ children }: PageTransitionProps) => {
     );
   }
 
-  return (
-    <AnimatePresence initial={false} mode="sync">
-      <motion.div
-        key={pathname ?? "/"}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.24, ease: easing }}
-        className="min-h-full"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
+    return (
+      <AnimatePresence initial={false} mode="sync">
+        <motion.div
+          key={pathname ?? "/"}
+          initial={{ opacity: 0.8, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.4, ease: easing }}
+          className="min-h-full"
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+    );
 };
 
 export default PageTransition;
