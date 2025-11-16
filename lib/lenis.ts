@@ -17,7 +17,7 @@ export function canUseLenis(): boolean {
   return !reduce;
 }
 
-/** Initialize Lenis (snappy Meridian-style scroll) */
+/** Initialize Lenis (snappy Dezitech engineering scroll) */
 export function initLenis(options?: {
   lerp?: number;
   wheelMultiplier?: number;
