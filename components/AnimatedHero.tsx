@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
+import { cinematicMotion } from "@/motion.config";
 
 import ParallaxWrapper from "./ParallaxWrapper";
 import SectionWrapper from "./SectionWrapper";
@@ -25,8 +26,6 @@ type AnimatedHeroProps = {
 
 const HERO_EASE: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
 const HEADLINE_WORD_LIMIT = 14;
-const HERO_WORD_STAGGER = 0.045;
-const HERO_HEADLINE_DURATION = 0.56;
 const HERO_TIMINGS = {
   headlineStart: 0.08,
   subline: 0.45,
@@ -63,7 +62,8 @@ const buildWordMatrix = (normalizedLines: string[]) => {
     words.map((word, wordIndex) => ({
       key: `${lineIndex}-${wordIndex}-${word}`,
       word,
-      delay: HERO_TIMINGS.headlineStart + (offsets[lineIndex] + wordIndex) * HERO_WORD_STAGGER,
+      delay:
+        HERO_TIMINGS.headlineStart + (offsets[lineIndex] + wordIndex) * cinematicMotion.hero.wordStagger,
     })),
   );
 };
@@ -103,7 +103,7 @@ const AnimatedHero = ({
           className="inline-flex"
           initial={{ y: "105%", opacity: 0 }}
           animate={{ y: "0%", opacity: 1 }}
-          transition={{ delay: word.delay, duration: HERO_HEADLINE_DURATION, ease: HERO_EASE }}
+          transition={{ delay: word.delay, duration: cinematicMotion.hero.headlineDuration, ease: HERO_EASE }}
         >
           {word.word}
           <span aria-hidden="true">&nbsp;</span>

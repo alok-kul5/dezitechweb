@@ -2,18 +2,19 @@
 "use client";
 
 import React, { ReactNode, useEffect } from "react";
-import { canUseLenis, initLenis, destroyLenis, resizeLenis } from "@/lib/lenis";
+import { canUseLenis, initLenis, destroyLenis, resizeLenis, LenisPreset } from "@/lib/lenis";
 import useReducedMotion from "./useReducedMotion";
 
 type LenisProviderProps = {
   children: ReactNode;
+  mode?: LenisPreset;
 };
 
 /**
  * LenisProvider mounts Lenis (smooth scroll) on the client.
  * It ensures Lenis only runs in browser, respects reduced-motion and cleans up.
  */
-export default function LenisProvider({ children }: LenisProviderProps) {
+export default function LenisProvider({ children, mode = "snappy" }: LenisProviderProps) {
   const prefersReduced = useReducedMotion();
 
   useEffect(() => {
@@ -21,12 +22,7 @@ export default function LenisProvider({ children }: LenisProviderProps) {
     if (!canUseLenis() || prefersReduced) return;
 
     // Init Lenis (idempotent in lib/lenis.ts)
-      const lenis = initLenis({
-      lerp: 0.045,
-      wheelMultiplier: 1.5,
-      gestureOrientation: "vertical",
-      touchMultiplier: 1.4,
-    });
+    const lenis = initLenis(mode);
 
     // Resize handler
     const handleResize = () => {
@@ -43,7 +39,7 @@ export default function LenisProvider({ children }: LenisProviderProps) {
         destroyLenis();
       } catch {}
     };
-  }, [prefersReduced]);
+  }, [mode, prefersReduced]);
 
   return <>{children}</>;
 }
