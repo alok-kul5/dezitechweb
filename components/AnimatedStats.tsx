@@ -137,9 +137,7 @@ const AnimatedStats = () => {
                   >
                     <KpiCard
                       label={stat.label}
-                      value={`${stat.prefix ?? ""}${formatValue(stat.current, stat.decimals)}${
-                        stat.suffix ? ` ${stat.suffix}` : ""
-                      }`}
+                      value={`${formatValue(stat.current)}${stat.suffix ? ` ${stat.suffix}` : ""}`}
                       description={stat.description}
                       icon={stat.icon}
                       media={stat.media}
