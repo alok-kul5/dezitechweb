@@ -4,8 +4,13 @@
 
 :root {
   --container: 1180px;
+  --container-compact: 960px;
   --space-base: 24px;
   --dezitech-red: #c8102e;
+  --color-primary: #c8102e;
+  --color-neutral-dark: #0f1724;
+  --color-neutral-mid: #6b7280;
+  --color-neutral-light: #f8f8f9;
   --bg-canvas: #0b0f14;
   --bg-grid: #0b0f14;
   --bg-surface: #0f1724;
@@ -14,8 +19,12 @@
   --text-soft: #c7cbd7;
   --text-strong: #f9fafb;
   --ease-industrial: cubic-bezier(0.21, 0.8, 0.32, 1);
-  --radius-card: 20px;
+  --card-radius: 1.5rem;
+  --radius-card: var(--card-radius);
+  --card-border: rgba(255, 255, 255, 0.05);
+  --card-highlight: rgba(255, 255, 255, 0.1);
   --shadow-card: 0 20px 60px rgba(2, 4, 10, 0.65);
+  --card-shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
   --border-glow: rgba(255, 255, 255, 0.14);
 }
 
@@ -143,8 +152,8 @@ h3 {
 
 .surface-card {
   position: relative;
-  border-radius: var(--radius-card);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(4, 9, 18, 0.7));
   box-shadow: var(--shadow-card);
   overflow: hidden;
@@ -154,10 +163,43 @@ h3 {
   content: "";
   position: absolute;
   inset: 1px;
-  border-radius: calc(var(--radius-card) - 1px);
+  border-radius: calc(var(--card-radius) - 1px);
   border: 1px solid rgba(255, 255, 255, 0.04);
   pointer-events: none;
   mix-blend-mode: screen;
+}
+
+.card-surface {
+  position: relative;
+  border-radius: var(--card-radius);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: var(--card-shadow-soft);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  overflow: hidden;
+}
+
+.card-surface::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--card-radius) - 1px);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+  .kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .bg-ambient-grid {
