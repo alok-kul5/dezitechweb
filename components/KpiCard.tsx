@@ -14,7 +14,7 @@ const KpiCard = ({ label, value, description, icon, media }: KpiCardProps) => {
   const visual = media ?? icon ?? FALLBACK_MEDIA;
 
   return (
-    <article className="card-surface flex items-center gap-5 bg-white/5">
+    <article className="card-surface card-surface--metric flex items-center gap-5 bg-white/5">
       <div
         className="relative shrink-0 overflow-hidden rounded-2xl border border-white/10"
         style={{ width: "72px", height: "72px" }}

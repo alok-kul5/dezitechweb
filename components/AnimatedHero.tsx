@@ -152,6 +152,15 @@ const AnimatedHero = ({
           }
           right={
             <div className="relative">
+              <div className="pointer-events-none absolute inset-0 -z-10 opacity-60 blur-3xl">
+                <Image
+                  src="/ambient/ambient-glow.png"
+                  alt=""
+                  fill
+                  loading="lazy"
+                  className="object-cover"
+                />
+              </div>
               <ParallaxWrapper
                 speed={0.06}
                 axis="x"
