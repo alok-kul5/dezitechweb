@@ -1,46 +1,51 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
 import Lenis from "@studio-freight/lenis";
 
-type LenisProviderProps = {
-  children: ReactNode;
+export type LenisOptions = ConstructorParameters<typeof Lenis>[0];
+export type LenisInstance = InstanceType<typeof Lenis>;
+
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+
+export const defaultLenisOptions: LenisOptions = {
+  duration: 1.1,
+  orientation: "vertical",
+  smoothWheel: true,
+  smoothTouch: false,
+  syncTouch: true,
+  lerp: 0.08,
+  gestureOrientation: "vertical",
 };
 
-export function LenisProvider({ children }: LenisProviderProps) {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+const isBrowser = () => typeof window !== "undefined";
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
+export const prefersReducedMotion = () =>
+  isBrowser() && window.matchMedia(REDUCED_MOTION_QUERY).matches;
 
-    if (prefersReducedMotion.matches) return;
+export const canUseLenis = () => isBrowser() && !prefersReducedMotion();
 
-    const lenis = new Lenis({
-      duration: 1.15,
-      orientation: "vertical",
-      smoothWheel: true,
-      smoothTouch: false,
-      syncTouch: true,
-      lerp: 0.09,
-      gestureOrientation: "vertical",
-    });
+export const createLenis = (options?: Partial<LenisOptions>) =>
+  new Lenis({ ...defaultLenisOptions, ...options });
 
-    let frameId: number;
+export const initLenis = (options?: Partial<LenisOptions>) => {
+  const lenis = createLenis(options);
+  let frameId = 0;
 
-    const raf = (time: number) => {
-      lenis.raf(time);
-      frameId = requestAnimationFrame(raf);
-    };
-
+  const raf = (time: number) => {
+    lenis.raf(time);
     frameId = requestAnimationFrame(raf);
+  };
 
-    return () => {
-      cancelAnimationFrame(frameId);
-      lenis.destroy();
-    };
-  }, []);
+  frameId = requestAnimationFrame(raf);
 
-  return children;
-}
+  const destroy = () => {
+    cancelAnimationFrame(frameId);
+    lenis.destroy();
+  };
+
+  return { lenis, destroy };
+};
+
+export const resizeLenis = (lenis: LenisInstance) => {
+  lenis.resize();
+};

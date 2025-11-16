@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
   LayoutGroup,
   motion,
+  useMotionTemplate,
   useScroll,
   useSpring,
   useTransform,
@@ -36,10 +37,8 @@ const Header = () => {
 
   const paddingTop = useTransform(scrollProgress, [0, 1], [24, 14]);
   const paddingBottom = useTransform(scrollProgress, [0, 1], [24, 14]);
-  const backgroundColor = useTransform(
-    scrollProgress,
-    (value) => `rgba(255, 255, 255, ${0.4 + value * 0.6})`,
-  );
+  const backgroundOpacity = useTransform(scrollProgress, [0, 1], [0.35, 0.95]);
+  const backgroundColor = useMotionTemplate`rgba(255 255 255 / ${backgroundOpacity})`;
   const borderBottomColor = useTransform(
     scrollProgress,
     (value) => `rgba(15, 23, 42, ${value * 0.16})`,
@@ -53,6 +52,8 @@ const Header = () => {
     (value) => `blur(${value * 20}px)`,
   );
   const navOpacity = useTransform(scrollProgress, [0, 1], [1, 0.85]);
+  const gradientIntensity = useTransform(scrollProgress, [0, 1], [0, 0.6]);
+  const headerOffset = useTransform(scrollProgress, [0, 1], [0, -12]);
 
   const motionStyle = prefersReducedMotion
     ? {
@@ -63,21 +64,22 @@ const Header = () => {
         boxShadow: "none",
         backdropFilter: "blur(0px)",
       }
-    : {
-        paddingTop,
-        paddingBottom,
-        backgroundColor,
-        borderBottomColor,
-        boxShadow,
-        backdropFilter,
-      };
+      : {
+          paddingTop,
+          paddingBottom,
+          backgroundColor,
+          borderBottomColor,
+          boxShadow,
+          backdropFilter,
+          y: headerOffset,
+        };
 
   const handlePointerEnter = (href: string) => setHoveredLink(href);
   const resetHover = () => setHoveredLink(null);
 
   return (
-    <motion.header
-      className="site-header relative"
+      <motion.header
+        className="site-header sticky top-0 z-50"
       aria-label="Site header"
       style={motionStyle}
       initial={prefersReducedMotion ? undefined : { y: -32, opacity: 0 }}
@@ -88,11 +90,16 @@ const Header = () => {
           : { duration: 0.85, delay: 0.45, ease: NAV_EASE }
       }
     >
-      <motion.div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white/90 via-white/80 to-white/40"
-        style={{ opacity: navOpacity }}
-      />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white/90 via-white/80 to-white/40"
+          style={{ opacity: navOpacity }}
+        />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(79,209,197,0.45),_transparent_70%)]"
+          style={{ opacity: gradientIntensity }}
+        />
       <div className="container flex items-center justify-between gap-4">
         <motion.div
           initial={prefersReducedMotion ? undefined : { opacity: 0, y: -6 }}
@@ -135,17 +142,18 @@ const Header = () => {
                 onBlur={resetHover}
               >
                 <span>{link.label}</span>
-                {hoveredLink === link.href ? (
-                  <motion.span
-                    layoutId="nav-underline"
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-dezitech-400 via-dezitech-500 to-emerald-200"
-                    transition={{
-                      duration: prefersReducedMotion ? 0 : 0.4,
-                      ease: NAV_EASE,
-                    }}
-                  />
-                ) : null}
+                  {hoveredLink === link.href ? (
+                    <motion.span
+                      layoutId="nav-underline"
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-dezitech-400 via-dezitech-500 to-emerald-200"
+                      initial={false}
+                      transition={{
+                        duration: prefersReducedMotion ? 0 : 0.35,
+                        ease: NAV_EASE,
+                      }}
+                    />
+                  ) : null}
                 <motion.span
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-x-1 bottom-0 h-[2px] rounded-full bg-neutral-900/40"

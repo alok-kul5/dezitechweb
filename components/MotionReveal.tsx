@@ -18,6 +18,8 @@ type MotionRevealProps = {
   amount?: number;
   as?: keyof HTMLElementTagNameMap;
   fadeOnly?: boolean;
+  splitText?: boolean;
+  splitBy?: "word" | "char";
 } & HTMLMotionProps<"div">;
 
 const easing: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
@@ -36,6 +38,8 @@ const MotionReveal = ({
   amount = 0.16,
   as = "div",
   fadeOnly = false,
+  splitText = false,
+  splitBy = "word",
   ...rest
 }: MotionRevealProps) => {
   const prefersReducedMotion = useReducedMotion();
@@ -52,7 +56,8 @@ const MotionReveal = ({
   const baseInitial = fadeOnly ? { opacity: 0 } : { opacity: 0, ...offsets[direction] };
   const baseVisible = fadeOnly ? { opacity: 1 } : { opacity: 1, x: 0, y: 0 };
 
-  const hasStagger = shouldAnimate && stagger > 0 && Children.count(children) > 0;
+  const resolvedStagger = splitText && stagger === 0 ? 0.045 : stagger;
+  const hasStagger = shouldAnimate && (resolvedStagger > 0 || splitText);
 
   const containerVariants = hasStagger ? { hidden: {}, visible: {} } : { hidden: baseInitial, visible: baseVisible };
   const childVariants = { hidden: baseInitial, visible: baseVisible };
@@ -62,12 +67,24 @@ const MotionReveal = ({
         duration,
         delay,
         ease: easing,
-        ...(hasStagger ? { staggerChildren: stagger, delayChildren: delay } : {}),
+        ...(hasStagger
+          ? {
+              staggerChildren: resolvedStagger || 0.045,
+              delayChildren: delay,
+            }
+          : {}),
       }
     : { duration: 0 };
 
   const motionTagMap = motion as unknown as Record<string, typeof motion.div>;
   const MotionComponent = motionTagMap[as] ?? motion.div;
+
+  const tokenizeString = (value: string) => {
+    if (splitBy === "char") {
+      return value.split("");
+    }
+    return value.split(/(\s+)/);
+  };
 
   const renderChildren = () => {
     if (!hasStagger) {
@@ -77,6 +94,29 @@ const MotionReveal = ({
     return Children.map(children, (child, index) => {
       if (!isValidElement(child)) {
         const key = `motion-reveal-node-${index}`;
+        if (splitText && typeof child === "string" && shouldAnimate) {
+          return tokenizeString(child).map((token, tokenIndex) => {
+            const tokenKey = `${key}-token-${tokenIndex}`;
+            if (!token.trim()) {
+              return (
+                <span key={tokenKey} aria-hidden="true">
+                  {token}
+                </span>
+              );
+            }
+            return (
+              <motion.span
+                key={tokenKey}
+                style={{ display: "inline-block" }}
+                variants={childVariants}
+                data-motion-reveal-split
+              >
+                {token}
+              </motion.span>
+            );
+          });
+        }
+
         return shouldAnimate ? (
           <motion.span key={key} style={{ display: "inline-block" }} variants={childVariants}>
             {child}
