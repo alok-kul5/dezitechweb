@@ -3,6 +3,7 @@ import AnimatedStats from "@/components/AnimatedStats";
 import MotionReveal from "@/components/MotionReveal";
 import ProductGrid from "@/components/ProductGrid";
 import Section from "@/components/Section";
+import SectionWrapper from "@/components/SectionWrapper";
 import { getSiteContentSync } from "@/lib/siteData";
 
 const siteContent = getSiteContentSync();
@@ -27,19 +28,21 @@ const productCards = siteContent.products.map((product) => ({
 
 export default function Home() {
   return (
-    <main className="space-y-24">
+    <main className="flex flex-col">
       <AnimatedHero
         eyebrow={siteContent.hero.eyebrow}
         headline={siteContent.hero.headline}
         description={siteContent.hero.description}
         primaryCta={siteContent.hero.ctaPrimary}
         secondaryCta={siteContent.hero.ctaSecondary}
-          mediaSrc={siteContent.hero.image}
+        mediaSrc={siteContent.hero.image}
       />
 
-      <AnimatedStats />
+      <SectionWrapper variant="light">
+        <AnimatedStats />
+      </SectionWrapper>
 
-        <Section
+      <Section
           eyebrow="What we do"
           title="Engineering disciplines we lead"
         description={outsourcing?.description ?? ""}
@@ -60,15 +63,16 @@ export default function Home() {
               speed: 0.06,
             },
           ]}
-        >
+        variant="dark"
+      >
           <MotionReveal direction="up" distance={18} duration={0.65} amount={0.18}>
             <div className="rounded-[28px] border border-white/20 bg-black/30 p-2 backdrop-blur">
               <ProductGrid items={productCards} />
             </div>
           </MotionReveal>
-        </Section>
+      </Section>
 
-        <Section
+      <Section
           eyebrow="Established expertise"
           title="Why partners trust Dezitech"
           description={siteContent.quality.title}
@@ -83,7 +87,8 @@ export default function Home() {
               speed: 0.05,
             },
           ]}
-        >
+        variant="light"
+      >
             <div className="grid gap-4 md:grid-cols-2">
               {siteContent.quality.pillars.map((item, index) => (
               <MotionReveal
@@ -103,7 +108,7 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section
+      <Section
           eyebrow="Global presence"
           title="UK + India delivery model"
           description={manufacturing?.description ?? ""}
@@ -118,7 +123,8 @@ export default function Home() {
               speed: 0.04,
             },
           ]}
-        >
+        variant="dark"
+      >
             <div className="space-y-4">
               {(manufacturing?.bullets ?? []).map((statement, index) => (
               <MotionReveal
@@ -137,7 +143,7 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section
+      <Section
           eyebrow="Industries served"
           title="Where we already operate"
           description={servicesByTitle["industries served"]?.description ?? ""}
@@ -152,7 +158,8 @@ export default function Home() {
               speed: 0.03,
             },
           ]}
-        >
+        variant="light"
+      >
             <div className="grid gap-4 md:grid-cols-5">
               {industries.map((industry, index) => (
               <MotionReveal
@@ -171,14 +178,15 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section
+      <Section
           eyebrow="Get in touch"
           title="Stay ahead with Dezitech"
           description={siteContent.contact.message}
           accentVariant="orb"
           backdropVariant="midnight"
           accentClassName="left-20 top-4 hidden h-48 w-48 opacity-40 md:block"
-        >
+        variant="dark"
+      >
         <MotionReveal
           direction="up"
           distance={20}

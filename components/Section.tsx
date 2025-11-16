@@ -4,6 +4,7 @@ import { JSX, ReactNode } from "react";
 import MaskReveal from "./MaskReveal";
 import MotionReveal from "./MotionReveal";
 import ParallaxWrapper from "./ParallaxWrapper";
+import SectionWrapper, { SectionTone } from "./SectionWrapper";
 
 type SectionAccent = "grid" | "orb" | "beam";
 type SectionBackdrop = "slate" | "sand" | "midnight";
@@ -29,6 +30,7 @@ type SectionProps = {
   accentClassName?: string;
   backdropVariant?: SectionBackdrop;
   ambientProps?: SectionAmbientProp[];
+  variant?: SectionTone;
 };
 
 const backdropStyles: Record<SectionBackdrop, string> = {
@@ -63,11 +65,17 @@ const Section = ({
   accentClassName = "right-6 top-6 hidden h-40 w-40 md:block",
   backdropVariant = "slate",
   ambientProps = [],
+  variant = "dark",
 }: SectionProps) => {
   const hasHeading = Boolean(eyebrow || title || description);
+  const copyMuted = "text-[var(--tone-muted)]";
+  const panelClasses =
+    variant === "dark"
+      ? "border-white/10 bg-white/5 text-[var(--tone-foreground)] shadow-[0_30px_90px_rgba(3,6,15,0.45)]"
+      : "border-black/5 bg-white/80 text-[var(--tone-foreground)] shadow-[0_30px_90px_rgba(15,23,36,0.08)]";
 
   return (
-    <section id={id} className={`relative overflow-hidden px-6 py-20 ${className}`}>
+    <SectionWrapper id={id} variant={variant} className={className}>
       <MotionReveal
         className="pointer-events-none absolute inset-x-3 inset-y-4 rounded-[48px]"
         fadeOnly
@@ -88,7 +96,7 @@ const Section = ({
         {accentContent[accentVariant]}
       </ParallaxWrapper>
 
-      {ambientProps.map((prop) => (
+        {ambientProps.map((prop) => (
         <ParallaxWrapper
           key={`${prop.src}-${prop.className ?? ""}`}
           speed={prop.speed}
@@ -103,9 +111,11 @@ const Section = ({
             className="w-full opacity-50"
           />
         </ParallaxWrapper>
-      ))}
+        ))}
 
-        <div className="relative mx-auto max-w-5xl space-y-8 rounded-[40px] border border-white/10 bg-white/5 p-8 text-white shadow-[0_30px_90px_rgba(3,6,15,0.45)] backdrop-blur-2xl">
+        <div
+          className={`relative mx-auto max-w-5xl space-y-8 rounded-[36px] border p-8 backdrop-blur-2xl ${panelClasses}`}
+        >
           {hasHeading ? (
             <MotionReveal
               as="div"
@@ -116,25 +126,26 @@ const Section = ({
               stagger={0.08}
             >
               {eyebrow ? (
-                <div className="text-xs font-semibold uppercase tracking-[0.35em] text-white/50">
+                <div className="text-xs font-semibold uppercase tracking-[0.28em] text-[var(--tone-muted)]">
                   {eyebrow}
                 </div>
               ) : null}
               {title ? (
                 <div>
-                  <MaskReveal as="h2" className="text-3xl font-semibold text-white">
+                  <MaskReveal
+                    as="h2"
+                    className="text-3xl font-semibold text-[var(--tone-foreground)]"
+                  >
                     {title}
                   </MaskReveal>
                 </div>
               ) : null}
-              {description ? (
-                <div className="text-base text-white/70">{description}</div>
-              ) : null}
+              {description ? <div className={`text-base ${copyMuted}`}>{description}</div> : null}
             </MotionReveal>
           ) : null}
-        {children}
-      </div>
-    </section>
+          {children}
+        </div>
+      </SectionWrapper>
   );
 };
 
