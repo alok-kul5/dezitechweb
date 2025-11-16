@@ -7,6 +7,7 @@
   --space-base: 24px;
   --dezitech-red: #c8102e;
   --bg-canvas: #0b0f14;
+  --bg-grid: #0b0f14;
   --bg-surface: #0f1724;
   --grid-line: rgba(255, 255, 255, 0.04);
   --grid-highlight: rgba(255, 255, 255, 0.08);
@@ -157,6 +158,27 @@ h3 {
   border: 1px solid rgba(255, 255, 255, 0.04);
   pointer-events: none;
   mix-blend-mode: screen;
+}
+
+.bg-ambient-grid {
+  position: relative;
+  isolation: isolate;
+}
+
+.bg-ambient-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-grid);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    url("/ambient/ambient-grid.svg");
+  background-size: 120px 120px, 120px 120px, cover;
+  opacity: 0.32;
+  mix-blend-mode: screen;
+  z-index: -1;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
