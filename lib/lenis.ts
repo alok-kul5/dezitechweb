@@ -1,51 +1,79 @@
-"use client";
-
+// lib/lenis.ts
+// Lightweight Lenis wrapper that exports the functions expected by LenisProvider.tsx
+// This module is safe to import from server code (it guards window usage).
 import Lenis from "@studio-freight/lenis";
 
-export type LenisOptions = ConstructorParameters<typeof Lenis>[0];
-export type LenisInstance = InstanceType<typeof Lenis>;
+let lenisInstance: ReturnType<typeof Lenis> | null = null;
+let rafId: number | null = null;
 
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+/** Returns true when Lenis can run in this environment (browser). */
+export function canUseLenis(): boolean {
+  return typeof window !== "undefined" && typeof window.requestAnimationFrame === "function";
+}
 
-export const defaultLenisOptions: LenisOptions = {
-  duration: 1.1,
-  orientation: "vertical",
-  smoothWheel: true,
-  smoothTouch: false,
-  syncTouch: true,
-  lerp: 0.08,
-  gestureOrientation: "vertical",
-};
+/** Initialize Lenis if not already created. Returns the instance or null. */
+export function initLenis(options?: {
+  lerp?: number;
+  wheelMultiplier?: number;
+  gestureOrientation?: "vertical" | "horizontal";
+  smoothTouch?: boolean;
+  touchMultiplier?: number;
+}) {
+  if (!canUseLenis()) return null;
 
-const isBrowser = () => typeof window !== "undefined";
+  if (lenisInstance) return lenisInstance;
 
-export const prefersReducedMotion = () =>
-  isBrowser() && window.matchMedia(REDUCED_MOTION_QUERY).matches;
-
-export const canUseLenis = () => isBrowser() && !prefersReducedMotion();
-
-export const createLenis = (options?: Partial<LenisOptions>) =>
-  new Lenis({ ...defaultLenisOptions, ...options });
-
-export const initLenis = (options?: Partial<LenisOptions>) => {
-  const lenis = createLenis(options);
-  let frameId = 0;
-
-  const raf = (time: number) => {
-    lenis.raf(time);
-    frameId = requestAnimationFrame(raf);
+  const cfg = {
+    lerp: 0.08,
+    wheelMultiplier: 1.2,
+    gestureOrientation: "vertical",
+    smoothTouch: false,
+    touchMultiplier: 1.5,
+    ...(options || {}),
   };
 
-  frameId = requestAnimationFrame(raf);
+  lenisInstance = new Lenis(cfg);
 
-  const destroy = () => {
-    cancelAnimationFrame(frameId);
-    lenis.destroy();
-  };
+  function raf(time: number) {
+    if (!lenisInstance) return;
+    lenisInstance.raf(time);
+    rafId = requestAnimationFrame(raf);
+  }
 
-  return { lenis, destroy };
-};
+  rafId = requestAnimationFrame(raf);
 
-export const resizeLenis = (lenis: LenisInstance) => {
-  lenis.resize();
-};
+  return lenisInstance;
+}
+
+/** Call this on window resize if needed (Lenis usually handles it, but expose anyway). */
+export function resizeLenis() {
+  if (!lenisInstance) return;
+  if (typeof (lenisInstance as any).onResize === "function") {
+    try {
+      (lenisInstance as any).onResize();
+    } catch (e) {
+      // ignore
+    }
+  }
+}
+
+/** Destroys Lenis instance and cancels RAF loop. */
+export function destroyLenis() {
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+  if (lenisInstance) {
+    try {
+      lenisInstance.destroy();
+    } catch (e) {
+      // ignore
+    }
+    lenisInstance = null;
+  }
+}
+
+/** Expose the instance (dangerous to call from SSR) */
+export function getLenisInstance() {
+  return lenisInstance;
+}
