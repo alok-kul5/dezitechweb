@@ -5,30 +5,38 @@ import ProductGrid from "@/components/ProductGrid";
 import Section from "@/components/Section";
 
 const heroHeadline = [
-  "Helping customers grow profitably",
-  "through Meridian-grade engineering outsourcing",
-  "and resilient product manufacturing",
+  "Restoring confidence in industrial launches",
+  "through Dezitech-grade engineering partnerships",
+  "and resilient product manufacturing pipelines",
 ];
 
 const heroDescription =
-  "We combine UK and India based engineering talent to design, build, and deliver resilient supply chains for ambitious OEMs.";
+  "We combine UK and India-based engineering talent to design, build, and deliver resilient supply chains for ambitious OEMs.";
 
 const featuredProducts = [
   {
     title: "Engineering and design",
     summary: "Engineering resources, design, 3D modelling, CAE/FEA",
     href: "/products/engineering-design",
+    mediaSrc: "/images/DEZITECH_IMG_03.jpg",
   },
   {
     title: "Refrigeration",
     summary: "Design of refrigeration systems and component supply",
     href: "/products/refrigeration",
+    mediaSrc: "/images/DEZITECH_IMG_02.jpg",
   },
-  { title: "Heat pump", summary: "Heat pump design and components supply", href: "/products/heat-pump" },
+  {
+    title: "Heat pump",
+    summary: "Heat pump design and components supply",
+    href: "/products/heat-pump",
+    mediaSrc: "/images/DEZITECH_IMG_01.jpg",
+  },
   {
     title: "Engineering Supply chain",
     summary: "Cost effective & reliable components supply with excellent quality",
     href: "/products/engineering-supply-chain",
+    mediaSrc: "/images/DEZITECH_IMG_03.jpg",
   },
 ];
 
@@ -50,16 +58,16 @@ const industriesServed = ["Oil and gas", "Automotive", "Industrial", "Aviation",
 
 export default function Home() {
   return (
-      <>
-        <AnimatedHero
-          eyebrow="Dezitech Engineering"
-          headline={heroHeadline}
-          description={heroDescription}
-          primaryCta={{ label: "Explore Products", href: "/products" }}
-          secondaryCta={{ label: "Our Services", href: "/services" }}
-        />
+    <main className="space-y-24">
+      <AnimatedHero
+        eyebrow="Dezitech Engineering"
+        headline={heroHeadline}
+        description={heroDescription}
+        primaryCta={{ label: "Explore Products", href: "/products" }}
+        secondaryCta={{ label: "Our Services", href: "/services" }}
+      />
 
-        <AnimatedStats />
+      <AnimatedStats />
 
         <Section
           eyebrow="What we do"
@@ -201,18 +209,18 @@ export default function Home() {
           backdropVariant="midnight"
           accentClassName="left-20 top-4 hidden h-48 w-48 opacity-40 md:block"
         >
-          <MotionReveal
-            direction="up"
-            distance={20}
-            duration={0.65}
-            splitText
-            className="rounded-3xl border border-white/10 bg-black/30 p-8 text-base text-white/80"
-          >
-            Please do contact us for any further details such as work samples, quotation or to discuss how we can help you.
-            We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering
-            reviews stay on track.
-          </MotionReveal>
-        </Section>
-      </>
+        <MotionReveal
+          direction="up"
+          distance={20}
+          duration={0.65}
+          splitText
+          className="rounded-3xl border border-white/10 bg-black/30 p-8 text-base text-white/80"
+        >
+          Please do contact us for any further details such as work samples, quotation or to discuss how we can help you.
+          We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering
+          reviews stay on track.
+        </MotionReveal>
+      </Section>
+    </main>
   );
 }

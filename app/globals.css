@@ -3,27 +3,53 @@
 @tailwind utilities;
 
 :root {
-  --container: 1220px;
+  --container: 1180px;
   --space-base: 24px;
   --dezitech-red: #c8102e;
-  --bg-light: #05070f;
-  --ease-meridian: cubic-bezier(0.21, 0.8, 0.32, 1);
-  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --bg-canvas: #0b0f14;
+  --bg-surface: #0f1724;
+  --grid-line: rgba(255, 255, 255, 0.04);
+  --grid-highlight: rgba(255, 255, 255, 0.08);
+  --text-soft: #c7cbd7;
+  --text-strong: #f9fafb;
+  --ease-industrial: cubic-bezier(0.21, 0.8, 0.32, 1);
+  --radius-card: 20px;
+  --shadow-card: 0 20px 60px rgba(2, 4, 10, 0.65);
+  --border-glow: rgba(255, 255, 255, 0.14);
 }
 
 html {
   scroll-behavior: auto;
-  background-color: var(--bg-light);
+  background-color: var(--bg-canvas);
 }
 
 body {
   min-height: 100vh;
-  background: radial-gradient(circle at top, rgba(88, 201, 206, 0.08), transparent 55%) var(--bg-light);
-  color: #e5e7eb;
+  background-color: var(--bg-canvas);
+  background-image:
+    radial-gradient(circle at 20% -10%, rgba(200, 16, 46, 0.15), transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(25, 64, 95, 0.28), transparent 52%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04));
+  color: var(--text-soft);
   font-family: var(--font-body), Inter, system-ui, sans-serif;
   line-height: 1.6;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: 0.28;
+  mix-blend-mode: screen;
+  z-index: -1;
 }
 
 h1,
@@ -33,7 +59,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading), "Space Grotesk", Inter, system-ui, sans-serif;
-  color: #f9fafb;
+  color: var(--text-strong);
   line-height: 1.15;
   font-weight: 600;
   margin-bottom: 0.75em;
@@ -41,7 +67,7 @@ h6 {
 
 p {
   margin-bottom: 1.25em;
-  color: #c7cbd7;
+  color: var(--text-soft);
 }
 
 h1 {
@@ -57,11 +83,11 @@ h3 {
 }
 
 .container {
-  max-width: var(--container);
+  max-width: min(var(--container), 95vw);
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.75rem;
-  padding-right: 1.75rem;
+  padding-left: clamp(1.25rem, 4vw, 3rem);
+  padding-right: clamp(1.25rem, 4vw, 3rem);
   width: 100%;
 }
 
@@ -74,48 +100,63 @@ h3 {
 }
 
 .interactive-card {
-  transition:
-    transform 260ms var(--ease-meridian),
-    box-shadow 260ms var(--ease-meridian),
-    border-color 260ms var(--ease-meridian);
-  will-change: transform, box-shadow;
+  transition: transform 260ms var(--ease-industrial);
+  will-change: transform;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  background-color: rgba(15, 23, 36, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .interactive-card:hover {
-  transform: translateY(-6px) scale(1.012);
-  box-shadow: 0 30px 60px rgba(6, 9, 19, 0.55);
+  transform: translateY(-6px);
 }
 
 .interactive-icon {
   display: inline-flex;
-  transition: transform 240ms var(--ease-soft);
+  transition: transform 240ms var(--ease-industrial);
   will-change: transform;
 }
 
 .interactive-icon:hover {
-  transform: rotate3d(0.2, 0.6, 0, 2deg);
+  transform: translateX(2px);
 }
 
 .interactive-cta {
-  transition:
-    transform 240ms var(--ease-meridian),
-    box-shadow 240ms var(--ease-meridian),
-    background 240ms var(--ease-meridian);
-  will-change: transform, box-shadow;
+  transition: transform 240ms var(--ease-industrial), opacity 240ms var(--ease-industrial);
+  will-change: transform;
 }
 
 .interactive-cta:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 22px 45px rgba(200, 16, 46, 0.34);
+  transform: translateY(-4px);
 }
 
 .interactive-media {
-  transition: transform 420ms var(--ease-soft);
+  transition: transform 420ms var(--ease-industrial), opacity 420ms var(--ease-industrial);
   transform-origin: center;
 }
 
 .interactive-media:hover {
-  transform: perspective(800px) rotateX(2deg) rotateY(-1.5deg) scale(1.01);
+  transform: translateY(-4px);
+}
+
+.surface-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(4, 9, 18, 0.7));
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.surface-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: calc(var(--radius-card) - 1px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  mix-blend-mode: screen;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -131,10 +172,10 @@ h3 {
     transition-duration: 0.01ms !important;
   }
 
-  .interactive-card,
-  .interactive-icon,
-  .interactive-cta,
-  .interactive-media {
+    .interactive-card,
+    .interactive-icon,
+    .interactive-cta,
+    .interactive-media {
     transition: none !important;
     transform: none !important;
   }

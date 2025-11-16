@@ -1,6 +1,6 @@
 # Dezitech Engineering — Modern Redesign
 
-A Next.js (App Router) project that rebuilds [Dezitech Engineering](https://www.dezitechengineering.com/) with a premium, motion-rich UI inspired by Amrit Palace, Integrated Biosciences, 73 Strings, and Meridian.
+A Next.js (App Router) project that rebuilds [Dezitech Engineering](https://www.dezitechengineering.com/) with a premium, motion-rich UI inspired by best-in-class engineering interfaces; visual references are used only to guide the motion language.
 
 ## Getting Started
 ```bash
