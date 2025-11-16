@@ -12,48 +12,51 @@ const ContactForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="text-sm font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          required
-          className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-2"
-          placeholder="Jane Doe"
-        />
-      </div>
-      <div>
-        <label htmlFor="email" className="text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-2"
-          placeholder="you@company.com"
-        />
-      </div>
-      <div>
-        <label htmlFor="message" className="text-sm font-medium text-gray-700">
-          Message
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          rows={4}
-          className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-2"
-          placeholder="How can we help?"
-        />
-      </div>
-      <button type="submit" className="rounded-full bg-gray-900 px-6 py-2 text-sm font-semibold text-white">
-        Submit
-      </button>
-      {status ? <p className="text-xs text-gray-500">{status}</p> : null}
+        <div>
+          <label htmlFor="name" className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--tone-muted)]">
+            Name
+          </label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            className="mt-2 w-full rounded-[16px] border border-white/15 bg-white/[0.03] px-4 py-2.5 text-white placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-[#C8102E]"
+            placeholder="Jane Doe"
+          />
+        </div>
+        <div>
+          <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--tone-muted)]">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            className="mt-2 w-full rounded-[16px] border border-white/15 bg-white/[0.03] px-4 py-2.5 text-white placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-[#C8102E]"
+            placeholder="you@company.com"
+          />
+        </div>
+        <div>
+          <label htmlFor="message" className="text-xs font-semibold uppercase tracking-[0.3em] text-[var(--tone-muted)]">
+            Message
+          </label>
+          <textarea
+            id="message"
+            name="message"
+            rows={4}
+            className="mt-2 w-full rounded-[16px] border border-white/15 bg-white/[0.03] px-4 py-2.5 text-white placeholder:text-white/35 focus:outline-none focus:ring-2 focus:ring-[#C8102E]"
+            placeholder="How can we help?"
+          />
+        </div>
+        <button
+          type="submit"
+          className="hero-cta rounded-full bg-[#C8102E] px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.32em] text-white"
+        >
+          Submit
+        </button>
+        {status ? <p className="text-xs text-[var(--tone-muted)]">{status}</p> : null}
     </form>
   );
 };

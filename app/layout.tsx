@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import AmbientStage from "@/components/AmbientStage";
 import LenisProvider from "@/components/LenisProvider";
+import SiteEntryReveal from "@/components/SiteEntryReveal";
 import "./globals.css";
 
 const bodyFont = Inter({
@@ -29,20 +30,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-    return (
-        <html lang="en" data-theme="dark">
-            <body className={`${bodyFont.variable} ${headingFont.variable} bg-[var(--bg-canvas)] text-[var(--text-soft)] antialiased`}>
-          <LenisProvider>
-                <div className="relative flex min-h-screen flex-col overflow-hidden bg-[var(--bg-canvas)]">
-                <AmbientStage />
-                <AnimatedHeader />
-              <main className="flex-1">
-                <PageTransition>{children}</PageTransition>
-              </main>
-              <Footer />
-            </div>
-          </LenisProvider>
-        </body>
+  return (
+    <html lang="en" data-theme="dark">
+      <body className={`${bodyFont.variable} ${headingFont.variable} bg-[var(--bg-canvas)] text-[var(--text-soft)] antialiased`}>
+        <LenisProvider>
+          <SiteEntryReveal />
+          <div className="relative flex min-h-screen flex-col overflow-hidden bg-[var(--bg-canvas)]">
+            <AmbientStage />
+            <AnimatedHeader />
+            <main className="flex-1">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer />
+          </div>
+        </LenisProvider>
+      </body>
     </html>
   );
 }

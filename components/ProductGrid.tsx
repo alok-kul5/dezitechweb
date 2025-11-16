@@ -7,7 +7,7 @@ type ProductGridProps = {
 
 const ProductGrid = ({ items, emptyLabel = "Product details coming soon." }: ProductGridProps) => {
   if (!items.length) {
-    return <p className="text-sm text-gray-500">{emptyLabel}</p>;
+    return <p className="text-sm text-[var(--tone-muted)]">{emptyLabel}</p>;
   }
 
   return (

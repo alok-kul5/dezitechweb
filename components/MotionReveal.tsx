@@ -1,6 +1,7 @@
 "use client";
 
 import { HTMLMotionProps, motion } from "framer-motion";
+import { cinematicMotion } from "@/motion.config";
 import {
   Children,
   ElementType,
@@ -25,17 +26,12 @@ type MotionRevealProps = {
   as?: keyof HTMLElementTagNameMap;
   fadeOnly?: boolean;
   splitText?: boolean;
-  splitBy?: "word" | "char";
+  splitBy?: "word" | "char" | "line";
   pop?: boolean;
   disableWhileInView?: boolean;
+  variant?: "dark" | "light";
 } & HTMLMotionProps<"div">;
 
-const MERIDIAN_EASE: [number, number, number, number] = [
-  0.21,
-  0.8,
-  0.32,
-  1,
-];
 const MIN_DISTANCE = 12;
 const MAX_DISTANCE = 36;
 
@@ -43,18 +39,19 @@ const MotionReveal = ({
   children,
   className,
   direction = "up",
-  distance = 22,
+  distance = cinematicMotion.section.distance,
   delay = 0,
-  duration = 0.6,
+  duration = cinematicMotion.section.duration,
   stagger = 0,
   once = true,
-  amount = 0.2,
+  amount = cinematicMotion.section.amount,
   as = "div",
   fadeOnly = false,
   splitText = false,
   splitBy = "word",
   pop = false,
   disableWhileInView = false,
+  variant,
   ...rest
 }: MotionRevealProps) => {
   const prefersReducedMotion = useReducedMotion();
@@ -76,11 +73,12 @@ const MotionReveal = ({
     : { opacity: 1, x: 0, y: 0 };
 
   if (pop) {
-    baseInitial.scale = 0.96;
+    baseInitial.scale = cinematicMotion.pop.scaleFrom;
     baseVisible.scale = 1;
   }
 
-  const resolvedStagger = splitText && stagger === 0 ? 0.065 : stagger;
+  const resolvedStagger =
+    splitText && stagger === 0 ? (splitBy === "line" ? 0.12 : 0.065) : stagger;
   const hasStagger = shouldAnimate && (resolvedStagger > 0 || splitText);
 
   const containerVariants = hasStagger
@@ -88,28 +86,40 @@ const MotionReveal = ({
     : { hidden: baseInitial, visible: baseVisible };
   const childVariants = { hidden: baseInitial, visible: baseVisible };
 
-  const transition = shouldAnimate
-    ? {
-        duration,
-        delay,
-        ease: MERIDIAN_EASE,
-        ...(hasStagger
-          ? {
-              staggerChildren: resolvedStagger,
-              delayChildren: delay,
-            }
-          : {}),
-      }
-    : { duration: 0 };
+  const transition = {
+    duration,
+    delay,
+    ease: cinematicMotion.ease,
+    ...(hasStagger
+      ? {
+          staggerChildren: resolvedStagger,
+          delayChildren: delay,
+        }
+      : {}),
+  };
 
   const motionTagMap = motion as unknown as Record<string, typeof motion.div>;
   const MotionComponent = motionTagMap[as] ?? motion.div;
 
   const tokenizeString = (value: string) => {
     if (splitBy === "char") {
-      return value.split("");
+      return value.split("").map((token) => ({ token, isSpace: !token.trim(), isBreak: false }));
     }
-    return value.split(/(\s+)/);
+    if (splitBy === "line") {
+      const lines = value.split(/\r?\n/);
+      return lines.flatMap((line, idx) => {
+        const entries = [{ token: line, isSpace: false, isBreak: false }];
+        if (idx < lines.length - 1) {
+          entries.push({ token: "", isSpace: false, isBreak: true });
+        }
+        return entries;
+      });
+    }
+    return value.split(/(\s+)/).map((token) => ({
+      token,
+      isSpace: !token.trim(),
+      isBreak: false,
+    }));
   };
 
   const renderChildren = () => {
@@ -120,10 +130,13 @@ const MotionReveal = ({
     return Children.map(children, (child, index) => {
       if (!isValidElement(child)) {
         const key = `motion-reveal-node-${index}`;
-        if (splitText && typeof child === "string" && shouldAnimate) {
-          return tokenizeString(child).map((token, tokenIndex) => {
+        if (splitText && typeof child === "string") {
+          return tokenizeString(child).map(({ token, isSpace, isBreak }, tokenIndex) => {
             const tokenKey = `${key}-token-${tokenIndex}`;
-            if (!token.trim()) {
+            if (isBreak) {
+              return <br key={`${tokenKey}-break`} />;
+            }
+            if (isSpace) {
               return (
                 <span key={tokenKey} aria-hidden="true">
                   {token}
@@ -133,7 +146,7 @@ const MotionReveal = ({
             return (
               <motion.span
                 key={tokenKey}
-                style={{ display: "inline-block" }}
+                style={{ display: splitBy === "line" ? "block" : "inline-block" }}
                 variants={childVariants}
                 data-motion-reveal-split
               >
@@ -143,7 +156,7 @@ const MotionReveal = ({
           });
         }
 
-        return shouldAnimate ? (
+        return (
           <motion.span
             key={key}
             style={{ display: "inline-block" }}
@@ -152,8 +165,6 @@ const MotionReveal = ({
           >
             {child}
           </motion.span>
-        ) : (
-          child
         );
       }
 
@@ -172,14 +183,23 @@ const MotionReveal = ({
     });
   };
 
+  if (!shouldAnimate) {
+    return (
+      <MotionComponent className={className} data-motion-variant={variant} {...rest}>
+        {children}
+      </MotionComponent>
+    );
+  }
+
   return (
     <MotionComponent
       className={className}
-      initial={shouldAnimate ? "hidden" : undefined}
-      animate={disableWhileInView && shouldAnimate ? "visible" : undefined}
-      whileInView={!disableWhileInView && shouldAnimate ? "visible" : undefined}
-      viewport={shouldAnimate && !disableWhileInView ? { once, amount } : undefined}
-      variants={shouldAnimate ? containerVariants : undefined}
+      data-motion-variant={variant}
+      initial="hidden"
+      animate={disableWhileInView ? "visible" : undefined}
+      whileInView={!disableWhileInView ? "visible" : undefined}
+      viewport={!disableWhileInView ? { once, amount } : undefined}
+      variants={containerVariants}
       transition={transition}
       {...rest}
     >

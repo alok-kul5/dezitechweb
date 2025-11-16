@@ -19,17 +19,16 @@ const ContactPage = () => {
           <MotionReveal>
             <ContactForm />
           </MotionReveal>
-          <MotionReveal delay={0.12} className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900">Reach us directly</h3>
-            <p className="mt-3 text-sm text-gray-700">
-              We stay responsive between the UK & India so project conversations, supplier coordination, and engineering
-              reviews stay on track.
+          <MotionReveal delay={0.12} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 text-[var(--tone-foreground)]">
+            <h3 className="text-lg font-semibold text-[var(--tone-foreground)]">Reach us directly</h3>
+            <p className="mt-3 text-sm text-[var(--tone-muted)]">
+              We stay responsive between the UK & India so project conversations, supplier coordination, and engineering reviews stay on track.
             </p>
             <dl className="mt-6 space-y-4">
               {contactDetails.map((item, index) => (
                 <MotionReveal key={item.label} delay={0.15 + index * 0.05}>
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-gray-500">{item.label}</dt>
-                  <dd className="text-sm text-gray-900">{item.value}</dd>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-[var(--tone-muted)]">{item.label}</dt>
+                  <dd className="text-sm text-[var(--tone-foreground)]">{item.value}</dd>
                 </MotionReveal>
               ))}
             </dl>

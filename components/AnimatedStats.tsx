@@ -44,17 +44,20 @@ const AnimatedStats = () => {
   }, []);
 
   useEffect(() => {
-    setValues(kpis.map(() => 0));
-  }, [kpis.length]);
-
-  useEffect(() => {
     if (!isInView) return;
+
+      const resetFrame = requestAnimationFrame(() => {
+      setValues(kpis.map(() => 0));
+    });
 
     if (prefersReducedMotion) {
       const reducedId = requestAnimationFrame(() => {
         setValues(kpis.map((stat) => Number(stat.value)));
       });
-      return () => cancelAnimationFrame(reducedId);
+      return () => {
+        cancelAnimationFrame(resetFrame);
+        cancelAnimationFrame(reducedId);
+      };
     }
 
     const rafIds: number[] = [];
@@ -83,9 +86,10 @@ const AnimatedStats = () => {
       rafIds[index] = requestAnimationFrame(tick);
     });
 
-    return () => {
-      rafIds.forEach((id) => cancelAnimationFrame(id));
-    };
+      return () => {
+        cancelAnimationFrame(resetFrame);
+        rafIds.forEach((id) => cancelAnimationFrame(id));
+      };
   }, [isInView, prefersReducedMotion, kpis]);
 
   const stats = useMemo(
@@ -98,7 +102,7 @@ const AnimatedStats = () => {
   );
 
   return (
-    <section className="px-6 py-20">
+    <div className="w-full">
       <motion.div
         ref={containerRef}
         initial={{ opacity: 0, y: 20 }}
@@ -110,10 +114,12 @@ const AnimatedStats = () => {
           gapClassName="gap-12"
           left={
             <div className="space-y-8">
-              <MotionReveal as="div" className="space-y-4" direction="up" distance={18} stagger={0.08}>
-                <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">Operating posture</p>
-                <h3 className="text-3xl font-semibold text-white">Live delivery metrics</h3>
-                <p className="text-base text-white/70">
+                <MotionReveal as="div" className="space-y-4" direction="up" distance={18} stagger={0.08}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[var(--tone-muted)]">
+                    Operating posture
+                  </p>
+                  <h3 className="text-3xl font-semibold text-[var(--tone-foreground)]">Live delivery metrics</h3>
+                  <p className="text-base text-[var(--tone-muted)]">
                   Dezitech telemetry keeps a constant signal on availability, deployments, and response lines so global
                   OEMs can plan against real data.
                 </p>
@@ -149,18 +155,18 @@ const AnimatedStats = () => {
           }
           right={
             <div className="space-y-6">
-              <MotionReveal direction="up" distance={18} className="card-surface p-6">
-                <div className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-white/55">
+                <MotionReveal direction="up" distance={18} className="card-surface p-6">
+                  <div className="flex items-center justify-between text-xs uppercase tracking-[0.35em] text-[var(--tone-muted)]">
                   <span>{graphMeta.title}</span>
                   <span>{graphMeta.unit}</span>
                 </div>
-                <AnimatedLineGraph className="mt-4 h-36 w-full" data={graphMeta.data} />
-                <p className="mt-4 text-xs text-white/65">{graphMeta.description}</p>
+                  <AnimatedLineGraph className="mt-4" graphClassName="h-36 w-full" data={graphMeta.data} labels={graphMeta.labels} />
+                  <p className="mt-4 text-xs text-[var(--tone-muted)]">{graphMeta.description}</p>
               </MotionReveal>
 
-              <MotionReveal direction="up" distance={18} className="card-surface p-6 text-sm text-white/70">
-                <p className="font-semibold text-white">Operational certainty</p>
-                <p className="mt-2 text-white/65">
+                <MotionReveal direction="up" distance={18} className="card-surface p-6 text-sm text-[var(--tone-muted)]">
+                  <p className="font-semibold text-[var(--tone-foreground)]">Operational certainty</p>
+                  <p className="mt-2 text-[var(--tone-muted)]">
                   Counters sync with a RAF loop, ensuring the motion cadence stays crisp even on lower-powered devices.
                 </p>
               </MotionReveal>
@@ -168,7 +174,7 @@ const AnimatedStats = () => {
           }
         />
       </motion.div>
-    </section>
+    </div>
   );
 };
 

@@ -36,7 +36,7 @@ const AnimatedHeader = () => {
   const scale = useTransform(progress, [0, 1], [1, 0.97]);
 
   const motionStyle = prefersReducedMotion
-    ? {}
+    ? undefined
     : {
         backgroundColor: useMotionTemplate`rgba(255 255 255 / ${backgroundOpacity})`,
         borderBottomColor: useMotionTemplate`rgba(255 255 255 / ${borderOpacity})`,
@@ -84,23 +84,31 @@ const AnimatedHeader = () => {
                   className="group relative inline-flex items-center gap-1 py-3 text-white/70 transition-colors duration-200 ease-out hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/50"
                 >
                   <span>{link.label}</span>
-                  {active ? (
-                    <motion.span
-                      layoutId="nav-underline"
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-dezitech-400 via-dezitech-500 to-emerald-200"
-                      transition={{ duration: 0.26, ease: [0.21, 0.8, 0.32, 1] }}
-                    />
-                  ) : null}
-                  <motion.span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-3 bottom-0 h-px rounded-full bg-white/20"
-                    initial={false}
-                    animate={{
-                      opacity: active ? 0 : 0.4,
-                      scaleX: active ? 1 : 0,
-                    }}
-                    transition={{ duration: 0.28, ease: [0.21, 0.8, 0.32, 1] }}
-                  />
+                    {active
+                      ? prefersReducedMotion ? (
+                        <span className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-[#C8102E] via-[#f04658] to-white/80" />
+                      ) : (
+                        <motion.span
+                          layoutId="nav-underline"
+                          className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-[#C8102E] via-[#f04658] to-white/80"
+                          transition={{ duration: 0.26, ease: [0.21, 0.8, 0.32, 1] }}
+                        />
+                      )
+                      : null}
+                    {prefersReducedMotion ? (
+                      !active ? <span className="pointer-events-none absolute inset-x-3 bottom-0 h-px rounded-full bg-white/20 opacity-40" /> : null
+                    ) : (
+                      <motion.span
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-x-3 bottom-0 h-px rounded-full bg-white/20"
+                        initial={false}
+                        animate={{
+                          opacity: active ? 0 : 0.4,
+                          scaleX: active ? 1 : 0,
+                        }}
+                        transition={{ duration: 0.28, ease: [0.21, 0.8, 0.32, 1] }}
+                      />
+                    )}
                 </Link>
               );
             })}

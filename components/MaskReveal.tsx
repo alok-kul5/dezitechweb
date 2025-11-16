@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { cinematicMotion } from "@/motion.config";
 import { Children, ReactNode } from "react";
 
 import { useReducedMotion } from "./useReducedMotion";
@@ -13,8 +14,6 @@ type MaskRevealProps = {
   duration?: number;
   stagger?: number;
 };
-
-const MASK_EASE: [number, number, number, number] = [0.16, 0.84, 0.44, 1];
 
 const MaskReveal = ({
   children,
@@ -55,20 +54,20 @@ const MaskReveal = ({
           <span
             key={`mask-token-${index}`}
             style={{
-              display: "inline-block",
+              display: "inline-flex",
               overflow: "hidden",
             }}
           >
             <motion.span
-              initial={{ clipPath: "inset(0% 0% 100% 0%)", opacity: 0 }}
-              animate={{ clipPath: "inset(0% 0% 0% 0%)", opacity: 1 }}
+              initial={{ y: "110%", opacity: 0 }}
+              animate={{ y: "0%", opacity: 1 }}
               transition={{
                 duration,
                 delay: delay + index * stagger,
-                ease: MASK_EASE,
+                ease: cinematicMotion.ease,
               }}
               style={{
-                display: "inline-block",
+                display: "inline-flex",
                 transform: "translateZ(0)",
               }}
             >

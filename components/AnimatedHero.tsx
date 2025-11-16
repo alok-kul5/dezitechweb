@@ -4,9 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useMemo } from "react";
+import { cinematicMotion } from "@/motion.config";
 
-import AmbientStage from "./AmbientStage";
 import ParallaxWrapper from "./ParallaxWrapper";
+import SectionWrapper from "./SectionWrapper";
 import { useReducedMotion } from "./useReducedMotion";
 
 type Cta = {
@@ -23,36 +24,48 @@ type AnimatedHeroProps = {
   mediaSrc?: string;
 };
 
-const HERO_EASE: [number, number, number, number] = [0.21, 0.8, 0.32, 1];
-const HEADLINE_WORD_LIMIT = 12;
+const HERO_EASE: [number, number, number, number] = [0.2, 0.9, 0.2, 1];
+const HEADLINE_WORD_LIMIT = 14;
+const HERO_TIMINGS = {
+  headlineStart: 0.08,
+  subline: 0.45,
+  primaryCta: 0.55,
+  secondaryCta: 0.65,
+  mediaDelay: 0.5,
+} as const;
 
-const normalizeHeadline = (lines: string[]): string[] => {
-  const cleaned = lines.map((line) => line.trim()).filter(Boolean);
-  if (!cleaned.length) {
-    return [];
+const condenseHeadline = (lines: string[]): string[] => {
+  const flattened = lines.join(" ").replace(/\s+/g, " ").trim();
+  if (!flattened) return [];
+
+  const words = flattened.split(" ");
+  if (words.length <= HEADLINE_WORD_LIMIT) {
+    return lines.map((line) => line.trim()).filter(Boolean);
   }
 
-  const flattened = cleaned.join(" ").trim();
-  const words = flattened.split(/\s+/);
-  if (words.length > HEADLINE_WORD_LIMIT) {
-    const truncated = `${words.slice(0, HEADLINE_WORD_LIMIT).join(" ")} & more`;
-    return chunkHeadline(truncated);
+  const desiredLines = words.length > 20 ? 3 : 2;
+  const perLine = Math.ceil(words.length / desiredLines);
+  const condensed: string[] = [];
+
+  for (let index = 0; index < words.length && condensed.length < desiredLines; index += perLine) {
+    condensed.push(words.slice(index, index + perLine).join(" "));
   }
 
-  return cleaned.slice(0, 3);
+  return condensed;
 };
 
-const chunkHeadline = (text: string, maxLines = 3): string[] => {
-  const words = text.split(/\s+/);
-  const perLine = Math.max(1, Math.ceil(words.length / maxLines));
-  const segments: string[][] = [];
+const buildWordMatrix = (normalizedLines: string[]) => {
+  const groups = normalizedLines.map((line) => line.split(/\s+/).filter(Boolean));
+  const offsets = groups.map((_, idx) => groups.slice(0, idx).reduce((sum, group) => sum + group.length, 0));
 
-  for (let index = 0; index < words.length; index += perLine) {
-    if (segments.length === maxLines) break;
-    segments.push(words.slice(index, index + perLine));
-  }
-
-  return segments.map((segment) => segment.join(" "));
+  return groups.map((words, lineIndex) =>
+    words.map((word, wordIndex) => ({
+      key: `${lineIndex}-${wordIndex}-${word}`,
+      word,
+      delay:
+        HERO_TIMINGS.headlineStart + (offsets[lineIndex] + wordIndex) * cinematicMotion.hero.wordStagger,
+    })),
+  );
 };
 
 const AnimatedHero = ({
@@ -65,178 +78,155 @@ const AnimatedHero = ({
 }: AnimatedHeroProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
-  const resolvedHeadline = normalizeHeadline(headline);
-  const headlineWordMatrix = useMemo(() => {
-    const wordGroups = resolvedHeadline.map((line) => line.split(/\s+/).filter(Boolean));
-    const wordAccumulators = wordGroups.map((_, index) =>
-      wordGroups.slice(0, index).reduce((sum, group) => sum + group.length, 0),
-    );
-
-    return wordGroups.map((words, lineIndex) =>
-      words.map((word, wordIndex) => ({
-        key: `${lineIndex}-${wordIndex}-${word}`,
-        word,
-        delay: 0.4 + (wordAccumulators[lineIndex] + wordIndex) * 0.08,
-      })),
-    );
-  }, [resolvedHeadline]);
+  const normalizedHeadline = useMemo(() => condenseHeadline(headline), [headline]);
+  const wordMatrix = useMemo(() => buildWordMatrix(normalizedHeadline), [normalizedHeadline]);
   const heroImageSrc = mediaSrc ?? "/images/DEZITECH_IMG_HERO.jpg";
-  const heroEyebrowClass =
-    "inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/60";
+
   const primaryCtaClass =
-    "hero-cta inline-flex items-center justify-center rounded-full bg-[#C8102E] px-9 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-white shadow-[0_22px_55px_rgba(200,16,46,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70";
+    "hero-cta inline-flex items-center justify-center rounded-full bg-[#C8102E] px-8 py-3 text-[0.78rem] font-semibold uppercase tracking-[0.32em] text-white shadow-[0_18px_45px_rgba(200,16,46,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70";
   const secondaryCtaClass =
-    "hero-cta inline-flex items-center justify-center rounded-full border border-white/30 px-9 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-white/80 backdrop-blur focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70";
+    "hero-cta inline-flex items-center justify-center rounded-full border border-white/35 px-8 py-3 text-[0.78rem] font-semibold uppercase tracking-[0.32em] text-white/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70";
+
+  const renderWord = (word: { key: string; word: string; delay: number }) => {
+    if (!shouldAnimate) {
+      return (
+        <span key={word.key} className="inline-flex align-top">
+          {word.word}
+          <span aria-hidden="true">&nbsp;</span>
+        </span>
+      );
+    }
+
+    return (
+      <span key={word.key} className="inline-flex overflow-hidden align-top">
+        <motion.span
+          className="inline-flex"
+          initial={{ y: "105%", opacity: 0 }}
+          animate={{ y: "0%", opacity: 1 }}
+          transition={{ delay: word.delay, duration: cinematicMotion.hero.headlineDuration, ease: HERO_EASE }}
+        >
+          {word.word}
+          <span aria-hidden="true">&nbsp;</span>
+        </motion.span>
+      </span>
+    );
+  };
 
   return (
-    <section className="relative isolate overflow-hidden bg-carbon-900 py-20 text-white sm:py-28 lg:py-32">
+    <SectionWrapper
+      variant="dark"
+      className="pt-28 pb-24 lg:pt-32 lg:pb-32"
+      containerClassName="gap-16 lg:flex-row lg:items-center"
+    >
       <motion.div
-        className="absolute inset-0"
+        className="pointer-events-none absolute inset-0"
         initial={shouldAnimate ? { opacity: 0 } : undefined}
         animate={shouldAnimate ? { opacity: 1 } : undefined}
-        transition={shouldAnimate ? { duration: 0.6, ease: HERO_EASE } : undefined}
+        transition={shouldAnimate ? { duration: 0.4, ease: HERO_EASE } : undefined}
       >
-        <AmbientStage variant="hero" className="opacity-10" />
+        <div className="absolute -left-24 top-0 h-[420px] w-[420px] rounded-full bg-[radial-gradient(circle,_rgba(200,16,46,0.35),_transparent_70%)] blur-[140px]" />
+        <div className="absolute right-[-80px] bottom-[-60px] h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.18),_transparent_70%)] blur-[160px]" />
       </motion.div>
 
-      <div className="relative mx-auto grid w-full max-w-6xl grid-cols-1 gap-14 px-6 text-balance lg:grid-cols-[3fr_2fr] lg:items-center">
-        <div className="space-y-8">
-          {eyebrow ? (
-            <motion.p
-              className={heroEyebrowClass}
+      <div className="relative z-10 flex-1 space-y-8 lg:max-w-2xl">
+        {eyebrow ? (
+          <motion.p
+            className="inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/65"
+            initial={shouldAnimate ? { opacity: 0, y: 12 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+            transition={shouldAnimate ? { duration: 0.5, delay: 0.18, ease: HERO_EASE } : undefined}
+          >
+            <span className="h-px w-10 bg-white/30" aria-hidden="true" />
+            {eyebrow}
+          </motion.p>
+        ) : null}
+
+        <div className="space-y-3 font-heading text-balance text-[2.75rem] leading-[1.04] text-white md:text-[3.75rem] lg:text-[4.5rem]">
+          {wordMatrix.map((words, index) => (
+            <div key={`hero-line-${index}`}>{words.map((word) => renderWord(word))}</div>
+          ))}
+        </div>
+
+        <motion.p
+          className="max-w-2xl text-lg text-white/80"
+          initial={shouldAnimate ? { opacity: 0, y: 16 } : undefined}
+          animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
+          transition={shouldAnimate ? { duration: 0.5, delay: HERO_TIMINGS.subline, ease: HERO_EASE } : undefined}
+        >
+          {description}
+        </motion.p>
+
+        <div className="flex flex-wrap gap-4">
+          <motion.div
+            initial={shouldAnimate ? { opacity: 0, scale: 0.92 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
+            transition={shouldAnimate ? { delay: HERO_TIMINGS.primaryCta, duration: 0.45, ease: HERO_EASE } : undefined}
+          >
+            <Link href={primaryCta.href} className={primaryCtaClass}>
+              {primaryCta.label}
+            </Link>
+          </motion.div>
+
+          {secondaryCta ? (
+            <motion.div
               initial={shouldAnimate ? { opacity: 0, y: 14 } : undefined}
               animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
-              transition={shouldAnimate ? { duration: 0.5, delay: 0.25, ease: HERO_EASE } : undefined}
+              transition={
+                shouldAnimate ? { delay: HERO_TIMINGS.secondaryCta, duration: 0.45, ease: HERO_EASE } : undefined
+              }
             >
-              {eyebrow}
-            </motion.p>
-          ) : null}
-
-          <div className="space-y-2">
-            {headlineWordMatrix.map((words, lineIndex) => (
-              <div
-                key={`hero-headline-line-${lineIndex}`}
-                className="font-heading text-[2.5rem] leading-[1.05] text-white md:text-[3.75rem] lg:text-[4.75rem]"
-              >
-                {words.map(({ key, word, delay }) => {
-                  if (!shouldAnimate) {
-                    return (
-                      <span key={key} className="inline-block align-top">
-                        {word}
-                        <span aria-hidden="true">&nbsp;</span>
-                      </span>
-                    );
-                  }
-
-                  return (
-                    <motion.span
-                      key={key}
-                      className="inline-block align-top"
-                      initial={{ opacity: 0, y: 32 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay, duration: 0.65, ease: HERO_EASE }}
-                    >
-                      {word}
-                      <span aria-hidden="true">&nbsp;</span>
-                    </motion.span>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-
-          <motion.p
-            className="max-w-xl text-base text-white/80 md:text-lg"
-            initial={shouldAnimate ? { opacity: 0, y: 24 } : undefined}
-            animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
-            transition={shouldAnimate ? { duration: 0.65, delay: 0.6, ease: HERO_EASE } : undefined}
-          >
-            {description}
-          </motion.p>
-
-          <div className="flex flex-wrap gap-4">
-            <motion.div
-              initial={shouldAnimate ? { opacity: 0, scale: 1 } : undefined}
-              animate={shouldAnimate ? { opacity: 1, scale: [1, 1.04, 1] } : undefined}
-              transition={shouldAnimate ? { delay: 0.8, duration: 0.6, ease: HERO_EASE } : undefined}
-            >
-              <Link href={primaryCta.href} className={primaryCtaClass}>
-                {primaryCta.label}
+              <Link href={secondaryCta.href} className={secondaryCtaClass}>
+                {secondaryCta.label}
               </Link>
             </motion.div>
-
-            {secondaryCta ? (
-              <motion.div
-                initial={shouldAnimate ? { opacity: 0, y: 18 } : undefined}
-                animate={shouldAnimate ? { opacity: 1, y: 0 } : undefined}
-                transition={shouldAnimate ? { delay: 0.9, duration: 0.5, ease: HERO_EASE } : undefined}
-              >
-                <Link href={secondaryCta.href} className={secondaryCtaClass}>
-                  {secondaryCta.label}
-                </Link>
-              </motion.div>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-0 -z-10 opacity-60 blur-3xl">
-            <Image src="/ambient/ambient-glow.png" alt="" fill priority className="object-cover" />
-          </div>
-
-          <ParallaxWrapper
-            speed={0.05}
-            className="pointer-events-none absolute -right-6 top-6 hidden w-64 opacity-25 lg:block"
-          >
-            <Image src="/ambient/ambient-lines.svg" alt="Ambient line work" width={320} height={220} loading="lazy" />
-          </ParallaxWrapper>
-
-          <ParallaxWrapper
-            speed={0.08}
-            className="pointer-events-none absolute -left-8 bottom-4 hidden w-60 opacity-20 lg:block"
-          >
-            <Image src="/ambient/ambient-grid.svg" alt="Ambient grid" width={310} height={230} loading="lazy" />
-          </ParallaxWrapper>
-
-          <ParallaxWrapper speed={0.12} range={180}>
-            <motion.div
-              className="interactive-media relative overflow-hidden rounded-[32px] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl"
-              initial={shouldAnimate ? { opacity: 0, scale: 1.04 } : undefined}
-              animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
-              transition={shouldAnimate ? { duration: 0.85, delay: 0.5, ease: HERO_EASE } : undefined}
-            >
-              <div className="mb-5 flex items-center justify-between text-[0.55rem] uppercase tracking-[0.35em] text-white/55">
-                <span>Dezitech Core Systems</span>
-                <span>Verified</span>
-              </div>
-              <div className="relative aspect-[5/3] overflow-hidden rounded-3xl border border-white/10">
-                <Image
-                  src={heroImageSrc}
-                  alt="Dezitech engineering visual"
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(min-width: 1024px) 540px, 100vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#040915]/85 via-transparent to-transparent" />
-              </div>
-              <div className="mt-6 grid gap-4 text-xs text-white/70 sm:grid-cols-3">
-                {[
-                  { label: "Integrity", value: "99.982%" },
-                  { label: "Latency", value: "14 ms" },
-                  { label: "Thermals", value: "Optimal" },
-                ].map((metric) => (
-                  <div key={metric.label}>
-                    <p className="text-[0.55rem] uppercase tracking-[0.35em] text-white/40">{metric.label}</p>
-                    <p className="mt-2 text-lg font-semibold text-white">{metric.value}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </ParallaxWrapper>
+          ) : null}
         </div>
       </div>
-    </section>
+
+      <div className="relative z-10 flex-1 w-full max-w-xl lg:max-w-none">
+        <div className="pointer-events-none absolute -inset-20 -z-10">
+          <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,_rgba(200,16,46,0.28),_transparent_65%)] blur-[180px]" />
+        </div>
+        <ParallaxWrapper speed={0.12} className="relative">
+          <motion.figure
+            className="interactive-media relative mx-auto max-w-[520px] overflow-hidden rounded-[32px] border border-white/12 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl"
+            initial={shouldAnimate ? { opacity: 0, scale: 1.04 } : undefined}
+            animate={shouldAnimate ? { opacity: 1, scale: 1 } : undefined}
+            transition={
+              shouldAnimate ? { delay: HERO_TIMINGS.mediaDelay, duration: 0.8, ease: HERO_EASE } : undefined
+            }
+          >
+            <div className="mb-5 flex items-center justify-between text-[0.58rem] uppercase tracking-[0.32em] text-white/65">
+              <span>Dezitech Core Systems</span>
+              <span>Live Signal</span>
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] border border-white/10 bg-black/40">
+              <Image
+                src={heroImageSrc}
+                alt="Dezitech engineering visual"
+                fill
+                priority
+                className="object-cover"
+                sizes="(min-width: 1024px) 540px, 100vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#05070d]/70 via-transparent to-transparent" />
+            </div>
+            <div className="mt-5 grid gap-4 text-xs text-white/70 sm:grid-cols-3">
+              {[
+                { label: "Integrity", value: "99.982%" },
+                { label: "Latency", value: "14 ms" },
+                { label: "Thermals", value: "Optimal" },
+              ].map((metric) => (
+                <div key={metric.label}>
+                  <p className="text-[0.55rem] uppercase tracking-[0.32em] text-white/50">{metric.label}</p>
+                  <p className="mt-2 text-lg font-semibold text-white">{metric.value}</p>
+                </div>
+              ))}
+            </div>
+          </motion.figure>
+        </ParallaxWrapper>
+      </div>
+    </SectionWrapper>
   );
 };
 
