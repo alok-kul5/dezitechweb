@@ -1,0 +1,155 @@
+{
+  "hero": {
+    "eyebrow": "Dezitech Engineering",
+    "headline": [
+      "Helping customers grow profitably",
+      "by providing engineering outsourcing solutions",
+      "Design and Product manufacturing"
+    ],
+    "description": "Established in 2014, Dezitech engineering pvt. Ltd engineers have extensive experience in engineering design, new product development and supply chain management in diverse industries.",
+    "ctaPrimary": {
+      "label": "Contact Us",
+      "href": "/contact"
+    },
+    "ctaSecondary": {
+      "label": "About Us",
+      "href": "/about"
+    },
+    "image": "/images/DEZITECH_IMG_01.jpg"
+  },
+  "kpis": [
+    {
+      "label": "International engineering experience",
+      "value": 20,
+      "suffix": "+ years",
+      "description": "Our Engineers have 20+ years of international working experience and understand the business environment and cultural issues.",
+      "icon": "/icons/DEZITECH_ICON_MAP.svg",
+      "media": "/images/DEZITECH_IMG_02.jpg"
+    },
+    {
+      "label": "Established",
+      "value": 2014,
+      "description": "Established in 2014 by highly qualified and experienced Engineering professionals.",
+      "icon": "/icons/DEZITECH_ICON_GEAR.svg",
+      "media": "/images/DEZITECH_IMG_01.jpg"
+    },
+    {
+      "label": "Global support regions",
+      "value": 4,
+      "suffix": "regions",
+      "description": "We have provided engineering / supply chain support to customers in the UK, USA, India and Australia.",
+      "icon": "/icons/DEZITECH_ICON_MAP.svg",
+      "media": "/images/DEZITECH_IMG_03.jpg"
+    }
+  ],
+  "lineGraph": {
+    "title": "Manufacturing envelope benchmarks",
+    "description": "Mori Seiki (Japan)- SL-3 Dia 250mm, Length-500mm; Nakamura (Japan) TMC4 Dia 400mm, Length- 1500mm; Okuma-Howa (Japan) X-1200mm, Y-670mm, Z-550mm; WMW Starrag - IWK 7000 630 x 630 Twin Pallet.",
+    "unit": "mm",
+    "labels": [
+      "SL-3 Length",
+      "TMC4 Length",
+      "Okuma-Howa X",
+      "Okuma-Howa Y",
+      "Okuma-Howa Z",
+      "WMW Starrag Pallet"
+    ],
+    "data": [
+      500,
+      1500,
+      1200,
+      670,
+      550,
+      630
+    ]
+  },
+  "products": [
+    {
+      "title": "Engineering and design",
+      "summary": "Engineering resources, design, 3D modelling, CAE/FEA.",
+      "description": "We solve technical challenges and provide resources to get new products faster to the market.",
+      "href": "/products/engineering-design",
+      "media": "/images/DEZITECH_IMG_02.jpg",
+      "icon": "/icons/DEZITECH_ICON_GEAR.svg"
+    },
+    {
+      "title": "Refrigeration",
+      "summary": "Design of refrigeration systems and component supply.",
+      "description": "Refrigeration & heat pump components are part of the managed supply for customers who need reliable quality.",
+      "href": "/products/refrigeration",
+      "media": "/images/DEZITECH_IMG_03.jpg",
+      "icon": "/icons/DEZITECH_ICON_MAP.svg"
+    },
+    {
+      "title": "Heat pump",
+      "summary": "Heat pump design and components supply.",
+      "description": "We are flexible with volumes and manage the development & approval of patterns, jigs/fixtures, gauges and testing.",
+      "href": "/products/heat-pump",
+      "media": "/images/DEZITECH_ART_01.png",
+      "icon": "/icons/DEZITECH_ICON_GEAR.svg"
+    },
+    {
+      "title": "Engineering supply chain",
+      "summary": "Cost effective & reliable components supply with excellent quality.",
+      "description": "We are locally based & can assist with solving supply chain challenges ensuring a quality and reliable supply of components at economical prices from our operation in India.",
+      "href": "/products/engineering-supply-chain",
+      "media": "/images/DEZITECH_IMG_01.jpg",
+      "icon": "/icons/DEZITECH_ICON_MAP.svg"
+    }
+  ],
+  "services": [
+    {
+      "title": "Engineering outsourcing",
+      "description": "We believe that Engineering support should enhance and enrich the in-house knowledge & experience, which is generated and built over the years.",
+      "bullets": [
+        "Our Engineers have 20+ years of international working experience and understand the business environment and cultural issues.",
+        "We are able to provide tailored and flexible engineering support as the requirement.",
+        "We can help bring new products right first time and faster to the market."
+      ]
+    },
+    {
+      "title": "Manufacturing support",
+      "description": "It is important to select the right outsourcing / supply chain partner who can understand quality, standards, delivery requirement and business environment.",
+      "bullets": [
+        "We can help by providing a quality and reliable supply of products and components.",
+        "We are located in the UK & India, making communication easy and projects implementation effective.",
+        "We work with you to understand the requirement and overall goals, then supply components or find a reliable manufacturer for continuous, sustainable and resilient supply."
+      ]
+    },
+    {
+      "title": "Industries served",
+      "description": "We provide end to end service or tailored individual needs world wide to diverse and multidisciplinary Industries.",
+      "bullets": [
+        "Oil and gas",
+        "Automotive",
+        "Industrial",
+        "Aviation",
+        "HVAC & R"
+      ]
+    }
+  ],
+  "quality": {
+    "title": "Why Dezitech?",
+    "pillars": [
+      "Local presence",
+      "Experience of Making outsourcing profitable",
+      "Excellent understanding of international cultural issues",
+      "Nimble, Flexible hands on team",
+      "Diverse Engineering experience",
+      "In depth technical Understanding & involvement"
+    ]
+  },
+  "contact": {
+    "email": "info@dezitechengineering.com",
+    "locations": [
+      "Karad, India",
+      "Bristol, UK"
+    ],
+    "message": "Please do contact us for any further details such as work samples, quotation or to discuss how we can help you. We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering reviews stay on track.",
+    "cta": {
+      "label": "Request Call Back",
+      "href": "/contact",
+      "note": "TODO: Add phone number once confirmed with client."
+    }
+  }
+}

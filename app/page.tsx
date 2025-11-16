@@ -3,68 +3,45 @@ import AnimatedStats from "@/components/AnimatedStats";
 import MotionReveal from "@/components/MotionReveal";
 import ProductGrid from "@/components/ProductGrid";
 import Section from "@/components/Section";
+import { getSiteContentSync } from "@/lib/siteData";
 
-const heroHeadline = [
-  "Restoring confidence in industrial launches",
-  "through Dezitech-grade engineering partnerships",
-  "and resilient product manufacturing pipelines",
-];
-
-const heroDescription =
-  "We combine UK and India-based engineering talent to design, build, and deliver resilient supply chains for ambitious OEMs.";
-
-const featuredProducts = [
-  {
-    title: "Engineering and design",
-    summary: "Engineering resources, design, 3D modelling, CAE/FEA",
-    href: "/products/engineering-design",
-    mediaSrc: "/images/DEZITECH_IMG_03.jpg",
+const siteContent = getSiteContentSync();
+const heroStats = siteContent.kpis.slice(0, 3).map((kpi) => ({
+  label: kpi.label,
+  value:
+    typeof kpi.value === "number"
+      ? `${kpi.value}${kpi.suffix ? ` ${kpi.suffix}` : ""}`
+      : String(kpi.value),
+}));
+const servicesByTitle = siteContent.services.reduce<Record<string, (typeof siteContent.services)[number]>>(
+  (acc, service) => {
+    acc[service.title.toLowerCase()] = service;
+    return acc;
   },
-  {
-    title: "Refrigeration",
-    summary: "Design of refrigeration systems and component supply",
-    href: "/products/refrigeration",
-    mediaSrc: "/images/DEZITECH_IMG_02.jpg",
-  },
-  {
-    title: "Heat pump",
-    summary: "Heat pump design and components supply",
-    href: "/products/heat-pump",
-    mediaSrc: "/images/DEZITECH_IMG_01.jpg",
-  },
-  {
-    title: "Engineering Supply chain",
-    summary: "Cost effective & reliable components supply with excellent quality",
-    href: "/products/engineering-supply-chain",
-    mediaSrc: "/images/DEZITECH_IMG_03.jpg",
-  },
-];
-
-const foundingHighlights = [
-  "Established in 2014 by highly qualified and experienced Engineering professionals",
-  "Diversified and Global engineering experience",
-  "Well skilled in engineering, manufacturing and business management",
-  "Experience and Understanding of engineering outsourcing process",
-];
-
-const presenceStatements = [
-  "We are located in the UK & India, making communication easy and projects implementation effective.",
-  "In depth technical understanding. Solution provider rather than just outsourcing company.",
-  "Manufacturing and supply chain expertise honed through 20+ years of global industry experience.",
-  "Rigours supplier qualification process to ensure quality, reliability and continuous supply.",
-];
-
-const industriesServed = ["Oil and gas", "Automotive", "Industrial", "Aviation", "HVAC & R"];
+  {},
+);
+const outsourcing = servicesByTitle["engineering outsourcing"];
+const manufacturing = servicesByTitle["manufacturing support"];
+const industries = servicesByTitle["industries served"]?.bullets ?? [];
+const productCards = siteContent.products.map((product) => ({
+  title: product.title,
+  summary: product.summary,
+  href: product.href,
+  mediaSrc: product.media,
+  mediaAlt: `${product.title} visual`,
+  icon: product.icon,
+}));
 
 export default function Home() {
   return (
     <main className="space-y-24">
       <AnimatedHero
-        eyebrow="Dezitech Engineering"
-        headline={heroHeadline}
-        description={heroDescription}
-        primaryCta={{ label: "Explore Products", href: "/products" }}
-        secondaryCta={{ label: "Our Services", href: "/services" }}
+        eyebrow={siteContent.hero.eyebrow}
+        headline={siteContent.hero.headline}
+        description={siteContent.hero.description}
+        primaryCta={siteContent.hero.ctaPrimary}
+        secondaryCta={siteContent.hero.ctaSecondary}
+        stats={heroStats}
       />
 
       <AnimatedStats />
@@ -72,7 +49,7 @@ export default function Home() {
         <Section
           eyebrow="What we do"
           title="Engineering disciplines we lead"
-          description="Copy sourced from dezitechengineering.com to highlight Dezitech’s primary solution areas."
+        description={outsourcing?.description ?? ""}
           accentVariant="grid"
           backdropVariant="midnight"
           accentClassName="right-16 top-12 hidden h-48 w-48 opacity-40 md:block"
@@ -93,7 +70,7 @@ export default function Home() {
         >
           <MotionReveal direction="up" distance={18} duration={0.65} amount={0.18}>
             <div className="rounded-[28px] border border-white/20 bg-black/30 p-2 backdrop-blur">
-              <ProductGrid items={featuredProducts} />
+              <ProductGrid items={productCards} />
             </div>
           </MotionReveal>
         </Section>
@@ -101,7 +78,7 @@ export default function Home() {
         <Section
           eyebrow="Established expertise"
           title="Why partners trust Dezitech"
-          description="Headlines directly mirrored from the Dezitech homepage."
+          description={siteContent.quality.title}
           accentVariant="orb"
           backdropVariant="sand"
           accentClassName="left-10 -bottom-4 hidden h-56 w-56 opacity-50 md:block"
@@ -114,8 +91,8 @@ export default function Home() {
             },
           ]}
         >
-          <div className="grid gap-4 md:grid-cols-2">
-            {foundingHighlights.map((item, index) => (
+            <div className="grid gap-4 md:grid-cols-2">
+              {siteContent.quality.pillars.map((item, index) => (
               <MotionReveal
                 key={item}
                 as="div"
@@ -136,7 +113,7 @@ export default function Home() {
         <Section
           eyebrow="Global presence"
           title="UK + India delivery model"
-          description="Summaries imported from the manufacturing/supply chain and homepage sections."
+          description={manufacturing?.description ?? ""}
           accentVariant="beam"
           backdropVariant="slate"
           accentClassName="right-12 top-1/2 hidden h-60 w-24 -translate-y-1/2 opacity-40 md:block"
@@ -149,8 +126,8 @@ export default function Home() {
             },
           ]}
         >
-          <div className="space-y-4">
-            {presenceStatements.map((statement, index) => (
+            <div className="space-y-4">
+              {(manufacturing?.bullets ?? []).map((statement, index) => (
               <MotionReveal
                 key={statement}
                 as="div"
@@ -170,7 +147,7 @@ export default function Home() {
         <Section
           eyebrow="Industries served"
           title="Where we already operate"
-          description="Direct lift from the Dezitech industries overview."
+          description={servicesByTitle["industries served"]?.description ?? ""}
           accentVariant="grid"
           backdropVariant="sand"
           accentClassName="right-8 top-10 hidden h-40 w-40 opacity-50 md:block"
@@ -183,8 +160,8 @@ export default function Home() {
             },
           ]}
         >
-          <div className="grid gap-4 md:grid-cols-5">
-            {industriesServed.map((industry, index) => (
+            <div className="grid gap-4 md:grid-cols-5">
+              {industries.map((industry, index) => (
               <MotionReveal
                 key={industry}
                 as="div"
@@ -204,7 +181,7 @@ export default function Home() {
         <Section
           eyebrow="Get in touch"
           title="Stay ahead with Dezitech"
-          description="Adapted from the contact page invitation."
+          description={siteContent.contact.message}
           accentVariant="orb"
           backdropVariant="midnight"
           accentClassName="left-20 top-4 hidden h-48 w-48 opacity-40 md:block"
@@ -216,9 +193,7 @@ export default function Home() {
           splitText
           className="rounded-3xl border border-white/10 bg-black/30 p-8 text-base text-white/80"
         >
-          Please do contact us for any further details such as work samples, quotation or to discuss how we can help you.
-          We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering
-          reviews stay on track.
+          {siteContent.contact.message}
         </MotionReveal>
       </Section>
     </main>

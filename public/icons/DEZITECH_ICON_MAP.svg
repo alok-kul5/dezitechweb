@@ -1,0 +1,5 @@
+<!-- TODO: Replace with final Dezitech map marker icon -->
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M32 8C23 8 16 15.2 16 24.4C16 37.6 32 56 32 56C32 56 48 37.6 48 24.4C48 15.2 41 8 32 8Z" stroke="#F8F8F9" stroke-width="3" fill="rgba(200,16,46,0.35)"/>
+  <circle cx="32" cy="25" r="6" stroke="#0B0F14" stroke-width="3" fill="#F8F8F9"/>
+</svg>

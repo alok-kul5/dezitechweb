@@ -21,11 +21,10 @@ export default function LenisProvider({ children }: LenisProviderProps) {
     if (!canUseLenis() || prefersReduced) return;
 
     // Init Lenis (idempotent in lib/lenis.ts)
-    const lenis = initLenis({
+      const lenis = initLenis({
       lerp: 0.045,
       wheelMultiplier: 1.5,
       gestureOrientation: "vertical",
-      smoothTouch: false,
       touchMultiplier: 1.4,
     });
 
