@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
 import AmbientStage from "@/components/AmbientStage";
-import { LenisProvider } from "@/lib/lenis";
+import LenisProvider from "@/components/LenisProvider";
 import "./globals.css";
 
 const bodyFont = Inter({
@@ -31,9 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <body
-          className={`${bodyFont.variable} ${headingFont.variable} bg-neutral-50 text-neutral-900 antialiased`}
-        >
+        <body className={`${bodyFont.variable} ${headingFont.variable} bg-neutral-50 text-neutral-900 antialiased`}>
           <LenisProvider>
             <div className="relative flex min-h-screen flex-col overflow-hidden bg-neutral-50">
               <AmbientStage />
@@ -44,7 +42,7 @@ export default function RootLayout({
               <Footer />
             </div>
           </LenisProvider>
-      </body>
+        </body>
     </html>
   );
 }

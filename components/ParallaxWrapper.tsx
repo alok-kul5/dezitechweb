@@ -8,6 +8,8 @@ type ParallaxWrapperProps = {
   className?: string;
   speed?: number;
   axis?: "x" | "y";
+  range?: number;
+  disabled?: boolean;
 };
 
 const clamp = (value: number, min: number, max: number) =>
@@ -18,14 +20,17 @@ export function ParallaxWrapper({
   className,
   speed = 0.2,
   axis = "y",
+  range = 120,
+  disabled = false,
 }: ParallaxWrapperProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const normalizedSpeed = useMemo(() => clamp(speed, 0.1, 0.4), [speed]);
+  const normalizedSpeed = useMemo(() => clamp(speed, 0.08, 0.45), [speed]);
+  const movementRange = useMemo(() => clamp(range, 60, 220), [range]);
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion || disabled) return;
     const element = wrapperRef.current;
     if (!element || typeof window === "undefined") return;
 
@@ -41,7 +46,7 @@ export function ParallaxWrapper({
           ? (rect.top + rect.height * 0.5 - viewportHeight * 0.5) / viewportHeight
           : (rect.left + rect.width * 0.5 - viewportWidth * 0.5) / viewportWidth;
 
-      const movement = relativePosition * normalizedSpeed * 120;
+      const movement = relativePosition * normalizedSpeed * movementRange;
       const x = axis === "x" ? movement : 0;
       const y = axis === "y" ? movement : 0;
 
@@ -66,7 +71,7 @@ export function ParallaxWrapper({
       window.removeEventListener("resize", requestTick);
       element.style.transform = "";
     };
-  }, [axis, normalizedSpeed, prefersReducedMotion]);
+  }, [axis, disabled, movementRange, normalizedSpeed, prefersReducedMotion]);
 
   return (
     <div

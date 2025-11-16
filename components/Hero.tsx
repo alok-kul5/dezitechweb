@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
+import MotionReveal from "./MotionReveal";
 import ParallaxWrapper from "./ParallaxWrapper";
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -17,54 +18,29 @@ export type HeroProps = {
 };
 
 const HERO_EASE: [number, number, number, number] = [0.21, 0.8, 0.32, 1];
-
-const CTA_GROUP = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      delayChildren: 0.35,
-      staggerChildren: 0.07,
-    },
-  },
-};
-
-const CTA_ITEM = {
-  hidden: { opacity: 0, y: 18 },
+const CTA_WRAPPER = {
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, ease: HERO_EASE },
+    transition: {
+      ease: HERO_EASE,
+      duration: 0.6,
+      staggerChildren: 0.08,
+      delayChildren: 0.2,
+    },
   },
 };
+const CTA_ITEM = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { ease: HERO_EASE, duration: 0.6 } },
+};
+
+const MotionLink = motion(Link);
 
 const Hero = ({ eyebrow, title, description, primaryCta, secondaryCta }: HeroProps) => {
   const prefersReducedMotion = useReducedMotion();
-
-  const stage = (delay: number, extra?: Record<string, unknown>) =>
-    prefersReducedMotion
-      ? {}
-      : {
-          initial: { opacity: 0, y: 36 },
-          animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.9, ease: HERO_EASE, delay, ...extra },
-        };
-
-  const mediaStage = prefersReducedMotion
-    ? {}
-    : {
-        initial: { opacity: 0, y: 60, scale: 0.96 },
-        animate: { opacity: 1, y: 0, scale: 1.015 },
-        transition: { duration: 1.1, delay: 0.4, ease: HERO_EASE },
-      };
-
-  const accentStage = prefersReducedMotion
-    ? {}
-    : {
-        initial: { opacity: 0, x: -60 },
-        animate: { opacity: 0.7, x: 0 },
-        transition: { duration: 1.1, delay: 0.48, ease: HERO_EASE },
-      };
+  const shouldAnimate = !prefersReducedMotion;
 
   return (
     <section className="relative overflow-hidden bg-[#03060f] px-6 pb-28 pt-24 text-neutral-50">
@@ -87,65 +63,95 @@ const Hero = ({ eyebrow, title, description, primaryCta, secondaryCta }: HeroPro
       </div>
 
       <div className="container relative grid gap-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-        <div className="space-y-7 text-balance">
+        <div className="space-y-8 text-balance">
           {eyebrow ? (
-            <motion.p
-              {...stage(0.08)}
+            <MotionReveal
+              as="p"
               className="text-xs font-semibold uppercase tracking-[0.4em] text-teal-200/70"
+              direction="up"
+              distance={20}
+              duration={0.6}
+              stagger={0.04}
+              splitText
+              amount={0.4}
             >
               {eyebrow}
-            </motion.p>
+            </MotionReveal>
           ) : null}
 
-          <motion.h1
-            {...stage(0.16)}
+          <MotionReveal
+            as="h1"
             className="font-heading text-4xl font-semibold leading-tight text-white md:text-5xl lg:text-[3.65rem]"
+            direction="up"
+            distance={38}
+            duration={0.75}
+            stagger={0.05}
+            splitText
+            amount={0.35}
           >
             {title}
-          </motion.h1>
+          </MotionReveal>
 
           {description ? (
-            <motion.p
-              {...stage(0.24)}
+            <MotionReveal
+              as="p"
               className="max-w-2xl text-lg text-neutral-300 md:text-xl"
+              direction="up"
+              distance={28}
+              duration={0.7}
+              stagger={0.04}
+              splitText
+              amount={0.3}
             >
               {description}
-            </motion.p>
+            </MotionReveal>
           ) : null}
 
           {primaryCta || secondaryCta ? (
             <motion.div
               className="flex flex-wrap gap-4"
-              {...(prefersReducedMotion
-                ? {}
-                : { initial: "hidden", animate: "visible", variants: CTA_GROUP })}
+              initial={shouldAnimate ? "hidden" : undefined}
+              animate={shouldAnimate ? "visible" : undefined}
+              variants={CTA_WRAPPER}
             >
               {primaryCta ? (
-                <motion.div variants={prefersReducedMotion ? undefined : CTA_ITEM}>
-                  <Link
+                <motion.div variants={CTA_ITEM}>
+                  <MotionLink
                     href={primaryCta.href}
-                    className="inline-flex items-center rounded-full bg-dezitech-500 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-[0_20px_40px_rgba(200,16,46,0.25)] transition-transform duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] hover:-translate-y-1 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dezitech-300"
+                    className="inline-flex items-center rounded-full bg-dezitech-500 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-[0_20px_40px_rgba(200,16,46,0.25)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dezitech-300"
+                    whileHover={
+                      shouldAnimate ? { scale: 1.05, y: -6, transition: { duration: 0.35, ease: HERO_EASE } } : undefined
+                    }
+                    whileTap={shouldAnimate ? { scale: 0.98, y: 0 } : undefined}
                   >
                     {primaryCta.label}
-                  </Link>
+                  </MotionLink>
                 </motion.div>
               ) : null}
               {secondaryCta ? (
-                <motion.div variants={prefersReducedMotion ? undefined : CTA_ITEM}>
-                  <Link
+                <motion.div variants={CTA_ITEM}>
+                  <MotionLink
                     href={secondaryCta.href}
-                    className="inline-flex items-center rounded-full border border-white/20 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80 transition-all duration-[400ms] ease-[cubic-bezier(.21,.8,.32,1)] hover:-translate-y-1 hover:scale-[1.02] hover:border-white/50 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                    className="inline-flex items-center rounded-full border border-white/20 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                    whileHover={
+                      shouldAnimate ? { scale: 1.04, y: -4, transition: { duration: 0.35, ease: HERO_EASE } } : undefined
+                    }
+                    whileTap={shouldAnimate ? { scale: 0.99, y: 0 } : undefined}
                   >
                     {secondaryCta.label}
-                  </Link>
+                  </MotionLink>
                 </motion.div>
               ) : null}
             </motion.div>
           ) : null}
 
-          <motion.div
-            {...stage(0.4, { duration: 1 })}
+          <MotionReveal
             className="flex flex-wrap gap-6 text-sm text-white/70"
+            direction="up"
+            distance={24}
+            duration={0.85}
+            stagger={0.08}
+            amount={0.4}
           >
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-white/40">Response SLA</p>
@@ -159,20 +165,24 @@ const Hero = ({ eyebrow, title, description, primaryCta, secondaryCta }: HeroPro
               <p className="text-xs uppercase tracking-[0.3em] text-white/40">Global Sites</p>
               <p className="text-2xl font-semibold text-white">14</p>
             </div>
-          </motion.div>
+          </MotionReveal>
         </div>
 
         <div className="relative">
           <div className="pointer-events-none absolute -left-16 top-14 hidden h-56 w-56 rounded-full bg-teal-500/20 blur-3xl lg:block" />
 
-          <ParallaxWrapper speed={0.26}>
+          <ParallaxWrapper speed={0.26} range={140}>
             <motion.div
               className="relative overflow-hidden rounded-[32px] border border-white/5 bg-gradient-to-br from-white/10 via-white/5 to-transparent p-6 shadow-[0_45px_90px_rgba(3,6,15,0.65)] backdrop-blur-xl"
-              {...mediaStage}
+              initial={
+                shouldAnimate ? { opacity: 0, y: 60, scale: 0.95 } : undefined
+              }
+              animate={
+                shouldAnimate ? { opacity: 1, y: 0, scale: 1 } : undefined
+              }
+              transition={{ duration: 1.05, delay: 0.35, ease: HERO_EASE }}
               whileHover={
-                prefersReducedMotion
-                  ? undefined
-                  : { y: -12, transition: { duration: 0.6, ease: HERO_EASE } }
+                shouldAnimate ? { y: -12, scale: 1.01, transition: { duration: 0.6, ease: HERO_EASE } } : undefined
               }
             >
               <div className="mb-4 flex items-center justify-between text-[0.65rem] uppercase tracking-[0.45em] text-white/60">
@@ -209,13 +219,16 @@ const Hero = ({ eyebrow, title, description, primaryCta, secondaryCta }: HeroPro
             </motion.div>
           </ParallaxWrapper>
 
-          <ParallaxWrapper
-            speed={0.18}
-            className="pointer-events-none absolute -right-10 -top-12 hidden w-80 lg:block"
-          >
+          <ParallaxWrapper speed={0.18} range={120} className="pointer-events-none absolute -right-10 -top-12 hidden w-80 lg:block">
             <motion.div
               className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 opacity-70"
-              {...accentStage}
+              initial={
+                shouldAnimate ? { opacity: 0, x: -60 } : undefined
+              }
+              animate={
+                shouldAnimate ? { opacity: 0.7, x: 0 } : undefined
+              }
+              transition={{ duration: 1.1, delay: 0.48, ease: HERO_EASE }}
             >
               <Image
                 src="/images/DEZITECH_TECH_GRID.svg"
@@ -227,28 +240,28 @@ const Hero = ({ eyebrow, title, description, primaryCta, secondaryCta }: HeroPro
             </motion.div>
           </ParallaxWrapper>
 
-          <ParallaxWrapper speed={0.14} axis="x" className="pointer-events-none absolute -left-12 bottom-0 hidden lg:block">
+          <ParallaxWrapper speed={0.14} axis="x" range={100} className="pointer-events-none absolute -left-12 bottom-0 hidden lg:block">
             <motion.div
               className="h-48 w-48 rounded-full bg-[radial-gradient(circle,_rgba(80,201,206,0.4),_transparent_70%)] blur-2xl"
-              {...(prefersReducedMotion
-                ? {}
-                : {
-                    initial: { opacity: 0, scale: 0.8 },
-                    animate: { opacity: 0.7, scale: 1 },
-                    transition: { duration: 1.2, delay: 0.52, ease: HERO_EASE },
-                  })}
+              initial={
+                shouldAnimate ? { opacity: 0, scale: 0.8 } : undefined
+              }
+              animate={
+                shouldAnimate ? { opacity: 0.7, scale: 1 } : undefined
+              }
+              transition={{ duration: 1.2, delay: 0.52, ease: HERO_EASE }}
             />
           </ParallaxWrapper>
 
           <motion.div
             className="pointer-events-none absolute inset-0 rounded-[42px] bg-[url(/images/DEZITECH_BG_SHAPE.png)] bg-cover bg-center opacity-20 blur-3xl"
-            {...(prefersReducedMotion
-              ? {}
-              : {
-                  initial: { opacity: 0, scale: 0.9 },
-                  animate: { opacity: 0.2, scale: 1 },
-                  transition: { duration: 1, delay: 0.55, ease: HERO_EASE },
-                })}
+            initial={
+              shouldAnimate ? { opacity: 0, scale: 0.9 } : undefined
+            }
+            animate={
+              shouldAnimate ? { opacity: 0.2, scale: 1 } : undefined
+            }
+            transition={{ duration: 1, delay: 0.55, ease: HERO_EASE }}
           />
         </div>
       </div>

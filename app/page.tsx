@@ -83,22 +83,22 @@ export default function Home() {
             backdropVariant="sand"
             accentClassName="left-10 -bottom-4 hidden h-56 w-56 opacity-60 md:block"
           >
-            <MotionReveal
-              direction="up"
-              distance={18}
-              duration={0.65}
-              stagger={0.08}
-              className="grid gap-4 md:grid-cols-2"
-            >
-              {foundingHighlights.map((item) => (
-                <div
+            <div className="grid gap-4 md:grid-cols-2">
+              {foundingHighlights.map((item, index) => (
+                <MotionReveal
                   key={item}
+                  as="div"
+                  direction="up"
+                  distance={18}
+                  duration={0.6}
+                  delay={index * 0.06}
+                  splitText
                   className="rounded-2xl border border-neutral-100 bg-gradient-to-br from-white via-white to-neutral-50/60 px-6 py-5 text-sm text-neutral-800 shadow-[0_15px_35px_rgba(15,23,42,0.08)]"
                 >
                   {item}
-                </div>
+                </MotionReveal>
               ))}
-            </MotionReveal>
+            </div>
           </Section>
 
           <Section
@@ -109,22 +109,22 @@ export default function Home() {
             backdropVariant="slate"
             accentClassName="right-12 top-1/2 hidden h-60 w-24 -translate-y-1/2 opacity-70 md:block"
           >
-            <MotionReveal
-              direction="up"
-              distance={18}
-              duration={0.65}
-              stagger={0.08}
-              className="space-y-4"
-            >
-              {presenceStatements.map((statement) => (
-                <div
+            <div className="space-y-4">
+              {presenceStatements.map((statement, index) => (
+                <MotionReveal
                   key={statement}
+                  as="div"
+                  direction="up"
+                  distance={18}
+                  duration={0.6}
+                  delay={index * 0.05}
+                  splitText
                   className="rounded-3xl border border-dashed border-neutral-200 bg-white/80 px-6 py-5 text-sm text-neutral-800 shadow-[0_12px_30px_rgba(15,23,42,0.06)]"
                 >
                   {statement}
-                </div>
+                </MotionReveal>
               ))}
-            </MotionReveal>
+            </div>
           </Section>
 
           <Section
@@ -135,22 +135,21 @@ export default function Home() {
             backdropVariant="sand"
             accentClassName="right-8 top-10 hidden h-40 w-40 opacity-50 md:block"
           >
-            <MotionReveal
-              direction="up"
-              distance={18}
-              duration={0.6}
-              stagger={0.06}
-              className="grid gap-4 md:grid-cols-5"
-            >
-              {industriesServed.map((industry) => (
-                <div
+            <div className="grid gap-4 md:grid-cols-5">
+              {industriesServed.map((industry, index) => (
+                <MotionReveal
                   key={industry}
+                  as="div"
+                  direction="up"
+                  distance={16}
+                  duration={0.55}
+                  delay={index * 0.04}
                   className="rounded-2xl border border-neutral-200 bg-white/85 px-4 py-6 text-center text-sm font-semibold text-neutral-900 shadow-[0_15px_35px_rgba(15,23,42,0.07)]"
                 >
                   {industry}
-                </div>
+                </MotionReveal>
               ))}
-            </MotionReveal>
+            </div>
           </Section>
 
           <Section
@@ -165,6 +164,7 @@ export default function Home() {
               direction="up"
               distance={20}
               duration={0.65}
+              splitText
               className="rounded-3xl border border-neutral-200/60 bg-white/85 p-8 text-base text-neutral-800 shadow-[0_20px_45px_rgba(15,23,42,0.08)]"
             >
               Please do contact us for any further details such as work samples, quotation or to discuss how we can help you.

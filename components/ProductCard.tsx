@@ -41,17 +41,26 @@ const ProductCard = ({
             }
       }
     >
-      <div>
-        <p className="text-[0.65rem] uppercase tracking-[0.35em] text-neutral-400">
-          Capability
-        </p>
-        <h3 className="mt-3 text-2xl font-semibold text-neutral-900">
-          {title}
-        </h3>
-        {summary ? (
-          <p className="mt-3 text-sm text-neutral-600">{summary}</p>
-        ) : null}
-      </div>
+        <div>
+          <p className="text-[0.65rem] uppercase tracking-[0.35em] text-neutral-400">
+            Capability
+          </p>
+          <h3 className="mt-3 text-2xl font-semibold text-neutral-900">
+            {title}
+          </h3>
+          {summary ? (
+            <MotionReveal
+              as="p"
+              direction="up"
+              distance={14}
+              duration={0.5}
+              splitText
+              className="mt-3 text-sm text-neutral-600"
+            >
+              {summary}
+            </MotionReveal>
+          ) : null}
+        </div>
       <div className="mt-8 flex items-center justify-between">
         <Link
           href={href}
