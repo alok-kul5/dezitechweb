@@ -6,13 +6,6 @@ import Section from "@/components/Section";
 import { getSiteContentSync } from "@/lib/siteData";
 
 const siteContent = getSiteContentSync();
-const heroStats = siteContent.kpis.slice(0, 3).map((kpi) => ({
-  label: kpi.label,
-  value:
-    typeof kpi.value === "number"
-      ? `${kpi.value}${kpi.suffix ? ` ${kpi.suffix}` : ""}`
-      : String(kpi.value),
-}));
 const servicesByTitle = siteContent.services.reduce<Record<string, (typeof siteContent.services)[number]>>(
   (acc, service) => {
     acc[service.title.toLowerCase()] = service;
@@ -41,7 +34,7 @@ export default function Home() {
         description={siteContent.hero.description}
         primaryCta={siteContent.hero.ctaPrimary}
         secondaryCta={siteContent.hero.ctaSecondary}
-        stats={heroStats}
+          mediaSrc={siteContent.hero.image}
       />
 
       <AnimatedStats />

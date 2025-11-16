@@ -167,6 +167,18 @@ h3 {
   transform: translateY(-4px);
 }
 
+.hero-cta {
+  transition:
+    transform 260ms var(--ease-industrial),
+    box-shadow 260ms var(--ease-industrial);
+  will-change: transform, box-shadow;
+}
+
+.hero-cta:hover {
+  transform: scale(1.04) translateZ(0);
+  box-shadow: 0 30px 55px rgba(0, 0, 0, 0.45);
+}
+
 .surface-card {
   position: relative;
   border-radius: var(--card-radius);
