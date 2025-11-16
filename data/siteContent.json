@@ -2,11 +2,10 @@
   "hero": {
     "eyebrow": "Dezitech Engineering",
     "headline": [
-      "Helping customers grow profitably",
-      "by providing engineering outsourcing solutions",
-      "Design and Product manufacturing"
+      "Build better products faster",
+      "with flexible engineering partners"
     ],
-    "description": "Established in 2014, Dezitech engineering pvt. Ltd engineers have extensive experience in engineering design, new product development and supply chain management in diverse industries.",
+    "description": "Since 2014, Dezitech Engineering has paired global teams with design, manufacturing, and supply-chain expertise.",
     "ctaPrimary": {
       "label": "Contact Us",
       "href": "/contact"
