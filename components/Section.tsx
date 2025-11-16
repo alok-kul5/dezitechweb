@@ -4,6 +4,7 @@ import { JSX, ReactNode } from "react";
 import MaskReveal from "./MaskReveal";
 import MotionReveal from "./MotionReveal";
 import ParallaxWrapper from "./ParallaxWrapper";
+import SectionWrapper, { SectionVariant } from "./SectionWrapper";
 
 type SectionAccent = "grid" | "orb" | "beam";
 type SectionBackdrop = "slate" | "sand" | "midnight";
@@ -29,26 +30,50 @@ type SectionProps = {
   accentClassName?: string;
   backdropVariant?: SectionBackdrop;
   ambientProps?: SectionAmbientProp[];
+  variant?: SectionVariant;
 };
 
-const backdropStyles: Record<SectionBackdrop, string> = {
-  slate:
-    "bg-[radial-gradient(circle_at_top,_rgba(15,23,42,0.35),_transparent_65%)]",
-  sand:
-    "bg-[radial-gradient(circle_at_top,_rgba(245,233,205,0.35),_transparent_55%)]",
-  midnight:
-    "bg-[radial-gradient(circle_at_top,_rgba(80,201,206,0.35),_transparent_60%)]",
+const backdropStyles: Record<SectionBackdrop, Record<SectionVariant, string>> = {
+  slate: {
+    dark: "bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.12),_transparent_65%)]",
+    light: "bg-[radial-gradient(circle_at_top,_rgba(15,23,36,0.1),_transparent_55%)]",
+  },
+  sand: {
+    dark: "bg-[radial-gradient(circle_at_top,_rgba(200,16,46,0.25),_transparent_72%)]",
+    light: "bg-[radial-gradient(circle_at_top,_rgba(248,248,249,0.9),_transparent_65%)]",
+  },
+  midnight: {
+    dark: "bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_65%)]",
+    light: "bg-[radial-gradient(circle_at_top,_rgba(15,23,36,0.12),_transparent_60%)]",
+  },
 };
 
-const accentContent: Record<SectionAccent, JSX.Element> = {
-  grid: (
-    <div className="h-full w-full rounded-[40px] border border-white/5 bg-[url(/images/DEZITECH_TECH_GRID.svg)] bg-cover bg-center opacity-40 mix-blend-screen" />
+const accentContent: Record<SectionAccent, (variant: SectionVariant) => JSX.Element> = {
+  grid: (variant) => (
+    <div
+      className={`h-full w-full rounded-[40px] border ${
+        variant === "light" ? "border-[#0F1724]/10 opacity-60" : "border-white/5 opacity-40 mix-blend-screen"
+      }`}
+      style={{ backgroundImage: "url(/images/DEZITECH_TECH_GRID.svg)", backgroundSize: "cover", backgroundPosition: "center" }}
+    />
   ),
-  orb: (
-    <div className="h-full w-full rounded-full bg-[radial-gradient(circle,_rgba(80,201,206,0.5),_transparent_70%)] blur-2xl" />
+  orb: (variant) => (
+    <div
+      className={`h-full w-full rounded-full blur-2xl ${
+        variant === "light"
+          ? "bg-[radial-gradient(circle,_rgba(200,16,46,0.25),_transparent_70%)]"
+          : "bg-[radial-gradient(circle,_rgba(200,16,46,0.4),_transparent_70%)]"
+      }`}
+    />
   ),
-  beam: (
-    <div className="h-full w-full rounded-[999px] bg-gradient-to-r from-white/60 via-white/10 to-transparent opacity-70 blur-md" />
+  beam: (variant) => (
+    <div
+      className={`h-full w-full rounded-[999px] ${
+        variant === "light"
+          ? "bg-gradient-to-r from-[#0F1724]/40 via-transparent to-transparent opacity-60"
+          : "bg-gradient-to-r from-white/60 via-white/10 to-transparent opacity-70"
+      } blur-md`}
+    />
   ),
 };
 
@@ -63,49 +88,62 @@ const Section = ({
   accentClassName = "right-6 top-6 hidden h-40 w-40 md:block",
   backdropVariant = "slate",
   ambientProps = [],
+  variant = "dark",
 }: SectionProps) => {
   const hasHeading = Boolean(eyebrow || title || description);
 
+  const shellClass =
+    variant === "light"
+      ? "border-[rgba(15,23,36,0.08)] bg-white text-[#0F1724] shadow-[0_35px_95px_rgba(15,23,36,0.12)]"
+      : "border-white/10 bg-white/5 text-white shadow-[0_45px_120px_rgba(3,6,15,0.6)] backdrop-blur";
+  const eyebrowClass =
+    variant === "light"
+      ? "text-[0.7rem] font-semibold uppercase tracking-[0.35em] text-[#94A3B8]"
+      : "text-[0.7rem] font-semibold uppercase tracking-[0.35em] text-white/55";
+  const titleClass = variant === "light" ? "text-3xl font-semibold text-[#0F1724]" : "text-3xl font-semibold text-white";
+  const descriptionClass = variant === "light" ? "text-base text-[#4B5563]" : "text-base text-white/70";
+
   return (
-    <section id={id} className={`relative overflow-hidden px-6 py-20 ${className}`}>
-      <MotionReveal
-        className="pointer-events-none absolute inset-x-3 inset-y-4 rounded-[48px]"
-        fadeOnly
-        direction="up"
-        distance={24}
-        duration={0.72}
-        amount={0.15}
-      >
-        <div
-          className={`h-full w-full rounded-[48px] ${backdropStyles[backdropVariant]}`}
-        />
-      </MotionReveal>
-
-      <ParallaxWrapper
-        speed={0.14}
-        className={`pointer-events-none absolute ${accentClassName}`}
-      >
-        {accentContent[accentVariant]}
-      </ParallaxWrapper>
-
-      {ambientProps.map((prop) => (
-        <ParallaxWrapper
-          key={`${prop.src}-${prop.className ?? ""}`}
-          speed={prop.speed}
-          axis={prop.axis}
-          className={`pointer-events-none absolute ${prop.className ?? ""}`}
+    <SectionWrapper id={id} variant={variant}>
+      <div className={`relative overflow-hidden rounded-[40px] border ${shellClass} ${className}`}>
+        <MotionReveal
+          className="pointer-events-none absolute inset-x-3 inset-y-4 rounded-[48px]"
+          fadeOnly
+          direction="up"
+          distance={24}
+          duration={0.72}
+          amount={0.15}
         >
-          <Image
-            src={prop.src}
-            alt={prop.alt}
-            width={prop.width ?? 320}
-            height={prop.height ?? 320}
-            className="w-full opacity-50"
+          <div
+            className={`h-full w-full rounded-[48px] ${backdropStyles[backdropVariant][variant]}`}
           />
-        </ParallaxWrapper>
-      ))}
+        </MotionReveal>
 
-        <div className="relative mx-auto max-w-5xl space-y-8 rounded-[40px] border border-white/10 bg-white/5 p-8 text-white shadow-[0_30px_90px_rgba(3,6,15,0.45)] backdrop-blur-2xl">
+        <ParallaxWrapper
+          speed={0.14}
+          className={`pointer-events-none absolute ${accentClassName}`}
+        >
+          {accentContent[accentVariant](variant)}
+        </ParallaxWrapper>
+
+        {ambientProps.map((prop) => (
+          <ParallaxWrapper
+            key={`${prop.src}-${prop.className ?? ""}`}
+            speed={prop.speed}
+            axis={prop.axis}
+            className={`pointer-events-none absolute ${prop.className ?? ""}`}
+          >
+            <Image
+              src={prop.src}
+              alt={prop.alt}
+              width={prop.width ?? 320}
+              height={prop.height ?? 320}
+              className="w-full opacity-50"
+            />
+          </ParallaxWrapper>
+        ))}
+
+        <div className="relative z-10 space-y-8 p-8">
           {hasHeading ? (
             <MotionReveal
               as="div"
@@ -115,26 +153,21 @@ const Section = ({
               duration={0.72}
               stagger={0.08}
             >
-              {eyebrow ? (
-                <div className="text-xs font-semibold uppercase tracking-[0.35em] text-white/50">
-                  {eyebrow}
-                </div>
-              ) : null}
+              {eyebrow ? <div className={eyebrowClass}>{eyebrow}</div> : null}
               {title ? (
                 <div>
-                  <MaskReveal as="h2" className="text-3xl font-semibold text-white">
+                  <MaskReveal as="h2" className={titleClass}>
                     {title}
                   </MaskReveal>
                 </div>
               ) : null}
-              {description ? (
-                <div className="text-base text-white/70">{description}</div>
-              ) : null}
+              {description ? <div className={descriptionClass}>{description}</div> : null}
             </MotionReveal>
           ) : null}
-        {children}
+          {children}
+        </div>
       </div>
-    </section>
+    </SectionWrapper>
   );
 };
 
