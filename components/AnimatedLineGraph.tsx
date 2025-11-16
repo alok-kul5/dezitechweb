@@ -22,6 +22,7 @@ type AnimatedLineGraphProps = {
 const staticGraph = getSiteContentSync().lineGraph;
 const GRAPH_EASE: [number, number, number, number] = [0.16, 0.84, 0.44, 1];
 const SAMPLE_DATA = [320, 410, 520, 610, 580, 660]; // TODO: Replace with live telemetry feed.
+const DEFAULT_LABELS = ["Signal", "Runtime", "Quality", "Reliability", "Yield", "Availability"];
 
 const cx = (...classes: Array<string | undefined>) => classes.filter(Boolean).join(" ");
 
@@ -52,33 +53,27 @@ const buildPath = (points: DataPoint[]) =>
 const AnimatedLineGraph = ({ data, labels, className, graphClassName }: AnimatedLineGraphProps) => {
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
-  const [points, setPoints] = useState<DataPoint[]>(() => buildPointsFromData(data ?? staticGraph.data ?? SAMPLE_DATA));
-  const [resolvedLabels, setResolvedLabels] = useState<string[]>(
-    () => labels ?? staticGraph.labels ?? ["Signal", "Runtime", "Quality", "Reliability", "Yield", "Availability"],
-  );
+  const [fallbackGraph, setFallbackGraph] = useState(() => staticGraph);
 
   useEffect(() => {
-    if (data) {
-      setPoints(buildPointsFromData(data));
-      setResolvedLabels(labels ?? staticGraph.labels ?? []);
-      return;
-    }
-
+    if (data) return;
     let mounted = true;
     loadSiteContent().then((content) => {
-      if (!mounted) return;
-      setPoints(buildPointsFromData(content.lineGraph.data ?? SAMPLE_DATA));
-      setResolvedLabels(labels ?? content.lineGraph.labels ?? []);
+      if (mounted) {
+        setFallbackGraph(content.lineGraph);
+      }
     });
-
     return () => {
       mounted = false;
     };
-  }, [data, labels]);
+  }, [data]);
 
+  const resolvedData = data ?? fallbackGraph.data ?? SAMPLE_DATA;
+  const labelSource = labels ?? fallbackGraph.labels ?? DEFAULT_LABELS;
+  const points = useMemo(() => buildPointsFromData(resolvedData), [resolvedData]);
   const path = useMemo(() => buildPath(points), [points]);
   const latestPoint = points[points.length - 1];
-  const labelDisplay = resolvedLabels.length ? resolvedLabels.slice(0, points.length) : [];
+  const labelDisplay = labelSource.slice(0, points.length);
 
   return (
     <div className={cx("space-y-4", className)}>

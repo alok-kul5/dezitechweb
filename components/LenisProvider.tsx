@@ -22,7 +22,7 @@ export default function LenisProvider({ children, mode = "snappy" }: LenisProvid
     if (!canUseLenis() || prefersReduced) return;
 
     // Init Lenis (idempotent in lib/lenis.ts)
-    const lenis = initLenis(mode);
+    initLenis(mode);
 
     // Resize handler
     const handleResize = () => {

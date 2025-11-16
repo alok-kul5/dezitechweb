@@ -9,6 +9,10 @@ let lenisInstance: InstanceType<typeof Lenis> | null = null;
 let rafId: number | null = null;
 
 type LenisPreset = "snappy" | "cinematic";
+type LenisInternal = InstanceType<typeof Lenis> & {
+  resize?: () => void;
+  onResize?: () => void;
+};
 
 const lenisPresets: Record<LenisPreset, LenisOptions> = {
   snappy: { lerp: 0.045, wheelMultiplier: 1.5 },
@@ -52,11 +56,12 @@ export function initLenis(preset: LenisPreset = "snappy", options?: LenisOptions
 /** Resize handler */
 export function resizeLenis() {
   if (!lenisInstance) return;
-  try {
-    (lenisInstance as any).onResize?.();
-  } catch {
-    lenisInstance?.resize?.();
+  const instance = lenisInstance as LenisInternal;
+  if (typeof instance.onResize === "function") {
+    instance.onResize();
+    return;
   }
+  instance.resize?.();
 }
 
 /** Destroy instance safely */

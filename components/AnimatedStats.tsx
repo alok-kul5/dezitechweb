@@ -44,17 +44,20 @@ const AnimatedStats = () => {
   }, []);
 
   useEffect(() => {
-    setValues(kpis.map(() => 0));
-  }, [kpis.length]);
-
-  useEffect(() => {
     if (!isInView) return;
+
+      const resetFrame = requestAnimationFrame(() => {
+      setValues(kpis.map(() => 0));
+    });
 
     if (prefersReducedMotion) {
       const reducedId = requestAnimationFrame(() => {
         setValues(kpis.map((stat) => Number(stat.value)));
       });
-      return () => cancelAnimationFrame(reducedId);
+      return () => {
+        cancelAnimationFrame(resetFrame);
+        cancelAnimationFrame(reducedId);
+      };
     }
 
     const rafIds: number[] = [];
@@ -83,9 +86,10 @@ const AnimatedStats = () => {
       rafIds[index] = requestAnimationFrame(tick);
     });
 
-    return () => {
-      rafIds.forEach((id) => cancelAnimationFrame(id));
-    };
+      return () => {
+        cancelAnimationFrame(resetFrame);
+        rafIds.forEach((id) => cancelAnimationFrame(id));
+      };
   }, [isInView, prefersReducedMotion, kpis]);
 
   const stats = useMemo(

@@ -19,7 +19,8 @@ const SiteEntryReveal = () => {
     if (hasSeen) return;
 
     document.cookie = `${COOKIE_NAME}=true; path=/; max-age=86400; SameSite=Lax`;
-    setIsVisible(true);
+    const frame = requestAnimationFrame(() => setIsVisible(true));
+    return () => cancelAnimationFrame(frame);
   }, [prefersReducedMotion]);
 
   if (!isVisible || prefersReducedMotion) {
