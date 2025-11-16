@@ -5,7 +5,7 @@
         "Engineering supply chains.",
         "Re-engineered for OEM success."
       ],
-      "description": "UK + India engineering teams keep OEM programs resilient, compliant, and on cost.",
+      "description": "Dual-shore Dezitech teams keep OEM launches compliant, responsive, and on cost.",
       "ctaPrimary": {
         "label": "Contact Us",
         "href": "/contact"
@@ -21,14 +21,14 @@
       "label": "International engineering experience",
       "value": 20,
       "suffix": "+ years",
-      "description": "Our Engineers have 20+ years of international working experience and understand the business environment and cultural issues.",
+      "description": "Global engineers bring 20+ years of multi-market program awareness.",
       "icon": "/icons/DEZITECH_ICON_MAP.svg",
       "media": "/images/DEZITECH_IMG_02.jpg"
     },
     {
       "label": "Established",
       "value": 2014,
-      "description": "Established in 2014 by highly qualified and experienced Engineering professionals.",
+      "description": "Founded in 2014 by senior manufacturing and engineering leads.",
       "icon": "/icons/DEZITECH_ICON_GEAR.svg",
       "media": "/images/DEZITECH_IMG_01.jpg"
     },
@@ -36,14 +36,14 @@
       "label": "Global support regions",
       "value": 4,
       "suffix": "regions",
-      "description": "We have provided engineering / supply chain support to customers in the UK, USA, India and Australia.",
+      "description": "Supporting OEM partners across the UK, USA, India, and Australia.",
       "icon": "/icons/DEZITECH_ICON_MAP.svg",
       "media": "/images/DEZITECH_IMG_03.jpg"
     }
   ],
   "lineGraph": {
     "title": "Manufacturing envelope benchmarks",
-    "description": "Mori Seiki (Japan)- SL-3 Dia 250mm, Length-500mm; Nakamura (Japan) TMC4 Dia 400mm, Length- 1500mm; Okuma-Howa (Japan) X-1200mm, Y-670mm, Z-550mm; WMW Starrag - IWK 7000 630 x 630 Twin Pallet.",
+    "description": "Envelope coverage across Mori Seiki, Nakamura, Okuma-Howa, and WMW twin pallets.",
     "unit": "mm",
     "labels": [
       "SL-3 Length",
@@ -99,25 +99,25 @@
   "services": [
     {
       "title": "Engineering outsourcing",
-      "description": "We believe that Engineering support should enhance and enrich the in-house knowledge & experience, which is generated and built over the years.",
+      "description": "Engineering support should expand in-house intelligence, not replace it.",
       "bullets": [
-        "Our Engineers have 20+ years of international working experience and understand the business environment and cultural issues.",
-        "We are able to provide tailored and flexible engineering support as the requirement.",
-        "We can help bring new products right first time and faster to the market."
+        "Engineers bring 20+ years of international program awareness.",
+        "Support flexes with the workload and skill gaps you need to fill.",
+        "Launch programs right-first-time with seasoned development partners."
       ]
     },
     {
       "title": "Manufacturing support",
-      "description": "It is important to select the right outsourcing / supply chain partner who can understand quality, standards, delivery requirement and business environment.",
+      "description": "Select a supply ally that understands quality systems, delivery, and culture.",
       "bullets": [
-        "We can help by providing a quality and reliable supply of products and components.",
-        "We are located in the UK & India, making communication easy and projects implementation effective.",
-        "We work with you to understand the requirement and overall goals, then supply components or find a reliable manufacturer for continuous, sustainable and resilient supply."
+        "Source reliable components with audited, repeatable processes.",
+        "UK + India teams keep communication fast across time zones.",
+        "We align on goals, then maintain resilient, continuous supply."
       ]
     },
     {
       "title": "Industries served",
-      "description": "We provide end to end service or tailored individual needs world wide to diverse and multidisciplinary Industries.",
+      "description": "Delivering tailored engineering and supply support across core industrial sectors.",
       "bullets": [
         "Oil and gas",
         "Automotive",
@@ -128,14 +128,14 @@
     }
   ],
   "quality": {
-    "title": "Why Dezitech?",
+    "title": "Local experts deliver global program resilience.",
     "pillars": [
       "Local presence",
-      "Experience of Making outsourcing profitable",
-      "Excellent understanding of international cultural issues",
-      "Nimble, Flexible hands on team",
-      "Diverse Engineering experience",
-      "In depth technical Understanding & involvement"
+      "Profitable outsourcing",
+      "Cultural fluency",
+      "Nimble hands-on team",
+      "Diverse engineering depth",
+      "Technical ownership"
     ]
   },
   "contact": {
@@ -144,11 +144,10 @@
       "Karad, India",
       "Bristol, UK"
     ],
-    "message": "Please do contact us for any further details such as work samples, quotation or to discuss how we can help you. We stay responsive between Karad and Bristol so project conversations, supplier coordination, and engineering reviews stay on track.",
+    "message": "Reach out for samples, quotes, or program planning. Teams in Karad and Bristol reply quickly to keep reviews on track.",
     "cta": {
       "label": "Request Call Back",
-      "href": "/contact",
-      "note": "TODO: Add phone number once confirmed with client."
+      "href": "/contact"
     }
   }
 }
