@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
 
 import AmbientStage from "./AmbientStage";
 import ParallaxWrapper from "./ParallaxWrapper";
@@ -65,6 +66,20 @@ const AnimatedHero = ({
   const prefersReducedMotion = useReducedMotion();
   const shouldAnimate = !prefersReducedMotion;
   const resolvedHeadline = normalizeHeadline(headline);
+  const headlineWordMatrix = useMemo(() => {
+    const wordGroups = resolvedHeadline.map((line) => line.split(/\s+/).filter(Boolean));
+    const wordAccumulators = wordGroups.map((_, index) =>
+      wordGroups.slice(0, index).reduce((sum, group) => sum + group.length, 0),
+    );
+
+    return wordGroups.map((words, lineIndex) =>
+      words.map((word, wordIndex) => ({
+        key: `${lineIndex}-${wordIndex}-${word}`,
+        word,
+        delay: 0.4 + (wordAccumulators[lineIndex] + wordIndex) * 0.08,
+      })),
+    );
+  }, [resolvedHeadline]);
   const heroImageSrc = mediaSrc ?? "/images/DEZITECH_IMG_HERO.jpg";
   const heroEyebrowClass =
     "inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/60";
@@ -72,8 +87,6 @@ const AnimatedHero = ({
     "hero-cta inline-flex items-center justify-center rounded-full bg-[#C8102E] px-9 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-white shadow-[0_22px_55px_rgba(200,16,46,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70";
   const secondaryCtaClass =
     "hero-cta inline-flex items-center justify-center rounded-full border border-white/30 px-9 py-3 text-[0.72rem] font-semibold uppercase tracking-[0.32em] text-white/80 backdrop-blur focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70";
-
-  let wordCursor = 0;
 
   return (
     <section className="relative isolate overflow-hidden bg-carbon-900 py-20 text-white sm:py-28 lg:py-32">
@@ -100,34 +113,36 @@ const AnimatedHero = ({
           ) : null}
 
           <div className="space-y-2">
-            {resolvedHeadline.map((line, lineIndex) => {
-              const words = line.split(/\s+/).filter(Boolean);
-              return (
-                <div
-                  key={`${line}-${lineIndex}`}
-                  className="font-heading text-[2.5rem] leading-[1.05] text-white md:text-[3.75rem] lg:text-[4.75rem]"
-                >
-                  {words.map((word, wordIndex) => {
-                    const delay = 0.4 + wordCursor * 0.08;
-                    wordCursor += 1;
-                    const animationProps = shouldAnimate
-                      ? {
-                          initial: { opacity: 0, y: 32 },
-                          animate: { opacity: 1, y: 0 },
-                          transition: { delay, duration: 0.65, ease: HERO_EASE },
-                        }
-                      : {};
-
+            {headlineWordMatrix.map((words, lineIndex) => (
+              <div
+                key={`hero-headline-line-${lineIndex}`}
+                className="font-heading text-[2.5rem] leading-[1.05] text-white md:text-[3.75rem] lg:text-[4.75rem]"
+              >
+                {words.map(({ key, word, delay }) => {
+                  if (!shouldAnimate) {
                     return (
-                      <motion.span key={`${word}-${wordIndex}`} className="inline-block align-top" {...animationProps}>
+                      <span key={key} className="inline-block align-top">
                         {word}
                         <span aria-hidden="true">&nbsp;</span>
-                      </motion.span>
+                      </span>
                     );
-                  })}
-                </div>
-              );
-            })}
+                  }
+
+                  return (
+                    <motion.span
+                      key={key}
+                      className="inline-block align-top"
+                      initial={{ opacity: 0, y: 32 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay, duration: 0.65, ease: HERO_EASE }}
+                    >
+                      {word}
+                      <span aria-hidden="true">&nbsp;</span>
+                    </motion.span>
+                  );
+                })}
+              </div>
+            ))}
           </div>
 
           <motion.p

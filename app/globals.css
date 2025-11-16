@@ -286,7 +286,8 @@ h3 {
     .interactive-card,
     .interactive-icon,
     .interactive-cta,
-    .interactive-media {
+    .interactive-media,
+    .hero-cta {
     transition: none !important;
     transform: none !important;
   }
