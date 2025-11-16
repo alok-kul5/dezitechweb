@@ -72,8 +72,8 @@ const Section = ({
         className="pointer-events-none absolute inset-x-3 inset-y-4 rounded-[48px]"
         fadeOnly
         direction="up"
-        distance={18}
-        duration={0.8}
+        distance={24}
+        duration={0.72}
         amount={0.15}
       >
         <div
@@ -105,36 +105,33 @@ const Section = ({
         </ParallaxWrapper>
       ))}
 
-      <div className="relative mx-auto max-w-5xl space-y-8 rounded-[40px] border border-white/10 bg-white/5 p-8 text-white shadow-[0_30px_90px_rgba(3,6,15,0.45)] backdrop-blur-2xl">
-        {hasHeading ? (
-          <div className="space-y-3">
-            {eyebrow ? (
-              <MotionReveal
-                as="p"
-                className="text-xs font-semibold uppercase tracking-[0.35em] text-white/50"
-                direction="up"
-                distance={18}
-              >
-                {eyebrow}
-              </MotionReveal>
-            ) : null}
-            {title ? (
-              <MaskReveal as="h2" className="text-3xl font-semibold text-white">
-                {title}
-              </MaskReveal>
-            ) : null}
-            {description ? (
-              <MotionReveal
-                as="p"
-                direction="up"
-                distance={18}
-                className="text-base text-white/70"
-              >
-                {description}
-              </MotionReveal>
-            ) : null}
-          </div>
-        ) : null}
+        <div className="relative mx-auto max-w-5xl space-y-8 rounded-[40px] border border-white/10 bg-white/5 p-8 text-white shadow-[0_30px_90px_rgba(3,6,15,0.45)] backdrop-blur-2xl">
+          {hasHeading ? (
+            <MotionReveal
+              as="div"
+              className="space-y-3"
+              direction="up"
+              distance={24}
+              duration={0.72}
+              stagger={0.08}
+            >
+              {eyebrow ? (
+                <div className="text-xs font-semibold uppercase tracking-[0.35em] text-white/50">
+                  {eyebrow}
+                </div>
+              ) : null}
+              {title ? (
+                <div>
+                  <MaskReveal as="h2" className="text-3xl font-semibold text-white">
+                    {title}
+                  </MaskReveal>
+                </div>
+              ) : null}
+              {description ? (
+                <div className="text-base text-white/70">{description}</div>
+              ) : null}
+            </MotionReveal>
+          ) : null}
         {children}
       </div>
     </section>
