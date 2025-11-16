@@ -6,8 +6,6 @@ import Section from "@/components/Section";
 
 const heroHeadline = [
   "Restoring confidence in industrial launches",
-  "through Dezitech-grade engineering partnerships",
-  "and resilient product manufacturing pipelines",
 ];
 
 const heroDescription =
