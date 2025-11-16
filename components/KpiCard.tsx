@@ -39,8 +39,8 @@ const KpiCard = ({ label, value, description, icon, media }: KpiCardProps) => {
           />
         ) : null}
       </div>
-      <div>
-        <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/50">{label}</p>
+        <div>
+          <p className="text-[0.6rem] uppercase tracking-[0.35em] text-white/70">{label}</p>
         <p className="mt-2 text-3xl font-semibold text-white">{value}</p>
         {description ? <p className="mt-2 text-xs text-white/65">{description}</p> : null}
       </div>

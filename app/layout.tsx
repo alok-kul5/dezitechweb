@@ -29,11 +29,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-      <html lang="en">
-          <body className={`${bodyFont.variable} ${headingFont.variable} bg-[#05070f] text-white antialiased`}>
+    return (
+        <html lang="en" data-theme="dark">
+            <body className={`${bodyFont.variable} ${headingFont.variable} bg-[var(--bg-canvas)] text-[var(--text-soft)] antialiased`}>
           <LenisProvider>
-              <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#05070f]">
+                <div className="relative flex min-h-screen flex-col overflow-hidden bg-[var(--bg-canvas)]">
                 <AmbientStage />
                 <AnimatedHeader />
               <main className="flex-1">
